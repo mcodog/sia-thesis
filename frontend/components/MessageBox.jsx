@@ -7,7 +7,7 @@ const MessageBox = ({ text = "This is a sample message.", user = true }) => {
     <View
       className="my-2"
       style={{
-        backgroundColor: user ? "#dedede" : "#6851a4",
+        backgroundColor: user ? "#dedede" : "#FF686B",
         borderRadius: 32,
         padding: 16,
         alignSelf: user ? "flex-end" : "flex-start",

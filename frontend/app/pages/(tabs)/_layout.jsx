@@ -1,27 +1,43 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Tabs } from "expo-router";
+// import { Tabs } from "expo-router";
+import Home from "./Home";
+import Messages from "./Messages";
+import Profile from "./Profile";
+import Resources from "./Resources";
 
 //Icons
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { AuthProvider } from "../../../context/AuthContext";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+const Tabs = createBottomTabNavigator();
 
 const _layout = () => {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#FF686B", // Set active tab color
+        tabBarInactiveTintColor: "gray",
+      }}
+    >
       <Tabs.Screen
-        name="home"
+        name="Home"
+        component={Home}
         options={{
-          title: "Home",
+          title: "pages/(tabs)/Home",
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="messages"
+        name="Messages"
+        component={Messages}
         options={{
           title: "Chat",
           tabBarIcon: ({ color }) => (
@@ -30,7 +46,8 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="resources"
+        name="Resources"
+        component={Resources}
         options={{
           title: "Resources",
           tabBarIcon: ({ color }) => (
@@ -43,7 +60,8 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="Profile"
+        component={Profile}
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
@@ -51,7 +69,7 @@ const _layout = () => {
           ),
         }}
       />
-    </Tabs>
+    </Tabs.Navigator>
   );
 };
 

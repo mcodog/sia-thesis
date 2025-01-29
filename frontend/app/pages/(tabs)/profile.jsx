@@ -1,14 +1,15 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { rem } from "../../../components/stylings/responsiveSize";
-
+import { useAuth } from "../../../context/AuthContext";
 //Paper
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const profile = () => {
+const Profile = () => {
+  const { onLogout } = useAuth();
   const router = useRouter();
   return (
     <View className="flex-1 p-4 pt-16">
@@ -16,7 +17,7 @@ const profile = () => {
         <View
           className="p-2 justify-center items-center text-center align-center"
           style={{
-            backgroundColor: "#6851a4",
+            backgroundColor: "#FFA69E",
             borderRadius: 100,
             width: rem(100),
             height: rem(100),
@@ -37,7 +38,7 @@ const profile = () => {
       <Button
         style={{ position: "absolute", bottom: 20, right: 20 }}
         mode="outlined"
-        onPress={() => router.push("pages/auth/welcome")}
+        onPress={onLogout}
       >
         Logout
       </Button>
@@ -45,4 +46,4 @@ const profile = () => {
   );
 };
 
-export default profile;
+export default Profile;

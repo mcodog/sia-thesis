@@ -4,13 +4,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { rem } from "./stylings/responsiveSize";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import { useStoreRootState } from "expo-router/build/global-state/router-store";
 
-const ChatLogBar = ({ chatLogNum, date }) => {
+const ChatLogBar = ({ chatLogNum, date, pressOutside }) => {
   const [showTools, setShowTools] = useState(false);
 
   const handleOutsideClick = () => {
@@ -18,6 +18,10 @@ const ChatLogBar = ({ chatLogNum, date }) => {
       setShowTools(false);
     }
   };
+
+  useEffect(() => {
+    handleOutsideClick();
+  }, [pressOutside]);
 
   return (
     <TouchableWithoutFeedback
@@ -41,7 +45,7 @@ const ChatLogBar = ({ chatLogNum, date }) => {
               </Text>
               <Text
                 className="font-bold"
-                style={{ fontSize: rem(12), color: "#6851a4" }}
+                style={{ fontSize: rem(12), color: "#FF686B" }}
               >
                 {" "}
                 {chatLogNum}
@@ -66,9 +70,13 @@ const ChatLogBar = ({ chatLogNum, date }) => {
               }
             }}
           >
-            <View>
+            <View
+              className="justify-end text-right items-end"
+              // style={{ borderWidth: 1 }}
+            >
               <Entypo
                 className="text-right"
+                style={{ textAlign: "right" }}
                 name="dots-three-vertical"
                 size={24}
                 color="black"
@@ -77,7 +85,12 @@ const ChatLogBar = ({ chatLogNum, date }) => {
           </TouchableWithoutFeedback>
         </View>
         {showTools && (
-          <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+          <TouchableWithoutFeedback
+            onPress={(e) => {
+              e.stopPropagation();
+              alert("Delete");
+            }}
+          >
             <View
               className="elevation-lg flex-row justify-center items-center"
               style={{

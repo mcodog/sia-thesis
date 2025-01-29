@@ -8,13 +8,14 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Appbar } from "react-native-paper";
+import { Appbar, DefaultTheme, PaperProvider } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { rem } from "../../../components/stylings/responsiveSize";
 
 //Customs
 import { TopShadowBox } from "../../../components/CustomShadow";
 import MessageBox from "../../../components/MessageBox";
+import theme from "../../../components/CustomTheme";
 
 //Icons
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -54,8 +55,8 @@ const index = () => {
   }, [sampleData]);
 
   return (
-    <>
-      <Appbar.Header>
+    <PaperProvider theme={theme}>
+      <Appbar.Header theme={DefaultTheme}>
         <Appbar.BackAction
           onPress={() => {
             router.back();
@@ -131,7 +132,7 @@ const index = () => {
           </View>
         </View>
       </View>
-    </>
+    </PaperProvider>
   );
 };
 

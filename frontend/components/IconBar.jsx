@@ -17,7 +17,7 @@ const IconBar = ({ title, sub, icon }) => {
         <View
           className="p-4 my-2"
           style={{
-            backgroundColor: "#6851a4",
+            backgroundColor: "#FF686B",
             borderRadius: 100,
             height: 60,
           }}
