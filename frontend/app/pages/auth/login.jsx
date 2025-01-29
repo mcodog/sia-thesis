@@ -12,35 +12,18 @@ import theme from "../../../components/CustomTheme";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
 import axios from "axios";
 import axiosInstance from "../../../context/axiosInstance";
+import { useAuth } from "../../../context/AuthContext";
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const router = useRouter();
   const [email, setEmail] = useState("admin");
   const [password, setPassword] = useState("secret");
+  const { login } = useAuth();
 
   const handleLogin = async () => {
-    console.log("Attempting to login with:", email, password);
-    try {
-      const result = await axiosInstance.post(`/api/token/`, {
-        username: email,
-        password,
-      });
-      console.log("Login successful:", result.data);
-    } catch (error) {
-      if (error.response) {
-        // ✅ Server responded with a status code outside the range of 2xx
-        console.log("Response Error:", error.response.data);
-        console.log("Status Code:", error.response.status);
-      } else if (error.request) {
-        // ✅ No response received (server unreachable)
-        console.log(
-          "Request Error: No response received from server",
-          error.request
-        );
-      } else {
-        // ✅ Other errors (e.g., wrong Axios config)
-        console.log("Error Message:", error.message);
-      }
+    isLoggedIn = login(email, password);
+    if (isLoggedIn) {
+      navigation.navigate("Main");
     }
   };
 

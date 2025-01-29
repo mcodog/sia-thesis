@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .serializers import ChatLogSerializer, MessageSerializer, UserSerializer
 from .models import ChatLog, Message
@@ -48,3 +49,16 @@ class MessageViewSet(viewsets.ModelViewSet):
             return Message.objects.filter(chat_id=chat_id)
         return Message.objects.none()
 
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get the current authenticated user
+        user = request.user
+        
+        # You can include more fields from the User model as needed
+        user_data = {
+            "username": user.username,
+            "email": user.email,
+        }
+        return Response(user_data, status=status.HTTP_200_OK)

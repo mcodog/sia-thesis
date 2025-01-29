@@ -29,7 +29,7 @@ const _layout = () => {
         name="Home"
         component={Home}
         options={{
-          title: "pages/(tabs)/Home",
+          title: "Home",
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={24} color={color} />
           ),

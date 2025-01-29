@@ -7,13 +7,62 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
   const [user, setUser] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
   const [test, setTest] = useState("Test");
 
+  const login = async (username, password) => {
+    console.log("Attempting to login with:", username, password);
+    try {
+      const result = await axiosInstance.post(`/api/token/`, {
+        username,
+        password,
+      });
+      console.log("Login successful:", result.data);
+      await fetchUserProfile(result.data.access);
+
+      return true;
+    } catch (error) {
+      if (error.response) {
+        console.log("Response Error:", error.response.data);
+        console.log("Status Code:", error.response.status);
+      } else if (error.request) {
+        console.log(
+          "Request Error: No response received from server",
+          error.request
+        );
+      } else {
+        console.log("Error Message:", error.message);
+      }
+    }
+
+    return false;
+  };
+
   useEffect(() => {
-    console.log("test value:", test);
-  }, [test]);
+    if (isAuthenticated) {
+      fetchUserProfile(token);
+    }
+  });
+
+  const fetchUserProfile = async (token) => {
+    try {
+      const response = await axiosInstance.get("api/user/profile/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUser(response.data.username);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Context: " + user);
+  }, [user]);
 
   // useEffect(() => {
   //   const checkAuthStatus = async () => {
@@ -36,7 +85,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ test, setTest, isAuthenticated, loading, isAdmin }}
+      value={{ test, setTest, isAuthenticated, loading, isAdmin, login, user }}
     >
       {loading ? (
         <View
