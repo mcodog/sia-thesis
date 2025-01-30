@@ -19,8 +19,10 @@ import theme from "../../../components/CustomTheme";
 
 //Icons
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRoute } from "@react-navigation/native";
+import { useAuth } from "../../../context/AuthContext";
 
-const sampleData = [
+const chats = [
   {
     user: true,
     text: "This is a sample message.",
@@ -31,28 +33,106 @@ const sampleData = [
   },
 ];
 
-const index = () => {
+const Chat = () => {
+  const { axiosInstanceWithBearer, user } = useAuth();
+
+  const stackRouter = useRoute();
+  const { isNew, chatId } = stackRouter.params;
+  const [id, setId] = useState(chatId ? chatId : null);
+
   const router = useRouter();
   const [message, setMessage] = useState("");
   const chatRef = useRef(null);
-  const [sampleData, setSampleData] = useState([
-    {
-      user: true,
-      text: "This is a sample message.",
-    },
-    {
-      user: false,
-      text: "This is a sample message.",
-    },
-  ]);
+  const [chats, setChats] = useState([]);
 
   const scrollToBottom = () => {
     chatRef.current?.scrollToEnd({ animated: true });
   };
 
+  const handleMessage = async () => {
+    const formData = {
+      chat: id,
+      from_user: true,
+      message_content: message,
+    };
+    console.log(id);
+    if (id === undefined) {
+      console.log("new");
+      try {
+        const res = await axiosInstanceWithBearer.post(`/Chat/`, {
+          user: user.id,
+        });
+
+        setId(res.data.id);
+        setChats((prev) => [...prev, { user: true, text: message }]);
+
+        const chat = await axiosInstanceWithBearer.post(`/Message/`, {
+          chat: res.data.id,
+          from_user: true,
+          message_content: message,
+        });
+
+        setChats((prev) => [
+          ...prev,
+          { user: false, text: chat.data.message_content },
+        ]);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.log("not new");
+      try {
+        setChats((prev) => [...prev, { user: true, text: message }]);
+
+        const res = await axiosInstanceWithBearer.post(`/Message/`, formData);
+
+        setChats((prev) => [
+          ...prev,
+          { user: false, text: res.data.message_content },
+        ]);
+        console.log(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const sendMessage = async () => {};
+
+  useEffect(() => {
+    if (chatId) {
+      retrieveMessages();
+    }
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
-  }, [sampleData]);
+  }, [chats]);
+
+  const retrieveMessages = async () => {
+    try {
+      console.log("searching: ", id);
+      const res = await axiosInstanceWithBearer.get(
+        `/Message/?chat_id=${chatId}`
+      );
+      console.log(res.data);
+      res.data.forEach((item) => {
+        if (item.from_user) {
+          setChats((prev) => [
+            ...prev,
+            { user: true, text: item.message_content },
+          ]);
+        } else {
+          setChats((prev) => [
+            ...prev,
+            { user: false, text: item.message_content },
+          ]);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <PaperProvider theme={theme}>
@@ -72,7 +152,21 @@ const index = () => {
       >
         <ScrollView ref={chatRef} contentContainerStyle={{ flexGrow: 1 }}>
           <View className="min-h-full flex-1 justify-end flex-col">
-            {sampleData.map((item, i) => (
+            {chats && (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontFamily: "Seco", fontSize: rem(14) }}>
+                  Start up a conversation. Say 'Hi'!
+                </Text>
+              </View>
+            )}
+
+            {chats.map((item, i) => (
               <MessageBox key={i} text={item.text} user={item.user} />
             ))}
           </View>
@@ -109,10 +203,8 @@ const index = () => {
             {/* <Button title="Sample" /> */}
             <TouchableOpacity
               onPress={() => {
-                setSampleData((prev) => [
-                  ...prev,
-                  { user: true, text: message },
-                ]);
+                // setChats((prev) => [...prev, { user: true, text: message }]);
+                handleMessage();
                 setMessage("");
               }}
             >
@@ -136,4 +228,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Chat;

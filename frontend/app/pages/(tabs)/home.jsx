@@ -25,12 +25,12 @@ import { useAuth } from "../../../context/AuthContext";
 
 const Home = () => {
   const { user } = useAuth();
-  console.log("User is ", user);
+  console.log("User is ", user.username);
   const router = useRouter();
 
   return (
     <PaperProvider theme={CustomTheme}>
-      {user ? (
+      {!(user.username == "") ? (
         <View className="flex-1 p-2">
           <ScrollView>
             <View
@@ -39,7 +39,7 @@ const Home = () => {
             >
               <View className="w-1/2">
                 <Text className="font-bold" style={{ fontSize: rem(20) }}>
-                  Hi, {user}!
+                  Hi, {user.username}!
                 </Text>
                 <Text style={{ fontSize: rem(10) }}>
                   Let's make this day productive.

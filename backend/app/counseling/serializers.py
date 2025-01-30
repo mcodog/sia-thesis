@@ -15,10 +15,10 @@ class ChatLogSerializer(serializers.HyperlinkedModelSerializer):
 	user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 	class Meta:
 		model = ChatLog
-		fields = ('user', 'date_created', 'last_updated')
+		fields = ('id','user', 'date_created', 'last_updated')
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
 	chat = serializers.PrimaryKeyRelatedField(queryset=ChatLog.objects.all())
 	class Meta:
 		model = Message
-		fields = ('chat', 'from_user', 'message_content', 'date_created')
+		fields = ('id','chat', 'from_user', 'message_content', 'date_created')

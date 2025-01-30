@@ -1,16 +1,37 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import axiosInstance from "./axiosInstance";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [id, setId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState("");
-  const [user, setUser] = useState();
+  // const [user, setUser] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
   const [test, setTest] = useState("Test");
+
+  const [user, setUser] = useState({
+    username: "",
+    id: "",
+  });
+
+  const axiosInstanceWithBearer = axios.create({
+    baseURL: "http://172.34.99.53:8000",
+    timeout: 5000,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    console.log(accessToken);
+  }, [accessToken]);
 
   const login = async (username, password) => {
     console.log("Attempting to login with:", username, password);
@@ -19,7 +40,8 @@ export const AuthProvider = ({ children }) => {
         username,
         password,
       });
-      console.log("Login successful:", result.data);
+      // console.log("Login successful:", result.data);
+      setAccessToken(result.data.access);
       await fetchUserProfile(result.data.access);
 
       return true;
@@ -54,15 +76,16 @@ export const AuthProvider = ({ children }) => {
         },
       });
 
-      setUser(response.data.username);
+      setUser((prev) => ({
+        ...prev,
+        username: response.data.username,
+        id: response.data.id,
+      }));
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
   };
-
-  useEffect(() => {
-    console.log("Context: " + user);
-  }, [user]);
 
   // useEffect(() => {
   //   const checkAuthStatus = async () => {
@@ -85,7 +108,17 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ test, setTest, isAuthenticated, loading, isAdmin, login, user }}
+      value={{
+        test,
+        setTest,
+        isAuthenticated,
+        loading,
+        isAdmin,
+        login,
+        user,
+        setUser,
+        axiosInstanceWithBearer,
+      }}
     >
       {loading ? (
         <View

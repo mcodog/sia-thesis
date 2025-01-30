@@ -8,6 +8,7 @@ import Register from "./pages/auth/Register";
 import Welcome from "./pages/auth/Welcome";
 import Home from "./pages/(tabs)/Home";
 import _layout from "./pages/(tabs)/_layout";
+import Chat from "./pages/messages/Chat";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -39,6 +40,7 @@ const AuthStack = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Main" component={_layout} />
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 };

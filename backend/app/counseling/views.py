@@ -22,6 +22,10 @@ class ChatViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ChatLog.objects.filter(user=self.request.user)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        return super().destroy(request, *args, **kwargs)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -53,11 +57,9 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # Get the current authenticated user
         user = request.user
-        
-        # You can include more fields from the User model as needed
         user_data = {
+            "id": user.id,
             "username": user.username,
             "email": user.email,
         }
