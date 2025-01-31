@@ -5,16 +5,18 @@ import "../../../global.css";
 import { rem } from "../../../components/stylings/responsiveSize";
 
 // Paper
-import { TextInput } from "react-native-paper";
+import TextInput from "../../../components/TextInput";
 import { Button } from "react-native-paper";
 import { FAB } from "react-native-paper";
 import { useRouter } from "expo-router";
+import Logo from "../../../components/Logo";
 
 const register = () => {
   const router = useRouter();
 
   return (
     <View className="flex-1 justify-center items-center p-16">
+      <Logo />
       <View style={{ position: "absolute", top: rem(20), left: rem(20) }}>
         <FAB icon="arrow-left" onPress={() => router.back()} />
       </View>
@@ -53,7 +55,7 @@ const register = () => {
             Login
           </Button>
         </View>
-        <View className="w-1/2 p-2">
+        <View className="w-100 p-1 " >
           <Button mode="outlined" onPress={() => console.log("Pressed")}>
             Register
           </Button>

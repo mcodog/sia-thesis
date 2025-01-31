@@ -1,11 +1,12 @@
-import { View, Text } from "react-native";
+import { View, Text , StyleSheet , TouchableOpacity } from "react-native";
 import React from "react";
 import "../../../global.css";
-
+import Header from "../../../components/Header";
+import Logo from "../../../components/Logo";
 import { rem } from "../../../components/stylings/responsiveSize";
-
+import TextInput from "../../../components/TextInput";
 // Paper
-import { TextInput } from "react-native-paper";
+//import { TextInput } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { FAB } from "react-native-paper";
 import { useRouter } from "expo-router";
@@ -18,9 +19,8 @@ const login = () => {
       <View style={{ position: "absolute", top: rem(20), left: rem(20) }}>
         <FAB icon="arrow-left" onPress={() => router.back()} />
       </View>
-      <Text className="m-2" style={{ fontSize: rem(22) }}>
-        SIGN IN
-      </Text>
+      <Logo />
+      <Header>Log In</Header>
       <View className="w-full p-2">
         <TextInput label="Email" style={{ height: rem(40) }} mode="outlined" />
       </View>
@@ -31,23 +31,31 @@ const login = () => {
           mode="outlined"
         />
       </View>
-      <View className="w-full flex-row p-2 gap-2">
-        <View className="w-1/2 ">
+      <View className="w-full ">
           <Button mode="contained" onPress={() => console.log("Pressed")}>
-            Login
+            LOGIN
           </Button>
-        </View>
-        <View className="w-1/2">
-          <Button
-            mode="outlined"
-            onPress={() => router.push("pages/auth/register")}
-          >
-            Register
-          </Button>
-        </View>
       </View>
+      <View style={styles.row}>
+         
+          <Text >Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("pages/auth/register")}>
+            <Text style={styles.link}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  link: {
+    fontWeight: 'bold',
+    color: '#560CCE',
+  },
+  row: {
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+})
 
 export default login;

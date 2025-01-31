@@ -26,6 +26,8 @@ const home = () => {
           style={{ height: rem(50) }}
         >
           <View className="w-1/2">
+
+          
             <Text className="font-bold" style={{ fontSize: rem(20) }}>
               Hi, Mark!
             </Text>
