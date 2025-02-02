@@ -9,6 +9,7 @@ from .models import ChatLog, Message
 from django.contrib.auth.models import User
 
 from .chat.Prompt import generate_chat_response
+from .analysis.predict import get_analysis
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -64,3 +65,9 @@ class UserProfileView(APIView):
             "email": user.email,
         }
         return Response(user_data, status=status.HTTP_200_OK)
+
+class AnalysisView(APIView):
+    def post(self, request):
+        data = request.data.get('quiz_result', [])
+        counseling_result = get_analysis(data)
+        return Response({'analysis_result': counseling_result}, status=status.HTTP_200_OK)
