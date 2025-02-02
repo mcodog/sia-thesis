@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, TouchableWithoutFeedback } from "react-native";
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { rem, em } from "../../../components/stylings/responsiveSize";
 import { useRouter } from "expo-router";
 
@@ -15,11 +16,15 @@ import Entypo from "@expo/vector-icons/Entypo";
 
 //Paper
 import { ActivityIndicator, FAB, PaperProvider } from "react-native-paper";
+import { ActivityIndicator, FAB, PaperProvider } from "react-native-paper";
 import theme from "../../../components/CustomTheme";
 import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../context/axiosInstance";
 import Animated, { FadeInLeft } from "react-native-reanimated";
 
+const Messages = ({ navigation }) => {
+  const { user, axiosInstanceWithBearer } = useAuth();
+  const [chatData, setChatData] = useState([]);
 const Messages = ({ navigation }) => {
   const { user, axiosInstanceWithBearer } = useAuth();
   const [chatData, setChatData] = useState([]);
@@ -93,6 +98,9 @@ const Messages = ({ navigation }) => {
             <FAB
               icon="plus"
               label="Create New"
+              onPress={() =>
+                navigation.navigate("Chat", { isNew: true, chatId: null })
+              }
               onPress={() =>
                 navigation.navigate("Chat", { isNew: true, chatId: null })
               }

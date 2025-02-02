@@ -21,7 +21,10 @@ import theme from "../../../components/CustomTheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../../../context/AuthContext";
+import { useRoute } from "@react-navigation/native";
+import { useAuth } from "../../../context/AuthContext";
 
+const chats = [
 const chats = [
   {
     user: true,
@@ -40,9 +43,17 @@ const Chat = () => {
   const { isNew, chatId } = stackRouter.params;
   const [id, setId] = useState(chatId ? chatId : null);
 
+const Chat = () => {
+  const { axiosInstanceWithBearer, user } = useAuth();
+
+  const stackRouter = useRoute();
+  const { isNew, chatId } = stackRouter.params;
+  const [id, setId] = useState(chatId ? chatId : null);
+
   const router = useRouter();
   const [message, setMessage] = useState("");
   const chatRef = useRef(null);
+  const [chats, setChats] = useState([]);
   const [chats, setChats] = useState([]);
 
   const scrollToBottom = () => {
@@ -107,6 +118,32 @@ const Chat = () => {
 
   useEffect(() => {
     scrollToBottom();
+  }, [chats]);
+
+  const retrieveMessages = async () => {
+    try {
+      console.log("searching: ", id);
+      const res = await axiosInstanceWithBearer.get(
+        `/Message/?chat_id=${chatId}`
+      );
+      console.log(res.data);
+      res.data.forEach((item) => {
+        if (item.from_user) {
+          setChats((prev) => [
+            ...prev,
+            { user: true, text: item.message_content },
+          ]);
+        } else {
+          setChats((prev) => [
+            ...prev,
+            { user: false, text: item.message_content },
+          ]);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
   }, [chats]);
 
   const retrieveMessages = async () => {
@@ -205,6 +242,8 @@ const Chat = () => {
               onPress={() => {
                 // setChats((prev) => [...prev, { user: true, text: message }]);
                 handleMessage();
+                // setChats((prev) => [...prev, { user: true, text: message }]);
+                handleMessage();
                 setMessage("");
               }}
             >
@@ -228,4 +267,5 @@ const Chat = () => {
   );
 };
 
+export default Chat;
 export default Chat;

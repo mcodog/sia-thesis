@@ -2,13 +2,17 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import axiosInstance from "./axiosInstance";
 import axios from "axios";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   // const [id, setId] = useState(null);
+  // const [id, setId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+  // const [user, setUser] = useState();
   const [accessToken, setAccessToken] = useState("");
   // const [user, setUser] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -86,6 +90,29 @@ export const AuthProvider = ({ children }) => {
       console.error("Error fetching user profile:", error);
     }
   };
+    if (isAuthenticated) {
+      fetchUserProfile(token);
+    }
+  });
+
+  const fetchUserProfile = async (token) => {
+    try {
+      const response = await axiosInstance.get("api/user/profile/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUser((prev) => ({
+        ...prev,
+        username: response.data.username,
+        id: response.data.id,
+      }));
+      // console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   // useEffect(() => {
   //   const checkAuthStatus = async () => {
@@ -108,6 +135,17 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
+      value={{
+        test,
+        setTest,
+        isAuthenticated,
+        loading,
+        isAdmin,
+        login,
+        user,
+        setUser,
+        axiosInstanceWithBearer,
+      }}
       value={{
         test,
         setTest,

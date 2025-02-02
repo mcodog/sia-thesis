@@ -17,6 +17,7 @@ import CustomTheme from "../../../components/CustomTheme";
 
 //Paper
 import { ActivityIndicator, Button, PaperProvider } from "react-native-paper";
+import { ActivityIndicator, Button, PaperProvider } from "react-native-paper";
 
 //Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
