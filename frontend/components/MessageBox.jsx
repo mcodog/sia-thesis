@@ -1,10 +1,19 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { rem } from "./stylings/responsiveSize";
+import Animated, {
+  FadeInLeft,
+  FadeOut,
+  LinearTransition,
+  Easing,
+} from "react-native-reanimated";
 
 const MessageBox = ({ text = "This is a sample message.", user = true }) => {
   return (
-    <View
+    <Animated.View
+      entering={FadeInLeft}
+      layout={LinearTransition.easing(Easing.ease)}
+      exiting={FadeOut}
       className="my-2"
       style={{
         backgroundColor: user ? "#dedede" : "#FF686B",
@@ -22,7 +31,7 @@ const MessageBox = ({ text = "This is a sample message.", user = true }) => {
       >
         {text}
       </Text>
-    </View>
+    </Animated.View>
   );
 };
 

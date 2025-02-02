@@ -21,7 +21,7 @@ const _layout = () => {
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#FF686B", // Set active tab color
+        tabBarActiveTintColor: "#0cdfc6", // Set active tab color
         tabBarInactiveTintColor: "gray",
       }}
     >
@@ -29,7 +29,7 @@ const _layout = () => {
         name="Home"
         component={Home}
         options={{
-          title: "pages/(tabs)/Home",
+          title: "Home",
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={24} color={color} />
           ),

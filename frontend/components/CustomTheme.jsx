@@ -8,9 +8,9 @@ const theme = {
   ...DefaultTheme,
   myOwnProperty: true,
   colors: {
-    primary: "#FFA69E",
+    primary: "#0cdfc6",
     onPrimary: "white",
-    primaryContainer: "#FF686B",
+    primaryContainer: "#0cdfc6",
     onPrimaryContainer: "rgb(240, 219, 255)",
     secondary: "rgb(208, 193, 218)",
     onSecondary: "rgb(54, 44, 63)",

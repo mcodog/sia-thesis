@@ -10,12 +10,13 @@ import { rem } from "../../../components/stylings/responsiveSize";
 import { useAuth } from "../../../context/AuthContext";
 
 const Welcome = ({ navigation }) => {
-  const { test, setTest } = useAuth();
-  console.log(test);
-  useEffect(() => {
-    setTest("something");
-  }, []);
+  const { setUser } = useAuth();
   const router = useRouter();
+
+  const handleGuest = () => {
+    setUser("Guest");
+    navigation.navigate("Main", { animation: "none" });
+  };
 
   return (
     <PaperProvider theme={theme}>
@@ -60,7 +61,7 @@ const Welcome = ({ navigation }) => {
           <View className="w-full p-2">
             <Button
               onPress={() => {
-                navigation.navigate("Main", { animation: "none" });
+                handleGuest();
                 // router.push("pages/(tabs)");
               }}
               mode="outlined"

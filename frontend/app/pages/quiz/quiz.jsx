@@ -1,4 +1,10 @@
-import { View, Text, TouchableWithoutFeedback, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Pressable,
+  Image,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import Animated, {
@@ -42,8 +48,9 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import theme from "../../../components/CustomTheme";
+import logo from "../../../assets/images/logo.png";
 
-const quiz = () => {
+const Quiz = ({ navigation }) => {
   const [questions, setQuestions] = useState([
     {
       question: "How often do you feel stressed?",
@@ -222,14 +229,17 @@ const quiz = () => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#FF686B",
+          backgroundColor: "white",
         }}
       >
         <Animated.View
           layout={LinearTransition.easing(Easing.bezier(0.5, 1.5, 0.5, 1))}
-          style={{ marginVertical: rem(20), marginTop: rem(-100) }}
+          style={{
+            marginTop: rem(-100),
+            // borderWidth: 1,
+          }}
         >
-          <Text
+          {/* <Text
             style={{
               fontFamily: "CustomFont",
               fontSize: rem(18),
@@ -237,7 +247,16 @@ const quiz = () => {
             }}
           >
             PathFinder
-          </Text>
+          </Text> */}
+          <Image
+            source={logo}
+            style={{
+              width: rem(200),
+              resizeMode: "contain",
+              height: rem(100),
+              // borderWidth: 1,
+            }}
+          />
         </Animated.View>
         {!start && (
           <Animated.View
@@ -250,6 +269,7 @@ const quiz = () => {
               borderRadius: 24,
               alignItems: "center",
               overflow: "hidden",
+              elevation: 5,
             }}
           >
             <Text
@@ -272,7 +292,7 @@ const quiz = () => {
                 style={[
                   animatedStyle,
                   {
-                    backgroundColor: "#FF686B",
+                    backgroundColor: "#0cdfc6",
                     borderRadius: 24,
                     padding: rem(5),
                     marginTop: rem(30),
@@ -298,7 +318,7 @@ const quiz = () => {
         {renderQuestions && renderTitle && (
           <Animated.View entering={FadeIn} exiting={FadeOut}>
             <Text
-              style={{ fontFamily: "Seco", color: "white", fontSize: rem(22) }}
+              style={{ fontFamily: "Seco", color: "black", fontSize: rem(22) }}
             >
               Question Set A
             </Text>
@@ -317,6 +337,7 @@ const quiz = () => {
               overflow: "hidden",
               justifyContent: "center",
               alignItems: "center",
+              elevation: 5,
             }}
           >
             {questions.map((item, i) => {
@@ -375,7 +396,7 @@ const quiz = () => {
                             borderRadius: 24,
                             justifyContent: "center",
                             alignItems: "center",
-                            backgroundColor: isSelected ? "#FF686B" : "white",
+                            backgroundColor: isSelected ? "#0cdfc6" : "white",
                           }}
                         >
                           <TouchableWithoutFeedback
@@ -450,7 +471,7 @@ const quiz = () => {
                               <AntDesign
                                 name="left"
                                 size={24}
-                                color="#FF686B"
+                                color="#0cdfc6"
                               />
                             </Text>
                           </TouchableWithoutFeedback>
@@ -477,7 +498,7 @@ const quiz = () => {
                               <AntDesign
                                 name="right"
                                 size={24}
-                                color="#FF686B"
+                                color="#0cdfc6"
                               />
                             </Text>
                           </TouchableWithoutFeedback>
@@ -576,7 +597,7 @@ const quiz = () => {
               <ActivityIndicator
                 style={{ marginBottom: rem(20) }}
                 animating={isLoading}
-                color={"#FF686B"}
+                color={"#0cdfc6"}
               />
             )}
             <Text>
@@ -585,7 +606,7 @@ const quiz = () => {
             </Text>
             {!isLoading && (
               <Button
-                onPress={() => router.push("pages/quiz/result")}
+                onPress={() => navigation.navigate("Result")}
                 style={{ marginTop: rem(10) }}
               >
                 Continue
@@ -598,4 +619,4 @@ const quiz = () => {
   );
 };
 
-export default quiz;
+export default Quiz;

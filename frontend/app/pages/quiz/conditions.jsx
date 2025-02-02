@@ -15,7 +15,7 @@ import Animated, {
   SlideOutUp,
 } from "react-native-reanimated";
 
-const conditions = () => {
+const Conditions = ({ navigation }) => {
   const router = useRouter();
   const [checked, setChecked] = React.useState(false);
   return (
@@ -112,7 +112,9 @@ const conditions = () => {
           </Button>
           <Button
             mode="contained"
-            onPress={() => router.push("pages/quiz/quiz")}
+            onPress={() =>
+              navigation.navigate("Quiz", { animationEnabled: false })
+            }
           >
             <AntDesign name="check" size={16} color="white" /> Agree and
             Continue
@@ -123,4 +125,4 @@ const conditions = () => {
   );
 };
 
-export default conditions;
+export default Conditions;

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .serializers import ChatLogSerializer, MessageSerializer, UserSerializer
 from .models import ChatLog, Message
@@ -21,6 +22,10 @@ class ChatViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return ChatLog.objects.filter(user=self.request.user)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        return super().destroy(request, *args, **kwargs)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -48,3 +53,14 @@ class MessageViewSet(viewsets.ModelViewSet):
             return Message.objects.filter(chat_id=chat_id)
         return Message.objects.none()
 
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        user_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        }
+        return Response(user_data, status=status.HTTP_200_OK)

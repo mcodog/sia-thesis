@@ -67,7 +67,7 @@ const sampledata = [
   // },
 ];
 
-const result = () => {
+const Result = ({ navigation }) => {
   const router = useRouter();
   const [isRenderingResults, setIsRenderingResults] = useState(false);
   const [viewCard, setViewCard] = useState("Not Set");
@@ -145,12 +145,12 @@ const result = () => {
                 exiting={exitTitleKeyframe}
                 style={{
                   backgroundColor: "white",
-                  height: rem(350),
                   width: rem(250),
                   elevation: 10,
                   borderRadius: 24,
                   padding: rem(10),
                   paddingTop: rem(30),
+                  paddingBottom: rem(30),
                 }}
               >
                 <Text
@@ -275,7 +275,7 @@ const result = () => {
                 <CustomButton
                   text="Return to Home"
                   style={{}}
-                  onPress={() => router.push("pages/(tabs)")}
+                  onPress={() => navigation.navigate("Main")}
                 />
                 {/* <Button>Return to Home</Button> */}
               </View>
@@ -376,4 +376,4 @@ const result = () => {
   );
 };
 
-export default result;
+export default Result;

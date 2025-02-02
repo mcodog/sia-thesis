@@ -10,7 +10,13 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import { useStoreRootState } from "expo-router/build/global-state/router-store";
 
-const ChatLogBar = ({ chatLogNum, date, pressOutside }) => {
+const ChatLogBar = ({
+  chatLogNum,
+  date,
+  pressOutside,
+  handleDelete,
+  handlePress,
+}) => {
   const [showTools, setShowTools] = useState(false);
 
   const handleOutsideClick = () => {
@@ -27,7 +33,7 @@ const ChatLogBar = ({ chatLogNum, date, pressOutside }) => {
     <TouchableWithoutFeedback
       className="flex-1"
       style={{ position: "absolute", flex: 1 }}
-      onPress={handleOutsideClick}
+      onPress={handlePress}
     >
       <View
         className="elevation-md w-full p-4 flex-row"
@@ -45,7 +51,7 @@ const ChatLogBar = ({ chatLogNum, date, pressOutside }) => {
               </Text>
               <Text
                 className="font-bold"
-                style={{ fontSize: rem(12), color: "#FF686B" }}
+                style={{ fontSize: rem(12), color: "#0cdfc6" }}
               >
                 {" "}
                 {chatLogNum}
@@ -88,7 +94,7 @@ const ChatLogBar = ({ chatLogNum, date, pressOutside }) => {
           <TouchableWithoutFeedback
             onPress={(e) => {
               e.stopPropagation();
-              alert("Delete");
+              handleDelete(chatLogNum);
             }}
           >
             <View
