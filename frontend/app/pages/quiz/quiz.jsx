@@ -49,74 +49,332 @@ import {
 } from "react-native-paper";
 import theme from "../../../components/CustomTheme";
 import logo from "../../../assets/images/logo.png";
+import { useAuth } from "../../../context/AuthContext";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setQuizResult } from "../../../redux/counterSlice";
+import useAudioPlayer from "../../../hooks/useAudioPlayer";
+
+import inthepastAudio from "../../../assets/audio/voice/inthepast.mp3";
+import youroverallselfAudio from "../../../assets/audio/voice/youroverallself.mp3";
+import everbeendiagnosedAudio from "../../../assets/audio/voice/everbeendiagnosed.mp3";
+import downhopelesslostAudio from "../../../assets/audio/voice/downhopelesslost.mp3";
+import headachesAudio from "../../../assets/audio/voice/headaches.mp3";
+import bloodpressureAudio from "../../../assets/audio/voice/bloodpressure.mp3";
+import sleepqualityAudio from "../../../assets/audio/voice/sleepquality.mp3";
+import breathingAudio from "../../../assets/audio/voice/breathing.mp3";
+import noiselevelAudio from "../../../assets/audio/voice/noiselevel.mp3";
+import livingsituationAudio from "../../../assets/audio/voice/livingsituation.mp3";
+import workenvironmentAudio from "../../../assets/audio/voice/workenvironment.mp3";
+import adequatelymetAudio from "../../../assets/audio/voice/adequatelymet.mp3";
+import academicperformanceAudio from "../../../assets/audio/voice/academicperformance.mp3";
+import academicpressureAudio from "../../../assets/audio/voice/academicpressure.mp3";
+import relationshipwithteachersAudio from "../../../assets/audio/voice/relationshipwithteachers.mp3";
+import futurecareerAudio from "../../../assets/audio/voice/futurecareer.mp3";
+import supportsystemAudio from "../../../assets/audio/voice/supportsystem.mp3";
+import peerpressureAudio from "../../../assets/audio/voice/peerpressure.mp3";
+import extracurricularAudio from "../../../assets/audio/voice/extracurricular.mp3";
+import bullyingAudio from "../../../assets/audio/voice/bullying.mp3";
+import overallstressAudio from "../../../assets/audio/voice/overallstress.mp3";
+import finishedAudio from "../../../assets/audio/voice/finished.mp3";
+import ding from "../../../assets/audio/ding.mp3";
+import wind from "../../../assets/audio/wind.mp3";
+import tap from "../../../assets/audio/tap2.mp3";
+
+const questionAudioMap = {
+  "In the past two weeks, how often have you felt excessively worried or anxious?":
+    {
+      file: inthepastAudio,
+      delay: 3000,
+    },
+  "How would you rate your overall self-esteem?": {
+    file: youroverallselfAudio,
+    delay: 500,
+  },
+  "Have you ever been diagnosed with a mental health condition?": {
+    file: everbeendiagnosedAudio,
+    delay: 500,
+  },
+  "In the past two weeks, how often have you felt down, hopeless, or lost interest in things you enjoy?":
+    {
+      file: downhopelesslostAudio,
+      delay: 2000,
+    },
+  "How often do you experience headaches?": {
+    file: headachesAudio,
+    delay: 500,
+  },
+  "How would you describe your blood pressure?": {
+    file: bloodpressureAudio,
+    delay: 500,
+  },
+  "How would you rate your overall sleep quality?": {
+    file: sleepqualityAudio,
+    delay: 500,
+  },
+  "How often do you experience shortness of breath or breathing difficulties?":
+    {
+      file: breathingAudio,
+      delay: 500,
+    },
+  "How would you rate the noise level in your living/study environment?": {
+    file: noiselevelAudio,
+    delay: 500,
+  },
+  "How comfortable is your living situation?": {
+    file: livingsituationAudio,
+    delay: 500,
+  },
+  "How safe do you feel in your living or working environment?": {
+    file: workenvironmentAudio,
+    delay: 500,
+  },
+  "Are all your basic needs (food, shelter, healthcare) adequately met?": {
+    file: adequatelymetAudio,
+    delay: 500,
+  },
+  "How would you rate your academic performance?": {
+    file: academicperformanceAudio,
+    delay: 500,
+  },
+  "How much academic pressure do you experience?": {
+    file: academicpressureAudio,
+    delay: 500,
+  },
+  "How would you describe your relationship with your teachers/professors?": {
+    file: relationshipwithteachersAudio,
+    delay: 500,
+  },
+  "How worried are you about your future career?": {
+    file: futurecareerAudio,
+    delay: 500,
+  },
+  "How strong is your social support system (friends, family, community)?": {
+    file: supportsystemAudio,
+    delay: 500,
+  },
+  "How often do you feel pressured by your peers to do things you wouldn’t normally do?":
+    {
+      file: peerpressureAudio,
+      delay: 500,
+    },
+  "How actively do you participate in extracurricular activities?": {
+    file: extracurricularAudio,
+    delay: 500,
+  },
+  "How often have you experienced bullying?": {
+    file: bullyingAudio,
+    delay: 500,
+  },
+  "How would you rate your overall stress level?": {
+    file: overallstressAudio,
+    delay: 500,
+  },
+};
 
 const Quiz = ({ navigation }) => {
+  const quizResult = useSelector((state) => state.quizResult.quizResult);
+  const dispatch = useDispatch();
+
   const [questions, setQuestions] = useState([
     {
-      question: "How often do you feel stressed?",
-      answers: ["Never", "Rarely", "Sometimes", "Always"],
+      question:
+        "In the past two weeks, how often have you felt excessively worried or anxious?",
+      answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
       input: "",
     },
     {
-      question: "Do you feel supported by your family?",
-      answers: ["Not at all", "A little", "Somewhat", "Completely"],
+      question: "How would you rate your overall self-esteem?",
+      answers: [
+        "Very Low",
+        "Low",
+        "Moderate",
+        "High",
+        "Very High",
+        "Extremely High",
+      ],
       input: "",
     },
-    // {
-    //   question: "How satisfied are you with your current job?",
-    //   answers: [
-    //     "Very dissatisfied",
-    //     "Dissatisfied",
-    //     "Satisfied",
-    //     "Very satisfied",
-    //   ],
-    //   input: "",
-    // },
-    // {
-    //   question: "Do you often feel overwhelmed by your responsibilities?",
-    //   answers: ["Never", "Occasionally", "Frequently", "Always"],
-    //   input: "",
-    // },
-    // {
-    //   question: "How would you rate your social interactions with friends?",
-    //   answers: ["Very poor", "Average", "Good", "Excellent"],
-    //   input: "",
-    // },
-    // {
-    //   question: "Do you have any concerns about your mental health?",
-    //   answers: [
-    //     "No concerns",
-    //     "Mild concerns",
-    //     "Moderate concerns",
-    //     "Severe concerns",
-    //   ],
-    //   input: "",
-    // },
-    // {
-    //   question: "How often do you experience mood swings?",
-    //   answers: ["Never", "Rarely", "Sometimes", "Often"],
-    //   input: "",
-    // },
-    // {
-    //   question: "How would you describe your relationship with your partner?",
-    //   answers: ["Very unhealthy", "Unhealthy", "Healthy", "Very healthy"],
-    //   input: "",
-    // },
-    // {
-    //   question: "Do you feel you have a good work-life balance?",
-    //   answers: ["Not at all", "A little", "Somewhat", "Completely"],
-    //   input: "",
-    // },
-    // {
-    //   question: "How confident are you in making important life decisions?",
-    //   answers: [
-    //     "Not confident",
-    //     "Somewhat confident",
-    //     "Confident",
-    //     "Very confident",
-    //   ],
-    //   input: "",
-    // },
+    {
+      question: "Have you ever been diagnosed with a mental health condition?",
+      answers: ["No", "Yes"],
+      input: "",
+    },
+    {
+      question:
+        "In the past two weeks, how often have you felt down, hopeless, or lost interest in things you enjoy?",
+      answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
+      input: "",
+    },
+    {
+      question: "How often do you experience headaches?",
+      answers: [
+        "Never",
+        "Rarely",
+        "Occasionally",
+        "Often",
+        "Very Often",
+        "Almost Daily",
+      ],
+      input: "",
+    },
+    {
+      question: "How would you describe your blood pressure?",
+      answers: ["Low", "Normal", "High"],
+      input: "",
+    },
+    {
+      question: "How would you rate your overall sleep quality?",
+      answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
+      input: "",
+    },
+    {
+      question:
+        "How often do you experience shortness of breath or breathing difficulties?",
+      answers: [
+        "Never",
+        "Rarely",
+        "Occasionally",
+        "Often",
+        "Very Often",
+        "Almost Daily",
+      ],
+      input: "",
+    },
+    {
+      question:
+        "How would you rate the noise level in your living/study environment?",
+      answers: [
+        "Very Quiet",
+        "Quiet",
+        "Moderate",
+        "Noisy",
+        "Very Noisy",
+        "Extremely Noisy",
+      ],
+      input: "",
+    },
+    {
+      question: "How comfortable is your living situation?",
+      answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
+      input: "",
+    },
+    {
+      question: "How safe do you feel in your living or working environment?",
+      answers: [
+        "Very Unsafe",
+        "Unsafe",
+        "Neutral",
+        "Safe",
+        "Very Safe",
+        "Extremely Safe",
+      ],
+      input: "",
+    },
+    {
+      question:
+        "Are all your basic needs (food, shelter, healthcare) adequately met?",
+      answers: [
+        "Not at all",
+        "Rarely",
+        "Sometimes",
+        "Most of the Time",
+        "Almost Always",
+        "Always",
+      ],
+      input: "",
+    },
+    {
+      question: "How would you rate your academic performance?",
+      answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
+      input: "",
+    },
+    {
+      question: "How much academic pressure do you experience?",
+      answers: [
+        "None",
+        "Very Light",
+        "Manageable",
+        "Somewhat Heavy",
+        "Heavy",
+        "Overwhelming",
+      ],
+      input: "",
+    },
+    {
+      question:
+        "How would you describe your relationship with your teachers/professors?",
+      answers: [
+        "Very Poor",
+        "Poor",
+        "Neutral",
+        "Good",
+        "Very Good",
+        "Excellent",
+      ],
+      input: "",
+    },
+    {
+      question: "How worried are you about your future career?",
+      answers: [
+        "Not at all",
+        "Slightly",
+        "Somewhat",
+        "Moderately",
+        "Very",
+        "Extremely",
+      ],
+      input: "",
+    },
+    {
+      question:
+        "How strong is your social support system (friends, family, community)?",
+      answers: ["None", "Weak", "Moderate", "Strong"],
+      input: "",
+    },
+    {
+      question:
+        "How often do you feel pressured by your peers to do things you wouldn’t normally do?",
+      answers: [
+        "Never",
+        "Rarely",
+        "Occasionally",
+        "Often",
+        "Very Often",
+        "Almost Always",
+      ],
+      input: "",
+    },
+    {
+      question:
+        "How actively do you participate in extracurricular activities?",
+      answers: [
+        "Not at all",
+        "Rarely",
+        "Occasionally",
+        "Regularly",
+        "Very Actively",
+        "Extremely Active",
+      ],
+      input: "",
+    },
+    {
+      question: "How often have you experienced bullying?",
+      answers: [
+        "Never",
+        "Rarely",
+        "Occasionally",
+        "Often",
+        "Very Often",
+        "Almost Always",
+      ],
+      input: "",
+    },
+    {
+      question: "How would you rate your overall stress level?",
+      answers: ["Low", "Moderate", "High"],
+      input: "",
+    },
   ]);
 
   const router = useRouter();
@@ -130,10 +388,13 @@ const Quiz = ({ navigation }) => {
   const [isAnswering, setIsAnswering] = useState(false);
   const [finished, setFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { axiosInstanceWithBearer } = useAuth();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const staggerValue = 200;
+
+  const { playSound, stopSound, isPlaying } = useAudioPlayer();
 
   // useEffect(() => {
   //   setQuestionNum((prev) => prev + 1);
@@ -141,6 +402,19 @@ const Quiz = ({ navigation }) => {
   //     showModal();
   //   }
   // }, [quizProgress]);
+
+  useEffect(() => {
+    if (!start) return;
+
+    const currentQuestion = questions[questionNum]?.question;
+    const audioData = questionAudioMap[currentQuestion];
+
+    if (audioData) {
+      setTimeout(() => {
+        playSound(audioData.file);
+      }, audioData.delay);
+    }
+  }, [questionNum, start]);
 
   useEffect(() => {
     if (isLoading) {
@@ -167,6 +441,28 @@ const Quiz = ({ navigation }) => {
       }, 3500);
     }
   }, [start]);
+
+  useEffect(() => {
+    if (finished) {
+      playSound(finishedAudio);
+    }
+  }, [finished]);
+
+  const handleFinish = async () => {
+    const quiz_result = questions.map((q) => q.input);
+    console.log(quiz_result);
+
+    try {
+      const res = await axiosInstanceWithBearer.post("/api/analysis/", {
+        quiz_result,
+      });
+
+      dispatch(setQuizResult(res.data.analysis_result));
+      navigation.navigate("Result");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const startBackgroundKeyframe = new Keyframe({
     0: {
@@ -285,6 +581,7 @@ const Quiz = ({ navigation }) => {
 
             <TouchableWithoutFeedback
               onPress={() => {
+                playSound(tap);
                 setStart(!start);
               }}
             >
@@ -343,7 +640,9 @@ const Quiz = ({ navigation }) => {
             {questions.map((item, i) => {
               return questionNum === i ? (
                 <Animated.View
-                  entering={SlideInDown.delay(500)}
+                  entering={SlideInDown.delay(500).easing(
+                    Easing.bezier(0.5, 1.5, 0.5, 1)
+                  )}
                   exiting={SlideOutUp}
                   style={{
                     padding: rem(10),
@@ -379,7 +678,7 @@ const Quiz = ({ navigation }) => {
                     }}
                   >
                     {item.answers.map((answer, index) => {
-                      const isSelected = item.input === answer;
+                      const isSelected = item.input === index;
 
                       return (
                         <Animated.View
@@ -404,9 +703,10 @@ const Quiz = ({ navigation }) => {
                               const updatedQuestions = [...questions];
                               updatedQuestions[i] = {
                                 ...updatedQuestions[i],
-                                input: answer,
+                                input: index,
                               };
                               setQuestions(updatedQuestions);
+                              playSound(ding);
                             }}
                           >
                             <View
@@ -430,7 +730,7 @@ const Quiz = ({ navigation }) => {
                       );
                     })}
 
-                    {!(item.input == "") && !(i == questions.length - 1) && (
+                    {!(item.input === "") && !(i == questions.length - 1) && (
                       <Animated.View
                         entering={FadeInUp.easing(
                           Easing.bezier(0.5, 1.5, 0.5, 1)
@@ -481,7 +781,12 @@ const Quiz = ({ navigation }) => {
                         >
                           <TouchableWithoutFeedback
                             disabled={i == questions.length - 1}
-                            onPress={() => setQuestionNum((prev) => prev + 1)}
+                            onPress={() => {
+                              setQuestionNum((prev) => prev + 1);
+                              setTimeout(() => {
+                                playSound(wind);
+                              }, 0);
+                            }}
                           >
                             <Text
                               style={{
@@ -606,7 +911,7 @@ const Quiz = ({ navigation }) => {
             </Text>
             {!isLoading && (
               <Button
-                onPress={() => navigation.navigate("Result")}
+                onPress={() => handleFinish()}
                 style={{ marginTop: rem(10) }}
               >
                 Continue

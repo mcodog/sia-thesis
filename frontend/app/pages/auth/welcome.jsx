@@ -8,6 +8,7 @@ import background from "../../../assets/images/bg/welcome.png";
 import theme from "../../../components/CustomTheme";
 import { rem } from "../../../components/stylings/responsiveSize";
 import { useAuth } from "../../../context/AuthContext";
+import SoundButton from "../../../components/SoundButton";
 
 const Welcome = ({ navigation }) => {
   const { setUser } = useAuth();
@@ -35,7 +36,7 @@ const Welcome = ({ navigation }) => {
         <View className="absolute bottom-52">
           <View className="flex-row w-full">
             <View className="w-1/2 p-2">
-              <Button
+              <SoundButton
                 className="w-full"
                 onPress={() => {
                   navigation.navigate("Login");
@@ -43,10 +44,10 @@ const Welcome = ({ navigation }) => {
                 mode="contained"
               >
                 Login
-              </Button>
+              </SoundButton>
             </View>
             <View className="w-1/2 p-2">
-              <Button
+              <SoundButton
                 className="w-full"
                 onPress={() => {
                   // router.push("pages/auth/Register");
@@ -55,11 +56,11 @@ const Welcome = ({ navigation }) => {
                 mode="contained"
               >
                 Register
-              </Button>
+              </SoundButton>
             </View>
           </View>
           <View className="w-full p-2">
-            <Button
+            <SoundButton
               onPress={() => {
                 handleGuest();
                 // router.push("pages/(tabs)");
@@ -67,7 +68,7 @@ const Welcome = ({ navigation }) => {
               mode="outlined"
             >
               Continue as Guest
-            </Button>
+            </SoundButton>
           </View>
         </View>
       </View>

@@ -27,10 +27,6 @@ export const AuthProvider = ({ children }) => {
     withCredentials: true,
   });
 
-  useEffect(() => {
-    console.log(accessToken);
-  }, [accessToken]);
-
   const login = async (username, password) => {
     console.log("Attempting to login with:", username, password);
     try {

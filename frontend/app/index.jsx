@@ -17,6 +17,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { AuthProvider } from "../context/AuthContext";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 const index = () => {
   const [fontsLoaded] = useFonts({
@@ -27,9 +29,11 @@ const index = () => {
   });
 
   return (
-    <AuthProvider>
-      <AuthStack />
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthProvider>
+        <AuthStack />
+      </AuthProvider>
+    </Provider>
   );
 };
 

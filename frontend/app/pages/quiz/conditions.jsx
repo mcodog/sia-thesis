@@ -14,6 +14,7 @@ import Animated, {
   SlideInUp,
   SlideOutUp,
 } from "react-native-reanimated";
+import SoundButton from "../../../components/SoundButton";
 
 const Conditions = ({ navigation }) => {
   const router = useRouter();
@@ -110,7 +111,7 @@ const Conditions = ({ navigation }) => {
           <Button mode="outlined" onPress={() => router.back()}>
             <Feather name="x" size={16} color="#FFA69E" /> Decline
           </Button>
-          <Button
+          <SoundButton
             mode="contained"
             onPress={() =>
               navigation.navigate("Quiz", { animationEnabled: false })
@@ -118,7 +119,7 @@ const Conditions = ({ navigation }) => {
           >
             <AntDesign name="check" size={16} color="white" /> Agree and
             Continue
-          </Button>
+          </SoundButton>
         </View>
       </Animated.View>
     </PaperProvider>

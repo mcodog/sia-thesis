@@ -22,50 +22,8 @@ import Animated, {
   SlideOutUp,
 } from "react-native-reanimated";
 import CustomButton from "../../../components/CustomButton";
-// import { brown100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
-const sampledata = [
-  {
-    title: "Family Counseling",
-    percentage: 0.789,
-    image_uri:
-      "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013742/family1_xhlx6s.png",
-    content:
-      "Based on your responses, family counseling is recommended as the most suitable option. Your answers indicate a need for improved communication, conflict resolution, or emotional support within your family. Family counseling can help strengthen relationships, address underlying issues, and create a healthier, more supportive home environment.",
-  },
-  {
-    title: "School Counseling",
-    percentage: 0.652,
-    image_uri:
-      "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013741/cognitive1_j5lxaj.png",
-    content:
-      "Your responses suggest that school counseling would be beneficial. This option can help address academic challenges, personal development, and social concerns related to educational settings.",
-  },
-  {
-    title: "Career Counseling",
-    percentage: 0.712,
-    image_uri:
-      "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013742/career1_dxtjse.png",
-    content:
-      "Career counseling is recommended based on your answers. This service can help you identify your strengths, interests, and career aspirations, paving the way for fulfilling professional growth.",
-  },
-  // {
-  //   title: "Marriage Counseling",
-  //   percentage: 0.823,
-  //   image_uri:
-  //     "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013742/couples1_bazwv1.png",
-  //   content:
-  //     "Your answers indicate that marriage counseling would be highly beneficial. This type of counseling focuses on strengthening your relationship, resolving conflicts, and enhancing communication with your partner.",
-  // },
-  // {
-  //   title: "Grief Counseling",
-  //   percentage: 0.687,
-  //   image_uri:
-  //     "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013742/family1_xhlx6s.png",
-  //   content:
-  //     "Based on your responses, grief counseling is recommended to help process your emotions and navigate through the challenges of loss. This can provide support and strategies to cope effectively.",
-  // },
-];
+import { useSelector } from "react-redux";
 
 const Result = ({ navigation }) => {
   const router = useRouter();
@@ -74,11 +32,49 @@ const Result = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAll, setShowAll] = useState(false);
 
+  const quizResult = useSelector((state) => state.quizResult.quizResult);
+  const [sampledata, setSampleData] = useState([]);
+
   useEffect(() => {
+    if (quizResult) {
+      const newData = Object.entries(quizResult).map(([title, percentage]) => ({
+        title,
+        percentage,
+        image_uri:
+          "https://res.cloudinary.com/dvsla5ril/image/upload/v1738013742/family1_xhlx6s.png",
+        content: generateContent(title),
+      }));
+
+      setSampleData(newData);
+    }
+
     setTimeout(() => {
       setIsRenderingResults(true);
     }, 1000);
   }, []);
+
+  const generateContent = (title) => {
+    switch (title) {
+      case "Academic Achievement Counseling":
+        return "This counseling helps enhance study habits, motivation, and academic strategies for better performance.";
+      case "Bullying Intervention Counseling":
+        return "This counseling focuses on strategies to address bullying, build resilience, and create a safer environment.";
+      case "Career Counseling":
+        return "This counseling provides guidance on career choices, professional development, and future planning.";
+      case "Extracurricular Engagement Counseling":
+        return "This counseling supports students in finding meaningful extracurricular activities to boost confidence and skills.";
+      case "General Counseling":
+        return "A broad counseling option that helps address various emotional, social, and personal concerns.";
+      case "Health and Wellness Counseling":
+        return "Focuses on mental and physical well-being, stress management, and developing a healthier lifestyle.";
+      case "School Counseling":
+        return "Provides support in academic, social, and emotional aspects of school life to ensure success.";
+      case "Social Support Counseling":
+        return "Helps individuals develop better relationships, improve social skills, and strengthen support networks.";
+      default:
+        return "A counseling approach tailored to your unique needs.";
+    }
+  };
 
   const handleNext = () => {
     if (currentIndex < sampledata.length - 1) {
@@ -221,7 +217,8 @@ const Result = ({ navigation }) => {
                     style={{
                       borderWidth: 1,
                       width: "30%",
-                      height: rem(120),
+                      minheight: rem(120),
+                      maxHeight: rem(170),
                       borderRadius: 24,
                       padding: rem(5),
                       justifyContent: "center",
@@ -252,6 +249,7 @@ const Result = ({ navigation }) => {
                             marginTop: rem(5),
                             fontWeight: 500,
                             textAlign: "center",
+                            fontSize: rem(8),
                           }}
                         >
                           {item.title}
@@ -287,7 +285,7 @@ const Result = ({ navigation }) => {
                     borderRadius: 24,
                     flexDirection: "row",
                   }}
-                  colors={["#FF686B", "#FFA69E"]}
+                  colors={["#0cdfc6", "#9af1e6"]}
                   text="Save Results"
                   textStyle={{ color: "white" }}
                   renderIcon={() => (
@@ -327,12 +325,13 @@ const Result = ({ navigation }) => {
               exiting={exitTitleKeyframe}
               style={{
                 backgroundColor: "white",
-                height: rem(350),
+                // height: rem(350),
                 width: rem(250),
                 elevation: 10,
                 borderRadius: 24,
                 padding: rem(10),
                 paddingTop: rem(30),
+                paddingBottom: rem(30),
               }}
             >
               <Text

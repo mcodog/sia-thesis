@@ -23,6 +23,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import PostTile from "../../../components/tiles/PostTile";
 import { useAuth } from "../../../context/AuthContext";
+import SoundButton from "../../../components/SoundButton";
 
 const Home = ({ navigation }) => {
   const { user } = useAuth();
@@ -49,9 +50,10 @@ const Home = ({ navigation }) => {
                   source={logo}
                   style={{
                     position: "relative",
-                    left: rem(-30),
+                    top: rem(-5),
+                    left: rem(-10),
                     width: "100%",
-                    height: "100%",
+                    height: "130%",
                     resizeMode: "contain",
                   }}
                 />
@@ -116,18 +118,15 @@ const Home = ({ navigation }) => {
                       Try out our Counseling Recommendation Quiz with Predictive
                       Analytics!
                     </Text>
-                    <Button
-                      // buttonColor="white"
-                      // textColor="black"
+                    <SoundButton
                       className="w-full"
                       mode="contained"
                       onPress={() => {
-                        // router.push("pages/quiz/conditions");
                         navigation.navigate("Conditions");
                       }}
                     >
                       Start
-                    </Button>
+                    </SoundButton>
                   </View>
                 </View>
               </View>
