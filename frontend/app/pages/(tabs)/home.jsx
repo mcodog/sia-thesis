@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import background from "../../../assets/images/bg/abstract2.png";
 
@@ -23,6 +23,7 @@ import Feather from "@expo/vector-icons/Feather";
 import PostTile from "../../../components/tiles/PostTile";
 import { useAuth } from "../../../context/AuthContext";
 
+
 const Home = () => {
   const { user } = useAuth();
   console.log("User is ", user.username);
@@ -41,13 +42,14 @@ const Home = () => {
                 <Text className="font-bold" style={{ fontSize: rem(20) }}>
                   Hi, {user.username}!
                 </Text>
-                <Text style={{ fontSize: rem(10) }}>
+                <Text style={{ fontSize: rem(12) }}>
                   Let's make this day productive.
                 </Text>
               </View>
               <View className="w-1/2 justify-end flex-row items-center p-1 gap-5">
-                <AntDesign name="bells" size={32} color="black" />
-                <Feather name="info" size={32} color="black" />
+                <AntDesign name="bells" size={20} color="black" />
+                <Feather name="info" size={20} color="black" />
+                
               </View>
             </View>
             {/* <View className="p-2">
@@ -139,6 +141,10 @@ const Home = () => {
             </View>
           </View>
         </View> */}
+
+        <TouchableOpacity style={styles.card}>
+                    <Text style={styles.cardText}>Mood Tracking</Text>
+        </TouchableOpacity>
             <View className="items-center flex-row px-2">
               <Text className="font-bold w-3/4" style={{ fontSize: rem(14) }}>
                 Things to check out!
@@ -229,4 +235,10 @@ const Home = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  
+  card: { width: '100%', backgroundColor: '#D4EDDA', padding: 10, borderRadius: 10, marginTop: 15 },
+  cardImage: { width: '100%', height: 100, borderRadius: 10 },
+  cardText: { marginTop: 5, fontSize: 14, fontWeight: 'bold' },
+});
 export default Home;

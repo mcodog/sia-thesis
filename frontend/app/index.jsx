@@ -3,12 +3,15 @@ import React from "react";
 import { Redirect } from "expo-router";
 import { PaperProvider } from "react-native-paper";
 import { useFonts } from "expo-font";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Welcome from "./pages/auth/Welcome";
-import Home from "./pages/(tabs)/Home";
+
+import Login from "./pages/auth/login"
+import Register from "./pages/auth/register";
+import Welcome from "./pages/auth/welcome";
+import Home from "./pages/(tabs)/home";
 import _layout from "./pages/(tabs)/_layout";
-import Chat from "./pages/messages/Chat";
+import Chat from "./pages/messages/chat";
+import games from "./pages/games/layoutgame";
+import TakeABreath from "./pages/games/TakeABreath";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -41,6 +44,8 @@ const AuthStack = () => {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Main" component={_layout} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Game" component={games} />
+      <Stack.Screen name="TakeABreath" component={TakeABreath} />
     </Stack.Navigator>
   );
 };
