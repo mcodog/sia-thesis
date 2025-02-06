@@ -82,6 +82,124 @@ import ding from "../../../assets/audio/ding.mp3";
 import wind from "../../../assets/audio/wind.mp3";
 import tap from "../../../assets/audio/tap2.mp3";
 
+import tag1 from "../../../assets/audio/tagalog/1.wav";
+import tag2 from "../../../assets/audio/tagalog/2.wav";
+import tag3 from "../../../assets/audio/tagalog/3.wav";
+import tag4 from "../../../assets/audio/tagalog/4.wav";
+import tag5 from "../../../assets/audio/tagalog/5.wav";
+import tag6 from "../../../assets/audio/tagalog/6.wav";
+import tag7 from "../../../assets/audio/tagalog/7.wav";
+import tag8 from "../../../assets/audio/tagalog/8.wav";
+import tag9 from "../../../assets/audio/tagalog/9.wav";
+import tag10 from "../../../assets/audio/tagalog/10.wav";
+import tag11 from "../../../assets/audio/tagalog/11.wav";
+import tag12 from "../../../assets/audio/tagalog/12.wav";
+import tag13 from "../../../assets/audio/tagalog/13.wav";
+import tag14 from "../../../assets/audio/tagalog/14.wav";
+import tag15 from "../../../assets/audio/tagalog/15.wav";
+import tag16 from "../../../assets/audio/tagalog/16.wav";
+import tag17 from "../../../assets/audio/tagalog/17.wav";
+import tag18 from "../../../assets/audio/tagalog/18.wav";
+import tag19 from "../../../assets/audio/tagalog/19.wav";
+import tag20 from "../../../assets/audio/tagalog/20.wav";
+import tag21 from "../../../assets/audio/tagalog/21.m4a";
+
+const questionAudioMapTag = {
+  "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na sobra kang nag-aalala o kaba?":
+    {
+      file: tag1,
+      delay: 3000,
+    },
+  "Paano mo irarate ang kabuuang pagpapahalaga mo sa sarili?": {
+    file: tag2,
+    delay: 500,
+  },
+  "Nadiagnose ka na ba ng isang kondisyon sa kalusugan ng isip?": {
+    file: tag3,
+    delay: 500,
+  },
+  "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na ikaw ay malungkot, nawawalan ng pag-asa, o nawawala ang interes sa mga bagay na kinagigiliwan mo?":
+    {
+      file: tag4,
+      delay: 500,
+    },
+  "Gaano kadalas kang nakakaranas ng pananakit ng ulo?": {
+    file: tag5,
+    delay: 500,
+  },
+  "Paano mo ilalarawan ang iyong presyon ng dugo?": {
+    file: tag6,
+    delay: 500,
+  },
+  "Paano mo irarate ang kabuuang kalidad ng iyong pagtulog?": {
+    file: tag7,
+    delay: 500,
+  },
+  "Gaano kadalas kang nakakaranas ng kakulangan sa paghinga o kahirapan sa paghinga?":
+    {
+      file: tag8,
+      delay: 500,
+    },
+  "Paano mo irarate ang antas ng ingay sa iyong lugar ng paninirahan o pag-aaral?":
+    {
+      file: tag9,
+      delay: 500,
+    },
+  "Gaano ka-komportable ang iyong kalagayan sa paninirahan?": {
+    file: tag10,
+    delay: 500,
+  },
+  "Gaano ka-ligtas ang iyong nararamdaman sa iyong lugar ng paninirahan o trabaho?":
+    {
+      file: tag11,
+      delay: 500,
+    },
+  "Natutugunan ba nang sapat ang lahat ng iyong pangunahing pangangailangan (pagkain, tirahan, pangangalaga sa kalusugan)?":
+    {
+      file: tag12,
+      delay: 500,
+    },
+  "Paano mo irarate ang iyong pagganap sa akademiko?": {
+    file: tag13,
+    delay: 500,
+  },
+  "Gaano kalaki ang presyur na nararanasan mo sa akademiko?": {
+    file: tag14,
+    delay: 500,
+  },
+  "Paano mo ilalarawan ang iyong relasyon sa iyong mga guro/profesor?": {
+    file: tag15,
+    delay: 500,
+  },
+  "Gaano ka-nababahala tungkol sa iyong hinaharap na karera?": {
+    file: tag16,
+    delay: 500,
+  },
+  "Gaano kalakas ang iyong sistema ng suporta mula sa lipunan (mga kaibigan, pamilya, komunidad)?":
+    {
+      file: tag17,
+      delay: 500,
+    },
+  "Gaano kadalas kang nakakaranas ng presyur mula sa iyong mga kapantay na gawin ang mga bagay na hindi mo karaniwang ginagawa?":
+    {
+      file: tag18,
+      delay: 500,
+    },
+  "Gaano ka-aktibo ang iyong pakikilahok sa mga extracurricular na aktibidad?":
+    {
+      file: tag19,
+      delay: 500,
+    },
+  "How often have you experienced bullying?": {
+    file: tag20,
+    delay: 500,
+  },
+  "How would you rate your overall stress level?": {
+    file: tag21,
+    delay: 500,
+  },
+};
+
 const questionAudioMap = {
   "In the past two weeks, how often have you felt excessively worried or anxious?":
     {
@@ -174,6 +292,7 @@ const questionAudioMap = {
 };
 
 const Quiz = ({ navigation }) => {
+  const settingsConfig = useSelector((state) => state.settings.settings);
   const quizResult = useSelector((state) => state.quizResult.quizResult);
   const dispatch = useDispatch();
 
@@ -183,6 +302,9 @@ const Quiz = ({ navigation }) => {
         "In the past two weeks, how often have you felt excessively worried or anxious?",
       answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na sobra kang nag-aalala o kaba?",
     },
     {
       question: "How would you rate your overall self-esteem?",
@@ -195,17 +317,24 @@ const Quiz = ({ navigation }) => {
         "Extremely High",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog: "Paano mo irarate ang kabuuang pagpapahalaga mo sa sarili?",
     },
     {
       question: "Have you ever been diagnosed with a mental health condition?",
       answers: ["No", "Yes"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Nadiagnose ka na ba ng isang kondisyon sa kalusugan ng isip?",
     },
     {
       question:
         "In the past two weeks, how often have you felt down, hopeless, or lost interest in things you enjoy?",
       answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na ikaw ay malungkot, nawawalan ng pag-asa, o nawawala ang interes sa mga bagay na kinagigiliwan mo?",
     },
     {
       question: "How often do you experience headaches?",
@@ -218,16 +347,22 @@ const Quiz = ({ navigation }) => {
         "Almost Daily",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog: "Gaano kadalas kang nakakaranas ng pananakit ng ulo?",
     },
     {
       question: "How would you describe your blood pressure?",
       answers: ["Low", "Normal", "High"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Paano mo ilalarawan ang iyong presyon ng dugo?",
     },
     {
       question: "How would you rate your overall sleep quality?",
       answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Paano mo irarate ang kabuuang kalidad ng iyong pagtulog?",
     },
     {
       question:
@@ -241,6 +376,9 @@ const Quiz = ({ navigation }) => {
         "Almost Daily",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Gaano kadalas kang nakakaranas ng kakulangan sa paghinga o kahirapan sa paghinga?",
     },
     {
       question:
@@ -254,11 +392,16 @@ const Quiz = ({ navigation }) => {
         "Extremely Noisy",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Paano mo irarate ang antas ng ingay sa iyong lugar ng paninirahan o pag-aaral?",
     },
     {
       question: "How comfortable is your living situation?",
       answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Gaano ka-komportable ang iyong kalagayan sa paninirahan?",
     },
     {
       question: "How safe do you feel in your living or working environment?",
@@ -271,6 +414,9 @@ const Quiz = ({ navigation }) => {
         "Extremely Safe",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Gaano ka-ligtas ang iyong nararamdaman sa iyong lugar ng paninirahan o trabaho?",
     },
     {
       question:
@@ -284,11 +430,16 @@ const Quiz = ({ navigation }) => {
         "Always",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Natutugunan ba nang sapat ang lahat ng iyong pangunahing pangangailangan (pagkain, tirahan, pangangalaga sa kalusugan)?",
     },
     {
       question: "How would you rate your academic performance?",
       answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Paano mo irarate ang iyong pagganap sa akademiko?",
     },
     {
       question: "How much academic pressure do you experience?",
@@ -301,6 +452,8 @@ const Quiz = ({ navigation }) => {
         "Overwhelming",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog: "Gaano kalaki ang presyur na nararanasan mo sa akademiko?",
     },
     {
       question:
@@ -314,6 +467,9 @@ const Quiz = ({ navigation }) => {
         "Excellent",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Paano mo ilalarawan ang iyong relasyon sa iyong mga guro/profesor?",
     },
     {
       question: "How worried are you about your future career?",
@@ -326,12 +482,17 @@ const Quiz = ({ navigation }) => {
         "Extremely",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog: "Gaano ka-nababahala tungkol sa iyong hinaharap na karera?",
     },
     {
       question:
         "How strong is your social support system (friends, family, community)?",
       answers: ["None", "Weak", "Moderate", "Strong"],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Gaano kalakas ang iyong sistema ng suporta mula sa lipunan (mga kaibigan, pamilya, komunidad)?",
     },
     {
       question:
@@ -345,6 +506,9 @@ const Quiz = ({ navigation }) => {
         "Almost Always",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Gaano kadalas kang nakakaranas ng presyur mula sa iyong mga kapantay na gawin ang mga bagay na hindi mo karaniwang ginagawa?",
     },
     {
       question:
@@ -358,6 +522,9 @@ const Quiz = ({ navigation }) => {
         "Extremely Active",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog:
+        "Gaano ka-aktibo ang iyong pakikilahok sa mga extracurricular na aktibidad?",
     },
     {
       question: "How often have you experienced bullying?",
@@ -370,11 +537,15 @@ const Quiz = ({ navigation }) => {
         "Almost Always",
       ],
       input: "",
+      type: "multiple choice",
+      tagalog: "Gaano kadalas kang nakakaranas ng pambubully?",
     },
     {
       question: "How would you rate your overall stress level?",
       answers: ["Low", "Moderate", "High"],
       input: "",
+      type: "multiple choice",
+      tagalog: "Paano mo irarate ang kabuuang antas ng iyong stress?",
     },
   ]);
 
@@ -405,16 +576,38 @@ const Quiz = ({ navigation }) => {
   //   }
   // }, [quizProgress]);
 
+  // useEffect(() => {
+  //   console.log(settingsConfig);
+  // }, []);
+
   useEffect(() => {
     if (!start) return;
 
-    const currentQuestion = questions[questionNum]?.question;
-    const audioData = questionAudioMap[currentQuestion];
+    let currentQuestion = questions[questionNum]?.question;
 
-    if (audioData) {
-      setTimeout(() => {
-        playSound(audioData.file);
-      }, audioData.delay);
+    if (settingsConfig.language == "Tagalog") {
+      currentQuestion = questions[questionNum]?.tagalog;
+    }
+
+    const audioData = questionAudioMap[currentQuestion];
+    const audioDataTag = questionAudioMapTag[currentQuestion];
+    console.log(audioDataTag);
+
+    if (settingsConfig.language == "Tagalog") {
+      console.log("tagalog audio");
+      console.log("dsads", audioDataTag);
+      if (audioDataTag) {
+        console.log("tagalog audio2");
+        setTimeout(() => {
+          playSound(audioDataTag.file);
+        }, audioDataTag.delay);
+      }
+    } else {
+      if (audioData) {
+        setTimeout(() => {
+          playSound(audioData.file);
+        }, audioData.delay);
+      }
     }
   }, [questionNum, start]);
 
@@ -674,7 +867,9 @@ const Quiz = ({ navigation }) => {
                       fontSize: rem(18),
                     }}
                   >
-                    {item.question}
+                    {settingsConfig.language == "English"
+                      ? item.question
+                      : item.tagalog}
                   </Animated.Text>
                   <View
                     style={{

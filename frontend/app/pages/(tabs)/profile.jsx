@@ -31,7 +31,7 @@ const Profile = () => {
 
         {/* Avatar with Edit Icon */}
         <View style={styles.avatarContainer}>
-          <AntDesign name="user" size={50} color="#0cdfc6" />
+          <AntDesign name="user" size={50} color="#8ee8d0" />
           <TouchableOpacity
             style={styles.editIcon}
             onPress={() => console.log("Edit Profile Picture")}
@@ -65,28 +65,28 @@ const Profile = () => {
 
       {/* Settings List */}
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="email" size={24} color="#0cdfc6" />
+        <MaterialIcons name="email" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Email</Text>
         <Text style={styles.emailText}>*************@gmail.com</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="lock" size={24} color="#0cdfc6" />
+        <MaterialIcons name="lock" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Update Password</Text>
       </TouchableOpacity>
 
       {/* Other Settings */}
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="settings" size={24} color="#0cdfc6" />
+        <MaterialIcons name="settings" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Settings</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="support-agent" size={24} color="#0cdfc6" />
+        <MaterialIcons name="support-agent" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Support</Text>
       </TouchableOpacity>
 
       {/* Logout Button */}
       <TouchableOpacity style={styles.otherSetting} onPress={onLogout}>
-        <MaterialIcons name="logout" size={24} color="#0cdfc6" />
+        <MaterialIcons name="logout" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    backgroundColor: "#0cdfc6",
+    backgroundColor: "#8ee8d0",
     alignItems: "center",
     padding: 20,
     borderBottomLeftRadius: 20,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#0cdfc6", // Semi-transparent background
+    backgroundColor: "#8ee8d0", // Semi-transparent background
     borderRadius: 20,
     padding: 3,
   },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   actionButton: {
-    backgroundColor: "#0cdfc6",
+    backgroundColor: "#8ee8d0",
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
