@@ -21,7 +21,7 @@ const Welcome = ({ navigation }) => {
 
   return (
     <PaperProvider theme={theme}>
-      <View className="flex-1 justify-center items-center p-16">
+      <View className="flex-1 justify-center items-center p-16 bg-white">
         <Image
           source={background}
           style={{ position: "absolute", height: "30%" }}

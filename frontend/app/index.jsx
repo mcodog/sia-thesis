@@ -7,6 +7,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Welcome from "./pages/auth/Welcome";
 import Home from "./pages/(tabs)/Home";
+import Settings from "./pages/(tabs)/Settings";
 import _layout from "./pages/(tabs)/_layout";
 import Chat from "./pages/messages/Chat";
 import Quiz from "./pages/quiz/Quiz";
@@ -49,6 +50,7 @@ const AuthStack = () => {
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Result" component={Result} />
       <Stack.Screen name="Conditions" component={Conditions} />
+      <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen
         name="Quiz"
         component={Quiz}

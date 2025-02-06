@@ -5,6 +5,7 @@ import Home from "./Home";
 import Messages from "./Messages";
 import Profile from "./Profile";
 import Resources from "./Resources";
+import Settings from "./Settings";
 
 //Icons
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -13,6 +14,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AuthProvider } from "../../../context/AuthContext";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Octicons from "@expo/vector-icons/Octicons";
 
 const Tabs = createBottomTabNavigator();
 
@@ -66,6 +68,16 @@ const _layout = () => {
           title: "Profile",
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <Octicons name="gear" size={24} color={color} />
           ),
         }}
       />

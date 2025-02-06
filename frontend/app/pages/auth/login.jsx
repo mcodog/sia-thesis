@@ -29,7 +29,7 @@ const Login = ({ navigation }) => {
 
   return (
     <PaperProvider theme={theme}>
-      <View className="flex-1 justify-center items-center p-16">
+      <View className="flex-1 justify-center items-center p-16 bg-white">
         <View style={{ position: "absolute", top: rem(20), left: rem(20) }}>
           <FAB icon="arrow-left" onPress={() => router.back()} />
         </View>

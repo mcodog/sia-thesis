@@ -77,6 +77,7 @@ import extracurricularAudio from "../../../assets/audio/voice/extracurricular.mp
 import bullyingAudio from "../../../assets/audio/voice/bullying.mp3";
 import overallstressAudio from "../../../assets/audio/voice/overallstress.mp3";
 import finishedAudio from "../../../assets/audio/voice/finished.mp3";
+import welcomeAudio from "../../../assets/audio/voice/welcome.mp3";
 import ding from "../../../assets/audio/ding.mp3";
 import wind from "../../../assets/audio/wind.mp3";
 import tap from "../../../assets/audio/tap2.mp3";
@@ -98,7 +99,7 @@ const questionAudioMap = {
   "In the past two weeks, how often have you felt down, hopeless, or lost interest in things you enjoy?":
     {
       file: downhopelesslostAudio,
-      delay: 2000,
+      delay: 500,
     },
   "How often do you experience headaches?": {
     file: headachesAudio,
@@ -389,6 +390,7 @@ const Quiz = ({ navigation }) => {
   const [finished, setFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { axiosInstanceWithBearer } = useAuth();
+  const [playIntro, setPlayIntro] = useState(1);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -504,12 +506,20 @@ const Quiz = ({ navigation }) => {
 
   useEffect(() => {
     scale.value = withDelay(
-      1800, // Delay in milliseconds
+      1800,
       withSpring(1, {
         damping: 10,
         stiffness: 100,
       })
     );
+
+    if (playIntro === 1) {
+      setTimeout(() => {
+        playSound(welcomeAudio);
+      }, 800);
+
+      setPlayIntro((prev) => prev - 1);
+    }
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
