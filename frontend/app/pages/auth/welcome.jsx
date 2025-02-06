@@ -77,3 +77,4 @@ const Welcome = ({ navigation }) => {
 };
 
 export default Welcome;
+

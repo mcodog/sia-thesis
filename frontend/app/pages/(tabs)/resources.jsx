@@ -1,85 +1,56 @@
-import { View, Text, ScrollView } from "react-native";
-import React from "react";
-import { Chip, Button, PaperProvider } from "react-native-paper";
-import { rem, em } from "../../../components/stylings/responsiveSize";
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { Chip, Button, PaperProvider } from 'react-native-paper';
+import ElevatedButton from '../../../components/customs/ElevatedButton';
+import theme from '../../../components/CustomTheme';
 
-//Customs
-import ElevatedButton from "../../../components/customs/ElevatedButton";
-import theme from "../../../components/CustomTheme";
-
-const Resources = () => {
+const HomeScreen = () => {
   return (
     <PaperProvider theme={theme}>
-      <View className="flex-1 p-2">
+      <View style={styles.container}>
+        <Text style={styles.header}>Resources</Text>
         <ElevatedButton text="Looking for Something?" search={true} />
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{ maxHeight: rem(40) }}
-        >
-          <View
-            className="my-4 flex-row gap-2 align-center items-center justify-center"
-            style={{ height: rem(30) }}
-          >
-            <Chip icon="account-heart" onPress={() => console.log("Pressed")}>
-              Health
-            </Chip>
-            <Chip icon="bag-personal" onPress={() => console.log("Pressed")}>
-              Academic
-            </Chip>
-            <Chip
-              icon="account-supervisor-circle-outline"
-              onPress={() => console.log("Pressed")}
-            >
-              Family
-            </Chip>
-            <Chip
-              icon="account-hard-hat"
-              onPress={() => console.log("Pressed")}
-            >
-              Professional
-            </Chip>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ maxHeight: 60 }}>
+          <View style={styles.chipContainer}>
+            <Chip icon="account-heart" onPress={() => console.log("Health Pressed")}>Health</Chip>
+            <Chip icon="bag-personal" onPress={() => console.log("Academic Pressed")}>Academic</Chip>
+            <Chip icon="account-supervisor-circle-outline" onPress={() => console.log("Family Pressed")}>Family</Chip>
+            <Chip icon="account-hard-hat" onPress={() => console.log("Professional Pressed")}>Professional</Chip>
           </View>
         </ScrollView>
-        {/* <View className="items-center flex-row px-2">
-        <Text className="font-bold w-3/4" style={{ fontSize: rem(14) }}>
-          Community Forum
-        </Text>
-        <View className="w-1/4 align-end">
-          <Button className="w-/14" mode="text">
-            See more
-          </Button>
-        </View>
-      </View> */}
-        <View className="px-2 gap-4 w-full mb-4 mt-4">
-          <View
-            className="elevation-md w-full"
-            style={{
-              borderRadius: 32,
-              height: rem(100),
-              backgroundColor: "white",
-            }}
-          ></View>
-          <View
-            className="elevation-md w-full"
-            style={{
-              borderRadius: 32,
-              height: rem(100),
-              backgroundColor: "white",
-            }}
-          ></View>
-          <View
-            className="elevation-md w-full"
-            style={{
-              borderRadius: 32,
-              height: rem(100),
-              backgroundColor: "white",
-            }}
-          ></View>
+        
+        <View style={styles.cardContainer}>
+          <TouchableOpacity style={styles.card}>
+            <Image source={{ uri: 'https://www.helpguide.org/wp-content/uploads/2023/02/Healthy-Eating-2.jpeg' }} style={styles.cardImage} />
+            <Text style={styles.cardText}> healthy eating</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Image source={{ uri: 'https://example.com/temperature.jpg' }} style={styles.cardImage} />
+            <Text style={styles.cardText}>What is Basal Body Temperature?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Image source={{ uri: 'https://example.com/conceive.jpg' }} style={styles.cardImage} />
+            <Text style={styles.cardText}>Is Your Body Ready to Conceive?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.card}>
+            <Image source={{ uri: 'https://example.com/tests.jpg' }} style={styles.cardImage} />
+            <Text style={styles.cardText}>Tests You Should Have Before TTC</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </PaperProvider>
   );
 };
 
-export default Resources;
+export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 11 },
+  chipContainer: { flexDirection: 'row', marginBottom: 9, alignItems: 'center', gap: 10 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  cardContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  card: { width: '48%', backgroundColor: '#f9f9f9', padding: 10, borderRadius: 10 },
+  cardImage: { width: '100%', height: 100, borderRadius: 10 },
+  cardText: { marginTop: 5, fontSize: 14, fontWeight: 'bold' },
+});

@@ -3,13 +3,16 @@ import React from "react";
 import { Redirect } from "expo-router";
 import { PaperProvider } from "react-native-paper";
 import { useFonts } from "expo-font";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Welcome from "./pages/auth/Welcome";
-import Home from "./pages/(tabs)/Home";
+
+import Login from "./pages/auth/login";
+import Register from "./pages/auth/register";
+import Welcome from "./pages/auth/welcome";
+import Home from "./pages/(tabs)/home";
 import Settings from "./pages/(tabs)/Settings";
 import _layout from "./pages/(tabs)/_layout";
-import Chat from "./pages/messages/Chat";
+import Chat from "./pages/messages/chat";
+import games from "./pages/games/layoutgame";
+import TakeABreath from "./pages/games/TakeABreath";
 import Quiz from "./pages/quiz/Quiz";
 import Result from "./pages/quiz/Result";
 import Conditions from "./pages/quiz/Conditions";
@@ -48,6 +51,8 @@ const AuthStack = () => {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Main" component={_layout} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Game" component={games} />
+      <Stack.Screen name="TakeABreath" component={TakeABreath} />
       <Stack.Screen name="Result" component={Result} />
       <Stack.Screen name="Conditions" component={Conditions} />
       <Stack.Screen name="Settings" component={Settings} />

@@ -1,18 +1,17 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 // import { Tabs } from "expo-router";
-import Home from "./Home";
-import Messages from "./Messages";
-import Profile from "./Profile";
-import Resources from "./Resources";
-import Settings from "./Settings";
+import Home from "../(tabs)/home";
+import Messages from "./messages";
+import Profile from "./profile";
+import Resources from "./resources";
+import Games from "../games/layoutgame"import Settings from "./Settings";
 
-//Icons
-import { IconSymbol } from "@/components/ui/IconSymbol";
+//import Games from "../games/TakeABreath"
+// Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { AuthProvider } from "../../../context/AuthContext";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Octicons from "@expo/vector-icons/Octicons";
 
@@ -25,6 +24,10 @@ const _layout = () => {
         headerShown: false,
         tabBarActiveTintColor: "#0cdfc6", // Set active tab color
         tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          height: 60, // Increased height for better spacing
+          paddingBottom: 5,
+        },
       }}
     >
       <Tabs.Screen
@@ -48,16 +51,25 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
+        name="Activities"
+        component={Games}
+        options={{
+          title: "",
+          tabBarIcon: ({ color }) => (
+            <View style={styles.largeIconContainer}>
+              <Ionicons name="game-controller-outline" size={40} color="white" />
+            </View>
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="Resources"
         component={Resources}
         options={{
           title: "Resources",
           tabBarIcon: ({ color }) => (
-            <Ionicons
-              name="file-tray-stacked-outline"
-              size={24}
-              color={color}
-            />
+            <Ionicons name="file-tray-stacked-outline" size={24} color={color} />
           ),
         }}
       />
@@ -84,5 +96,21 @@ const _layout = () => {
     </Tabs.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  largeIconContainer: {
+    width: 70,
+    height: 70,
+    backgroundColor: "#FF686B", // Background color of icon
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: -20, // Moves the icon up for emphasis
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    
+  },
+});
 
 export default _layout;

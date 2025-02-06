@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import "../../../global.css";
-
+import Header from "../../../components/Header";
+import Logo from "../../../components/Logo";
 import { rem } from "../../../components/stylings/responsiveSize";
 
 import { PaperProvider, TextInput } from "react-native-paper";
