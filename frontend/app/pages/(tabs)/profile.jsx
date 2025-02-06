@@ -31,8 +31,11 @@ const Profile = () => {
 
         {/* Avatar with Edit Icon */}
         <View style={styles.avatarContainer}>
-          <AntDesign name="user" size={50} color="white" />
-          <TouchableOpacity style={styles.editIcon} onPress={() => console.log("Edit Profile Picture")}>
+          <AntDesign name="user" size={50} color="#0cdfc6" />
+          <TouchableOpacity
+            style={styles.editIcon}
+            onPress={() => console.log("Edit Profile Picture")}
+          >
             <MaterialIcons name="camera-alt" size={20} color="white" />
           </TouchableOpacity>
         </View>
@@ -40,11 +43,12 @@ const Profile = () => {
         {/* Username  */}
         <View style={styles.usernameWrapper}>
           <Text style={styles.username}>username</Text>
-           
         </View>
 
         {/* Bio Section */}
-        <Text style={styles.bio}>This is the bio section. You can add a short description here.</Text>
+        <Text style={styles.bio}>
+          This is the bio section. You can add a short description here.
+        </Text>
       </View>
 
       {/* Action Buttons */}
@@ -61,28 +65,28 @@ const Profile = () => {
 
       {/* Settings List */}
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="email" size={24} color="#4CAF50" />
+        <MaterialIcons name="email" size={24} color="#0cdfc6" />
         <Text style={styles.settingText}>Email</Text>
         <Text style={styles.emailText}>*************@gmail.com</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="lock" size={24} color="#4CAF50" />
+        <MaterialIcons name="lock" size={24} color="#0cdfc6" />
         <Text style={styles.settingText}>Update Password</Text>
       </TouchableOpacity>
 
       {/* Other Settings */}
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="settings" size={24} color="#4CAF50" />
+        <MaterialIcons name="settings" size={24} color="#0cdfc6" />
         <Text style={styles.settingText}>Settings</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.otherSetting}>
-        <MaterialIcons name="support-agent" size={24} color="#4CAF50" />
+        <MaterialIcons name="support-agent" size={24} color="#0cdfc6" />
         <Text style={styles.settingText}>Support</Text>
       </TouchableOpacity>
 
       {/* Logout Button */}
       <TouchableOpacity style={styles.otherSetting} onPress={onLogout}>
-        <MaterialIcons name="logout" size={24} color="#4CAF50" />
+        <MaterialIcons name="logout" size={24} color="#0cdfc6" />
         <Text style={styles.settingText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
@@ -93,11 +97,11 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D4EDDA", // Light green background
+    backgroundColor: "white", // Light green background
     padding: 16,
   },
   header: {
-    backgroundColor: "#66BB6A",
+    backgroundColor: "#0cdfc6",
     alignItems: "center",
     padding: 20,
     borderBottomLeftRadius: 20,
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   avatarContainer: {
-    backgroundColor: "#FFA69E",
+    backgroundColor: "white",
     borderRadius: 100,
     width: 100,
     height: 100,
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    backgroundColor: "#0cdfc6", // Semi-transparent background
     borderRadius: 20,
     padding: 3,
   },
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   actionButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#0cdfc6",
     padding: 10,
     borderRadius: 10,
     alignItems: "center",

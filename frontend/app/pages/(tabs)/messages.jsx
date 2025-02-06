@@ -32,6 +32,10 @@ const Messages = ({ navigation }) => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
   const retrieveChats = async () => {
     try {
       const res = await axiosInstanceWithBearer.get("/Chat/");
