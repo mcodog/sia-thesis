@@ -11,11 +11,11 @@ import { useAuth } from "../../../context/AuthContext";
 import SoundButton from "../../../components/SoundButton";
 
 const Welcome = ({ navigation }) => {
-  const { setUser } = useAuth();
-  const router = useRouter();
+  // const { setUser } = useAuth();
+  // const router = useRouter();
 
   const handleGuest = () => {
-    setUser("Guest");
+    // setUser("Guest");
     navigation.navigate("Main", { animation: "none" });
   };
 
@@ -77,4 +77,3 @@ const Welcome = ({ navigation }) => {
 };
 
 export default Welcome;
-

@@ -23,7 +23,13 @@ import PortraitTile from "../../../components/tiles/PortraitTile";
 import CustomTheme from "../../../components/CustomTheme";
 
 //Paper
-import { ActivityIndicator, Button, PaperProvider } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  PaperProvider,
+  Dialog,
+  Portal,
+} from "react-native-paper";
 
 //Icons
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -32,11 +38,17 @@ import PostTile from "../../../components/tiles/PostTile";
 import { useAuth } from "../../../context/AuthContext";
 import SoundButton from "../../../components/SoundButton";
 
-const Home = ({ navigation }) => {
-  const { user } = useAuth();
-  console.log("User is ", user.username);
-  const router = useRouter();
+import { useSelector } from "react-redux";
 
+const Home = ({ navigation }) => {
+  const [visible, setVisible] = React.useState(false);
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
+
+  const { user } = useAuth();
+  const authState = useSelector((state) => state.auth.auth);
+  // console.log(authState.isLoggedIn);
   return (
     <PaperProvider theme={CustomTheme}>
       {!(user.username == "") ? (
@@ -129,7 +141,11 @@ const Home = ({ navigation }) => {
                       className="w-full"
                       mode="contained"
                       onPress={() => {
-                        navigation.navigate("Conditions");
+                        if (authState.isLoggedIn) {
+                          navigation.navigate("Conditions");
+                        } else {
+                          navigation.navigate("Login");
+                        }
                       }}
                     >
                       Start
@@ -258,6 +274,24 @@ const Home = ({ navigation }) => {
           <ActivityIndicator size="large" />
         </View>
       )}
+
+      <Portal>
+        <Dialog
+          style={{ backgroundColor: "white" }}
+          visible={visible}
+          onDismiss={hideDialog}
+        >
+          <Dialog.Title>Alert</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              You have to be logged in to access our quiz.
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Done</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </PaperProvider>
   );
 };

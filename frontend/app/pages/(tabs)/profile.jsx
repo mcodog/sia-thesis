@@ -4,10 +4,14 @@ import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   const { onLogout } = useAuth();
   const router = useRouter();
+  const user = useSelector((state) => state.user.user);
+
+  console.log(user);
 
   return (
     <View style={styles.container}>
@@ -42,7 +46,7 @@ const Profile = () => {
 
         {/* Username  */}
         <View style={styles.usernameWrapper}>
-          <Text style={styles.username}>username</Text>
+          <Text style={styles.username}>{user.name}</Text>
         </View>
 
         {/* Bio Section */}
@@ -67,7 +71,7 @@ const Profile = () => {
       <TouchableOpacity style={styles.otherSetting}>
         <MaterialIcons name="email" size={24} color="#8ee8d0" />
         <Text style={styles.settingText}>Email</Text>
-        <Text style={styles.emailText}>*************@gmail.com</Text>
+        <Text style={styles.emailText}>{user.email}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.otherSetting}>
         <MaterialIcons name="lock" size={24} color="#8ee8d0" />

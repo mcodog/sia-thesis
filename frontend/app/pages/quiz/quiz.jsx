@@ -300,7 +300,7 @@ const Quiz = ({ navigation }) => {
   const quizResult = useSelector((state) => state.quizResult.quizResult);
   const dispatch = useDispatch();
 
-  const valueRef = useRef(1);
+  const valueRef = useRef(5);
 
   const handleValueChange = (newValue) => {
     valueRef.current = newValue;
@@ -1037,7 +1037,7 @@ const Quiz = ({ navigation }) => {
                                   input: valueRef.current * 2.1,
                                 };
                                 setQuestions(updatedQuestions);
-                                valueRef.current = 1;
+                                valueRef.current = 5;
                                 if (i == questions.length - 1) {
                                   setFinished(true);
                                   setIsLoading(true);
