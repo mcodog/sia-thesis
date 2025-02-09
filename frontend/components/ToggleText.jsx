@@ -4,7 +4,7 @@ import { rem } from "./stylings/responsiveSize";
 
 const ToggleText = ({ state, toggler }) => {
   return (
-    <View style={{ flexDirection: "row", borderWidth: 2, borderRadius: 12 }}>
+    <View style={{ flexDirection: "row", elevation: 10, borderRadius: 12 }}>
       <TouchableWithoutFeedback onPress={() => toggler("English")}>
         <Text
           style={{
@@ -19,7 +19,7 @@ const ToggleText = ({ state, toggler }) => {
           English
         </Text>
       </TouchableWithoutFeedback>
-      <View style={{ borderRightWidth: 1 }}></View>
+      <View style={{ borderRightWidth: 1, borderColor: "#dedede" }}></View>
       <TouchableWithoutFeedback onPress={() => toggler("Tagalog")}>
         <Text
           style={{

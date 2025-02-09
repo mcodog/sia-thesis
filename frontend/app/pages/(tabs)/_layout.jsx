@@ -5,7 +5,7 @@ import Home from "../(tabs)/Home";
 import Messages from "./Messages";
 import Profile from "./Profile";
 // import Resources from "./Resources";
-import Games from "../games/layoutgame";
+import Games from "../games/LayoutGame";
 import Settings from "./Settings";
 
 //import Games from "../games/TakeABreath"

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 
 from .chat.Prompt import generate_chat_response
 from .analysis.predict import get_analysis
+# from .sentiment.Analyze import sentiment_analysis
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -71,3 +72,9 @@ class AnalysisView(APIView):
         data = request.data.get('quiz_result', [])
         counseling_result = get_analysis(data)
         return Response({'analysis_result': counseling_result}, status=status.HTTP_200_OK)
+
+# class SentimentAnalysis(APIView):
+#     def post(self, request):
+#         data = request.data.get('text_input', '')
+#         analysis_result = sentiment_analysis(data)
+#         return Response({'analysis_result': analysis_result}, status=status.HTTP_200_OK)

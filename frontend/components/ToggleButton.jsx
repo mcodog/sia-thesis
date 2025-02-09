@@ -24,7 +24,7 @@ const ToggleButton = ({ state, toggler }) => {
             height: "100%",
             width: "50%",
             borderRadius: 100,
-            borderWidth: 1,
+            elevation: 5,
           }}
           layout={LinearTransition}
         ></Animated.View>

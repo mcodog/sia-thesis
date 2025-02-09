@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 	path('api/user/profile/', UserProfileView.as_view(), name='user_profile'),
 	path('api/analysis/', AnalysisView.as_view(), name='quiz_analysis'),
+	# path('api/sentiment/', SentimentAnalysis.as_view(), name='sentiment_analysis'),
     path('', include(router.urls)),
 	path('api-auth/', include('rest_framework.urls'))
 ]

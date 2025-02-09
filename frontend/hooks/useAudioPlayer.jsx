@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Audio } from "expo-av";
+import { useSelector } from "react-redux";
 
 const useAudioPlayer = () => {
   const [sound, setSound] = useState(null);

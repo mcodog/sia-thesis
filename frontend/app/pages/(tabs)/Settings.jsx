@@ -37,6 +37,15 @@ const Settings = () => {
   return (
     <View style={{ flex: 1, padding: rem(10) }}>
       <Text style={{ fontSize: rem(20), fontWeight: 500 }}>Settings</Text>
+      <Text style={{ fontSize: rem(16), fontWeight: 500 }}>Quiz Settings</Text>
+      <Divider style={{ marginVertical: rem(5) }} />
+      <SettingRow>
+        <Text>Sound Effects - Quiz</Text>
+        <ToggleButton
+          state={settingsConfig.fxQuiz}
+          toggler={handleToggleFxQuiz}
+        />
+      </SettingRow>
       <Text style={{ fontSize: rem(16), fontWeight: 500 }}>
         Text-to-Speech Settings
       </Text>
@@ -60,15 +69,6 @@ const Settings = () => {
         <ToggleText
           state={settingsConfig.language}
           toggler={handleChangeLanguage}
-        />
-      </SettingRow>
-      <Text style={{ fontSize: rem(16), fontWeight: 500 }}>Quiz Settings</Text>
-      <Divider style={{ marginVertical: rem(5) }} />
-      <SettingRow>
-        <Text>Sound Effects - Quiz</Text>
-        <ToggleButton
-          state={settingsConfig.fxQuiz}
-          toggler={handleToggleFxQuiz}
         />
       </SettingRow>
     </View>

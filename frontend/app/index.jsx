@@ -11,7 +11,7 @@ import Home from "./pages/(tabs)/Home";
 import Settings from "./pages/(tabs)/Settings";
 import _layout from "./pages/(tabs)/_layout";
 import Chat from "./pages/messages/Chat";
-import games from "./pages/games/layoutgame";
+import Games from "./pages/games/LayoutGame";
 import TakeABreath from "./pages/games/TakeABreath";
 import Quiz from "./pages/quiz/Quiz";
 import Result from "./pages/quiz/Result";
@@ -51,7 +51,7 @@ const AuthStack = () => {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Main" component={_layout} />
       <Stack.Screen name="Chat" component={Chat} />
-      <Stack.Screen name="Game" component={games} />
+      <Stack.Screen name="Game" component={Games} />
       <Stack.Screen name="TakeABreath" component={TakeABreath} />
       <Stack.Screen name="Result" component={Result} />
       <Stack.Screen name="Conditions" component={Conditions} />
@@ -66,28 +66,3 @@ const AuthStack = () => {
 };
 
 export default index;
-
-{
-  /* <Stack>
-        <Stack.Screen
-          name="pages/auth/welcome"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="pages/auth/login"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="pages/auth/register"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="pages/messages/chat"
-          options={{ headerShown: true }}
-        />
-        <Stack.Screen name="pages/quiz/quiz" options={{ headerShown: true }} />
-      </Stack> */
-}
-{
-  /* <Redirect href="pages/auth/Welcome" /> */
-}

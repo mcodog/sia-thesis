@@ -5,7 +5,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import Animated, {
   Keyframe,
@@ -46,6 +46,7 @@ import {
   PaperProvider,
   MD3DarkTheme,
   ActivityIndicator,
+  TextInput,
 } from "react-native-paper";
 import theme from "../../../components/CustomTheme";
 import logo from "../../../assets/images/logo.png";
@@ -103,6 +104,9 @@ import tag18 from "../../../assets/audio/tagalog/18.wav";
 import tag19 from "../../../assets/audio/tagalog/19.wav";
 import tag20 from "../../../assets/audio/tagalog/20.wav";
 import tag21 from "../../../assets/audio/tagalog/21.m4a";
+import Draggable from "../../../components/Draggable";
+
+import FaceIndicator from "../../../components/FaceIndicator";
 
 const questionAudioMapTag = {
   "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na sobra kang nag-aalala o kaba?":
@@ -296,13 +300,24 @@ const Quiz = ({ navigation }) => {
   const quizResult = useSelector((state) => state.quizResult.quizResult);
   const dispatch = useDispatch();
 
+  const valueRef = useRef(1);
+
+  const handleValueChange = (newValue) => {
+    valueRef.current = newValue;
+    console.log("Updated Value:", newValue);
+  };
+
+  // const handleValueChange = (newValue) => {
+  //   setAnswerValue(newValue);
+  // };
+
   const [questions, setQuestions] = useState([
     {
       question:
         "In the past two weeks, how often have you felt excessively worried or anxious?",
       answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
       input: "",
-      type: "multiple choice",
+      type: "analysis",
       tagalog:
         "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na sobra kang nag-aalala o kaba?",
     },
@@ -332,7 +347,7 @@ const Quiz = ({ navigation }) => {
         "In the past two weeks, how often have you felt down, hopeless, or lost interest in things you enjoy?",
       answers: ["Never", "Rarely", "Sometimes", "Often", "Almost Always"],
       input: "",
-      type: "multiple choice",
+      type: "analysis",
       tagalog:
         "Sa nakaraang dalawang linggo, gaano kadalas mong naramdaman na ikaw ay malungkot, nawawalan ng pag-asa, o nawawala ang interes sa mga bagay na kinagigiliwan mo?",
     },
@@ -361,7 +376,7 @@ const Quiz = ({ navigation }) => {
       question: "How would you rate your overall sleep quality?",
       answers: ["Very Poor", "Poor", "Fair", "Good", "Very Good", "Excellent"],
       input: "",
-      type: "multiple choice",
+      type: "analysis",
       tagalog: "Paano mo irarate ang kabuuang kalidad ng iyong pagtulog?",
     },
     {
@@ -544,11 +559,12 @@ const Quiz = ({ navigation }) => {
       question: "How would you rate your overall stress level?",
       answers: ["Low", "Moderate", "High"],
       input: "",
-      type: "multiple choice",
+      type: "analysis",
       tagalog: "Paano mo irarate ang kabuuang antas ng iyong stress?",
     },
   ]);
 
+  const [asnwerValue, setAnswerValue] = useState(0);
   const router = useRouter();
   const size = useSharedValue(0);
   const [quizProgress, setQuizProgress] = useState(0);
@@ -582,6 +598,7 @@ const Quiz = ({ navigation }) => {
 
   useEffect(() => {
     if (!start) return;
+    if (!settingsConfig.quizSpeech) return;
 
     let currentQuestion = questions[questionNum]?.question;
 
@@ -639,6 +656,7 @@ const Quiz = ({ navigation }) => {
 
   useEffect(() => {
     if (finished) {
+      if (!settingsConfig.quizSpeech) return;
       playSound(finishedAudio);
     }
   }, [finished]);
@@ -707,6 +725,7 @@ const Quiz = ({ navigation }) => {
     );
 
     if (playIntro === 1) {
+      if (!settingsConfig.quizSpeech) return;
       setTimeout(() => {
         playSound(welcomeAudio);
       }, 800);
@@ -784,8 +803,9 @@ const Quiz = ({ navigation }) => {
 
             <TouchableWithoutFeedback
               onPress={() => {
-                playSound(tap);
                 setStart(!start);
+                if (!settingsConfig.fxQuiz) return;
+                playSound(tap);
               }}
             >
               <Animated.View
@@ -820,7 +840,7 @@ const Quiz = ({ navigation }) => {
             <Text
               style={{ fontFamily: "Seco", color: "black", fontSize: rem(22) }}
             >
-              Question Set A
+              Analysis
             </Text>
           </Animated.View>
         )}
@@ -882,58 +902,178 @@ const Quiz = ({ navigation }) => {
                       gap: rem(10),
                     }}
                   >
-                    {item.answers.map((answer, index) => {
-                      const isSelected = item.input === index;
+                    {item.type === "multiple choice" ? (
+                      item.answers.map((answer, index) => {
+                        const isSelected = item.input === index;
 
-                      return (
-                        <Animated.View
-                          layout={LinearTransition.easing(
-                            Easing.bezier(0.5, 1.5, 0.5, 1)
-                          )}
-                          key={index}
-                          entering={BounceIn.delay(1000 + staggerValue * index)}
-                          exiting={BounceOut}
-                          style={{
-                            borderWidth: 1,
-                            height: rem(40),
-                            width: "48%",
-                            borderRadius: 24,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: isSelected ? "#0cdfc6" : "white",
-                          }}
-                        >
-                          <TouchableWithoutFeedback
-                            onPress={() => {
-                              const updatedQuestions = [...questions];
-                              updatedQuestions[i] = {
-                                ...updatedQuestions[i],
-                                input: index,
-                              };
-                              setQuestions(updatedQuestions);
-                              playSound(ding);
+                        return (
+                          <Animated.View
+                            layout={LinearTransition.easing(
+                              Easing.bezier(0.5, 1.5, 0.5, 1)
+                            )}
+                            key={index}
+                            entering={BounceIn.delay(
+                              1000 + staggerValue * index
+                            )}
+                            exiting={BounceOut}
+                            style={{
+                              borderWidth: 1,
+                              height: rem(40),
+                              width: "48%",
+                              borderRadius: 24,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              backgroundColor: isSelected ? "#0cdfc6" : "white",
                             }}
                           >
-                            <View
-                              style={{
-                                height: "100%",
-                                width: "100%",
-                                justifyContent: "center",
-                                alignItems: "center",
+                            <TouchableWithoutFeedback
+                              onPress={() => {
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[i] = {
+                                  ...updatedQuestions[i],
+                                  input: index,
+                                };
+                                setQuestions(updatedQuestions);
+                                if (!settingsConfig.fxQuiz) return;
+                                playSound(ding);
+                              }}
+                            >
+                              <View
+                                style={{
+                                  height: "100%",
+                                  width: "100%",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    color: isSelected ? "white" : "black",
+                                  }}
+                                >
+                                  {answer}
+                                </Text>
+                              </View>
+                            </TouchableWithoutFeedback>
+                          </Animated.View>
+                        );
+                      })
+                    ) : (
+                      <View
+                        style={{
+                          // borderWidth: 1,
+                          width: "100%",
+                          padding: rem(10),
+                        }}
+                      >
+                        <FaceIndicator valueRef={valueRef} />
+                        <Draggable onValueChange={handleValueChange} />
+                        <View
+                          style={{
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <Text>Good</Text>
+                          <Text>Bad</Text>
+                        </View>
+
+                        <Animated.View
+                          entering={FadeInUp.easing(
+                            Easing.bezier(0.5, 1.5, 0.5, 1)
+                          )}
+                          style={{
+                            width: "100%",
+                            flexDirection: "row",
+                            marginTop: rem(50),
+                          }}
+                        >
+                          <View
+                            style={{ width: "50%", paddingHorizontal: rem(5) }}
+                          >
+                            {/* <Button
+                            mode="elevated"
+                            onPress={() => {
+                              setQuestionNum((prev) => prev - 1);
+                            }}
+                          >
+                            Previous
+                          </Button> */}
+                            <TouchableWithoutFeedback
+                              disabled={i === 0}
+                              onPress={() => setQuestionNum((prev) => prev - 1)}
+                            >
+                              <Text
+                                style={{
+                                  elevation: 5,
+                                  backgroundColor: "white",
+                                  borderRadius: 32,
+                                  padding: rem(10),
+                                  paddingVertical: rem(15),
+                                  textAlign: "center",
+                                  fontSize: rem(13),
+                                  fontWeight: 700,
+                                }}
+                              >
+                                <AntDesign
+                                  name="left"
+                                  size={24}
+                                  color="#0cdfc6"
+                                />
+                              </Text>
+                            </TouchableWithoutFeedback>
+                          </View>
+                          <View
+                            style={{ width: "50%", paddingHorizontal: rem(5) }}
+                          >
+                            <TouchableWithoutFeedback
+                              // disabled={i == questions.length - 1}
+                              onPress={() => {
+                                const updatedQuestions = [...questions];
+                                updatedQuestions[i] = {
+                                  ...updatedQuestions[i],
+                                  input: valueRef.current * 2.1,
+                                };
+                                setQuestions(updatedQuestions);
+                                valueRef.current = 1;
+                                if (i == questions.length - 1) {
+                                  setFinished(true);
+                                  setIsLoading(true);
+                                } else {
+                                  setQuestionNum((prev) => prev + 1);
+                                }
+
+                                setTimeout(() => {
+                                  if (!settingsConfig.fxQuiz) return;
+                                  playSound(wind);
+                                }, 0);
                               }}
                             >
                               <Text
                                 style={{
-                                  color: isSelected ? "white" : "black",
+                                  elevation: 5,
+                                  backgroundColor: "white",
+                                  borderRadius: 32,
+                                  padding: rem(10),
+                                  paddingVertical: rem(15),
+                                  textAlign: "center",
+                                  fontSize: rem(13),
+                                  fontWeight: 700,
                                 }}
                               >
-                                {answer}
+                                <AntDesign
+                                  name="right"
+                                  size={24}
+                                  color="#0cdfc6"
+                                />
                               </Text>
-                            </View>
-                          </TouchableWithoutFeedback>
+                            </TouchableWithoutFeedback>
+                          </View>
                         </Animated.View>
-                      );
-                    })}
+                      </View>
+                    )}
 
                     {!(item.input === "") && !(i == questions.length - 1) && (
                       <Animated.View
@@ -989,6 +1129,7 @@ const Quiz = ({ navigation }) => {
                             onPress={() => {
                               setQuestionNum((prev) => prev + 1);
                               setTimeout(() => {
+                                if (!settingsConfig.fxQuiz) return;
                                 playSound(wind);
                               }, 0);
                             }}
@@ -1016,7 +1157,7 @@ const Quiz = ({ navigation }) => {
                       </Animated.View>
                     )}
 
-                    {!(item.input == "") && i == questions.length - 1 && (
+                    {/* {i == questions.length - 1 && (
                       <Animated.View
                         entering={FadeInUp.easing(
                           Easing.bezier(0.5, 1.5, 0.5, 1)
@@ -1054,7 +1195,7 @@ const Quiz = ({ navigation }) => {
                           </TouchableWithoutFeedback>
                         </View>
                       </Animated.View>
-                    )}
+                    )} */}
                   </View>
                 </Animated.View>
               ) : null;
@@ -1116,7 +1257,10 @@ const Quiz = ({ navigation }) => {
             </Text>
             {!isLoading && (
               <Button
-                onPress={() => handleFinish()}
+                onPress={() => {
+                  console.log(questions);
+                  handleFinish();
+                }}
                 style={{ marginTop: rem(10) }}
               >
                 Continue
