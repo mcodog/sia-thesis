@@ -19,12 +19,21 @@ import theme from "../../../components/CustomTheme";
 import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../context/axiosInstance";
 import Animated, { FadeInLeft } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 const Messages = ({ navigation }) => {
   const { user, axiosInstanceWithBearer } = useAuth();
   const [chatData, setChatData] = useState([]);
   const [pressOutside, setPressOutside] = useState(1);
   const router = useRouter();
+
+  const authState = useSelector((state) => state.auth.auth);
+
+  useEffect(() => {
+    if (!authState.isLoggedIn) {
+      navigation.navigate("Login");
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -40,6 +49,7 @@ const Messages = ({ navigation }) => {
     try {
       const res = await axiosInstanceWithBearer.get("/Chat/");
       setChatData(res.data);
+      console.log(res.data);
     } catch (e) {
       console.log(e);
     }
@@ -56,54 +66,62 @@ const Messages = ({ navigation }) => {
   };
   return (
     <PaperProvider theme={theme}>
-      <TouchableWithoutFeedback
-        onPress={() => setPressOutside((prev) => prev + 1)}
-      >
-        <View className="flex-1 p-2">
-          <ElevatedButton text="Chat History" />
-          <ScrollView>
-            <View className="px-2 gap-4 w-full mb-4 mt-4">
-              {chatData ? (
-                chatData.map((item) => {
-                  return (
-                    <Animated.View entering={FadeInLeft} key={item.id}>
-                      <TouchableWithoutFeedback
-                        onPress={() => {
-                          alert("clicked");
-                        }}
-                      >
-                        <ChatLogBar
-                          chatLogNum={item.id}
-                          date={item.date_created}
-                          pressOutside={pressOutside}
-                          handleDelete={handleDelete}
-                          handlePress={() => {
-                            navigation.navigate("Chat", {
-                              isNew: false,
-                              chatId: item.id,
-                            });
+      {authState.isLoggedIn ? (
+        <TouchableWithoutFeedback
+          onPress={() => setPressOutside((prev) => prev + 1)}
+        >
+          <View className="flex-1 p-2">
+            <ElevatedButton text="Chat History" />
+            <ScrollView>
+              <View className="px-2 gap-4 w-full mb-4 mt-4">
+                {chatData ? (
+                  chatData.map((item) => {
+                    return (
+                      <Animated.View entering={FadeInLeft} key={item.id}>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            alert("clicked");
                           }}
-                        />
-                      </TouchableWithoutFeedback>
-                    </Animated.View>
-                  );
-                })
-              ) : (
-                <ActivityIndicator size="large" />
-              )}
+                        >
+                          <ChatLogBar
+                            chatLogNum={item.id}
+                            date={item.date_created}
+                            pressOutside={pressOutside}
+                            handleDelete={handleDelete}
+                            handlePress={() => {
+                              navigation.navigate("Chat", {
+                                isNew: false,
+                                chatId: item.id,
+                              });
+                            }}
+                          />
+                        </TouchableWithoutFeedback>
+                      </Animated.View>
+                    );
+                  })
+                ) : (
+                  <ActivityIndicator size="large" />
+                )}
+              </View>
+            </ScrollView>
+            <View style={{ position: "absolute", bottom: 20, right: 20 }}>
+              <FAB
+                icon="plus"
+                label="Create New"
+                onPress={() =>
+                  navigation.navigate("Chat", { isNew: true, chatId: null })
+                }
+              />
             </View>
-          </ScrollView>
-          <View style={{ position: "absolute", bottom: 20, right: 20 }}>
-            <FAB
-              icon="plus"
-              label="Create New"
-              onPress={() =>
-                navigation.navigate("Chat", { isNew: true, chatId: null })
-              }
-            />
           </View>
+        </TouchableWithoutFeedback>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>You need to be logged in to view this page.</Text>
         </View>
-      </TouchableWithoutFeedback>
+      )}
     </PaperProvider>
   );
 };

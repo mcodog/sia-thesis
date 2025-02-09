@@ -4,7 +4,12 @@ import axiosInstance from "./axiosInstance";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toggleLogin } from "../redux/authSlice";
-import { setName, setEmail } from "../redux/userSlice";
+import {
+  setName,
+  setEmail,
+  setFirstName,
+  setLastName,
+} from "../redux/userSlice";
 import { useRouter } from "expo-router";
 
 const AuthContext = createContext();
@@ -94,9 +99,11 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      console.log(response.data);
       dispatch(setName(response.data.username));
       dispatch(setEmail(response.data.email));
+      dispatch(setFirstName(response.data.first_name));
+      dispatch(setLastName(response.data.last_name));
       dispatch(toggleLogin());
       setUser((prev) => ({
         ...prev,
@@ -118,7 +125,7 @@ export const AuthProvider = ({ children }) => {
       id: "",
     });
     setAccessToken("");
-    router.push("pages/auth/Welcome");
+    // router.push("pages/auth/Welcome");
   };
 
   // useEffect(() => {

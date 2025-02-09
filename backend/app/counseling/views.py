@@ -82,6 +82,8 @@ class UserProfileView(APIView):
             "id": user.id,
             "username": user.username,
             "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name
         }
         return Response(user_data, status=status.HTTP_200_OK)
 

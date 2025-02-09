@@ -109,31 +109,6 @@ const Chat = () => {
     scrollToBottom();
   }, [chats]);
 
-  // const retrieveMessages = async () => {
-  //   try {
-  //     console.log("searching: ", id);
-  //     const res = await axiosInstanceWithBearer.get(
-  //       `/Message/?chat_id=${chatId}`
-  //     );
-  //     console.log(res.data);
-  //     res.data.forEach((item) => {
-  //       if (item.from_user) {
-  //         setChats((prev) => [
-  //           ...prev,
-  //           { user: true, text: item.message_content },
-  //         ]);
-  //       } else {
-  //         setChats((prev) => [
-  //           ...prev,
-  //           { user: false, text: item.message_content },
-  //         ]);
-  //       }
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
   const retrieveMessages = async () => {
     try {
       console.log("searching: ", id);
@@ -231,7 +206,7 @@ const Chat = () => {
                 // setChats((prev) => [...prev, { user: true, text: message }]);
                 handleMessage();
                 // setChats((prev) => [...prev, { user: true, text: message }]);
-                handleMessage();
+                // handleMessage();
                 setMessage("");
               }}
             >
