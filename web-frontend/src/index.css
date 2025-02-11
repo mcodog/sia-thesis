@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Glacial";
+  src: url("./assets/fonts/GlacialIndifference-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("./assets//fonts/OpenSans-Regular.ttf") format("truetype");
+}
+
+@theme {
+  --font-glacial: Glacial, sans-serif;
+  --font-open: OpenSans, sans-serif;
+}
+
+* {
+  font-family: "OpenSans", sans-serif;
+}

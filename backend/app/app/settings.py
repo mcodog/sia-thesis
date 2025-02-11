@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-eh1za5i=g5mu&!m=z7qug725)*@!tlcp+fp87q=v3(mqybr(vf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101']
+ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101', 'http://localhost:5173']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'counseling',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -64,11 +65,17 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Allow Vite frontend
+    "http://192.168.1.47:5173",  # Allow LAN access if needed
 ]
 
 ROOT_URLCONF = 'app.urls'
