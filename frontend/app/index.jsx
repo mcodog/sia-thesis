@@ -4,18 +4,24 @@ import { Redirect } from "expo-router";
 import { PaperProvider } from "react-native-paper";
 import { useFonts } from "expo-font";
 
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Welcome from "./pages/auth/Welcome";
-import Home from "./pages/(tabs)/Home";
+import Login from "./pages/auth/login";
+import Register from "./pages/auth/register";
+import Welcome from "./pages/auth/welcome";
+//import Home from "./pages/(tabs)/home";
 import Settings from "./pages/(tabs)/Settings";
 import _layout from "./pages/(tabs)/_layout";
-import Chat from "./pages/messages/Chat";
-import Games from "./pages/games/LayoutGame";
+import Chat from "./pages/messages/chat";
+import Games from "./pages/games/layoutgame";
 import TakeABreath from "./pages/games/TakeABreath";
-import Quiz from "./pages/quiz/Quiz";
-import Result from "./pages/quiz/Result";
-import Conditions from "./pages/quiz/Conditions";
+import Quiz from "./pages/quiz/quiz";
+import Result from "./pages/quiz/result";
+import Conditions from "./pages/quiz/conditions";
+import SleepTracker from "./pages/games/SleepTracker";
+import MoodTrackerScreen from "./pages/games/MoodTrackerScreen";
+import WeeklyWellnessReport from "./pages/games/WeeklyWellnessReport";
+import ClipCardGame from "./pages/games/ClipCardGame"; 
+import Diary from "./pages/games/Diary";
+import NotificationsScreen from "./pages/notification/Notifications";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,7 +29,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AuthProvider } from "../context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
-
+import MentalHealthSlider from "./pages/resources/MentalHealthSlider";
+import slider2 from "./pages/resources/slider2";
+import slider3 from "./pages/resources/slider3";
+import slider4 from "./pages/resources/slider4";
+import Resources from "./pages/resources/Resources";
 const index = () => {
   const [fontsLoaded] = useFonts({
     Primary: require("../assets/fonts/GlacialIndifference-Regular.otf"),
@@ -56,6 +66,17 @@ const AuthStack = () => {
       <Stack.Screen name="Result" component={Result} />
       <Stack.Screen name="Conditions" component={Conditions} />
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="SleepTracker" component={SleepTracker} />
+      <Stack.Screen name="MoodTrackerScreen" component={MoodTrackerScreen} />
+      <Stack.Screen name="WeeklyWellnessReport" component={WeeklyWellnessReport} />
+      <Stack.Screen name="ClipCardGame" component={ClipCardGame} />
+      <Stack.Screen name="Diary" component={Diary} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} /> 
+      <Stack.Screen name="MentalHealth" component={MentalHealthSlider} />
+      <Stack.Screen name="slider2" component={slider2} />
+      <Stack.Screen name="slider3" component={slider3} />
+      <Stack.Screen name="slider4" component={slider4} />
+      <Stack.Screen name="Resources" component={Resources} />
       <Stack.Screen
         name="Quiz"
         component={Quiz}
