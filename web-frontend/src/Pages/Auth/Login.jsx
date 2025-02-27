@@ -50,6 +50,7 @@ const Login = () => {
           <div className="my-2">
             <TextField
               id="password"
+              type="password"
               label="Password"
               variant="outlined"
               value={formstate.password}

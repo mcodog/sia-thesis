@@ -79,6 +79,7 @@ import bullyingAudio from "../../../assets/audio/voice/bullying.mp3";
 import overallstressAudio from "../../../assets/audio/voice/overallstress.mp3";
 import finishedAudio from "../../../assets/audio/voice/finished.mp3";
 import welcomeAudio from "../../../assets/audio/voice/welcome.mp3";
+import welcomeAudioTag from "../../../assets/audio/voice/welcometagalog.mp3";
 import ding from "../../../assets/audio/ding.mp3";
 import wind from "../../../assets/audio/wind.mp3";
 import tap from "../../../assets/audio/tap2.mp3";
@@ -726,10 +727,16 @@ const Quiz = ({ navigation }) => {
 
     if (playIntro === 1) {
       if (!settingsConfig.quizSpeech) return;
-      setTimeout(() => {
-        playSound(welcomeAudio);
-      }, 800);
 
+      if (settingsConfig.language == "English") {
+        setTimeout(() => {
+          playSound(welcomeAudio);
+        }, 800);
+      } else {
+        setTimeout(() => {
+          playSound(welcomeAudioTag);
+        }, 800);
+      }
       setPlayIntro((prev) => prev - 1);
     }
   }, []);
@@ -884,7 +891,7 @@ const Quiz = ({ navigation }) => {
                       color: "black",
                       textAlign: "center",
                       fontFamily: "Seco",
-                      fontSize: rem(18),
+                      fontSize: rem(15),
                     }}
                   >
                     {settingsConfig.language == "English"
@@ -893,7 +900,7 @@ const Quiz = ({ navigation }) => {
                   </Animated.Text>
                   <View
                     style={{
-                      marginTop: rem(20),
+                      marginTop: rem(10),
 
                       flexDirection: "row",
                       flexWrap: "wrap",
@@ -987,7 +994,7 @@ const Quiz = ({ navigation }) => {
                           style={{
                             width: "100%",
                             flexDirection: "row",
-                            marginTop: rem(50),
+                            marginTop: rem(20),
                           }}
                         >
                           <View

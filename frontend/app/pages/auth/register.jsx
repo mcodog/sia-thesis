@@ -17,17 +17,69 @@ import { useAuth } from "../../../context/AuthContext";
 const Register = ({ navigation }) => {
   const router = useRouter();
   const { register } = useAuth();
+  const [otp, setOtp] = useState("");
   const [user, setUser] = useState({
     name: "",
     password: "",
     first_name: "",
     last_name: "",
+    phone: "",
   });
 
   const handleRegister = async () => {
     let isLoggedIn = register(user);
     if (isLoggedIn) {
       navigation.navigate("Main");
+    }
+  };
+
+  const sendOTP = async () => {
+    try {
+      const response = await axiosInstance.post(
+        "/send-otp/",
+        { phone: user.phone }, // Ensure this is an object, not { "user.phone" }
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("✅ OTP Sent:", response.data);
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status code outside of 2xx
+        console.error("🔴 Server Error:", error.response.status);
+        console.error("🔴 Error Data:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("🔴 No Response from Server:", error.request);
+      } else {
+        // Something happened in setting up the request
+        console.error("🔴 Request Setup Error:", error.message);
+      }
+    }
+  };
+
+  const verifyOTP = async (otp) => {
+    try {
+      const response = await axiosInstance.post("/verify-otp/", {
+        phone: String(user.phone),
+        otp: String(otp),
+      });
+
+      console.log("OTP Sent:", response.data);
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status code outside of 2xx
+        console.error("🔴 Server Error:", error.response.status);
+        console.error("🔴 Error Data:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("🔴 No Response from Server:", error.request);
+      } else {
+        // Something happened in setting up the request
+        console.error("🔴 Request Setup Error:", error.message);
+      }
     }
   };
 
@@ -75,16 +127,58 @@ const Register = ({ navigation }) => {
             }
           />
         </View>
-        <View className="w-full p-2">
-          <TextInput
-            label="Password"
-            style={{ height: rem(40) }}
-            mode="outlined"
-            value={user.password}
-            onChangeText={(text) =>
-              setUser((prev) => ({ ...prev, password: text }))
-            }
-          />
+        <View className="w-full p-2 flex-row ">
+          <View className="w-1/2 p-2 pl-0 pt-0">
+            <TextInput
+              label="Password"
+              style={{ height: rem(40) }}
+              mode="outlined"
+              value={user.password}
+              onChangeText={(text) =>
+                setUser((prev) => ({ ...prev, password: text }))
+              }
+            />
+          </View>
+          <View className="w-1/2 p-2 pt-0 pr-0">
+            <TextInput
+              label="Confirm Password"
+              style={{ height: rem(40) }}
+              mode="outlined"
+              value={user.password}
+              onChangeText={(text) =>
+                setUser((prev) => ({ ...prev, password: text }))
+              }
+            />
+          </View>
+        </View>
+        <View className="w-full p-2 flex-row ">
+          <View className="w-1/2 p-2 pt-0 pl-0">
+            <TextInput
+              label="Phone"
+              style={{ height: rem(40) }}
+              mode="outlined"
+              value={user.phone}
+              onChangeText={(text) =>
+                setUser((prev) => ({ ...prev, phone: text }))
+              }
+            />
+          </View>
+          <View className="w-1/2 p-2 pt-0 pr-0 justify-center">
+            <Button onPress={sendOTP} mode="contained">
+              Send
+            </Button>
+          </View>
+        </View>
+        <View className="w-full p-2 flex-row ">
+          <View className="w-full p-2 pl-0 pt-0">
+            <TextInput
+              label="OTP"
+              style={{ height: rem(40) }}
+              mode="outlined"
+              value={otp}
+              onChangeText={(text) => setOtp(text)}
+            />
+          </View>
         </View>
         <View className="w-full flex-row p-2">
           <View className="w-1/2 p-2 ">

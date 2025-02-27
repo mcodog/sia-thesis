@@ -1,12 +1,7 @@
 import React from "react";
 import MobileView from "../assets/images/mobile.png";
-import { useSelector } from "react-redux";
 
 const Welcome = () => {
-  const user = useSelector((state) => state.auth);
-
-  console.log(user);
-
   return (
     <div className="absolute top-10 left-0 h-full">
       <section className="w-full px-14 grid grid-cols-2 h-full">
@@ -22,10 +17,10 @@ const Welcome = () => {
               your journey to mental well-being.
             </p>
             <div className="mt-4 flex justify-start items-center gap-4">
-              <button className="p-4 px-8 rounded-lg shadow-xl bg-[#0cdfc6] text-white font-bold">
+              <button className="p-4 px-8 rounded-lg shadow-xl bg-[#0cdfc6] text-white font-bold cursor-pointer">
                 Try Now
               </button>
-              <button className="p-4 px-8 rounded-lg shadow-xl font-bold">
+              <button className="p-4 px-8 rounded-lg shadow-xl font-bold cursor-pointer">
                 Learn More
               </button>
             </div>

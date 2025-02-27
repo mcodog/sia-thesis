@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-eh1za5i=g5mu&!m=z7qug725)*@!tlcp+fp87q=v3(mqybr(vf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101', 'http://localhost:5173']
-
+# ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101', 'http://localhost:5173', '192.168.98.101', '192.168.75.101']
+ALLOWED_HOSTS =['*']
 
 # Application definition
 
@@ -48,10 +48,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
 }
+
+
+TWILIO_ACCOUNT_SID = "AC5fc3ca652498ef1b80d552a22674a1f9"
+TWILIO_AUTH_TOKEN = "e48aa1f2a53b4ead843a11857797eca3"
+TWILIO_VERIFY_SERVICE_SID = "MG3932bf3ca53aad0be3aafd40aa0d43a6"
 
 from datetime import timedelta
 
@@ -73,10 +75,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Allow Vite frontend
-    "http://192.168.1.47:5173",  # Allow LAN access if needed
-]
+CORS_ALLOW_ALL_ORIGINS = True
+CSRF_COOKIE_SECURE = False  # Change to True in production with HTTPS
+CSRF_USE_SESSIONS = False
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",  # Allow Vite frontend
+#     "http://192.168.1.47:5173",  # Allow LAN access if needed
+#     "http://192.168.98.101:5173",  # Allow LAN access if needed
+# ]
 
 ROOT_URLCONF = 'app.urls'
 
