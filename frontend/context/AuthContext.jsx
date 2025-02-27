@@ -9,6 +9,7 @@ import {
   setEmail,
   setFirstName,
   setLastName,
+  setId,
 } from "../redux/userSlice";
 import { useRouter } from "expo-router";
 
@@ -29,9 +30,10 @@ export const AuthProvider = ({ children }) => {
   });
 
   const axiosInstanceWithBearer = axios.create({
-    // baseURL: "http://172.34.99.53:8000",
+    baseURL: "http://192.168.75.101:8000",
+    // baseURL: "http://192.168.1.47:8000",
     // baseURL: "http://192.168.28.101:8000",
-    baseURL: "http://192.168.1.47:8000",
+    // baseURL: "http://192.168.1.47:8000",
     timeout: 20000,
     headers: {
       "Content-Type": "application/json",
@@ -100,6 +102,7 @@ export const AuthProvider = ({ children }) => {
         },
       });
       console.log(response.data);
+      dispatch(setId(response.data.id));
       dispatch(setName(response.data.username));
       dispatch(setEmail(response.data.email));
       dispatch(setFirstName(response.data.first_name));

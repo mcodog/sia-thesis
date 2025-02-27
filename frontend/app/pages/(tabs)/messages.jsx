@@ -20,6 +20,7 @@ import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../context/axiosInstance";
 import Animated, { FadeInLeft } from "react-native-reanimated";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Messages = ({ navigation }) => {
   const { user, axiosInstanceWithBearer } = useAuth();
@@ -64,6 +65,38 @@ const Messages = ({ navigation }) => {
       console.log(e);
     }
   };
+
+  const makeVapiCall = async () => {
+    const url = "https://api.vapi.ai/call";
+    const token = "1d9de362-7090-4849-8b13-5ac3f28c1810";
+    // console.log("ti");
+    const data = {
+      assistantId: "7d9aa9b6-fa45-4b65-9762-ef88ec7f0627",
+      phoneNumberId: "b673124e-0728-44ba-bd29-9092fe62f05a",
+      customer: {
+        number: "+639947088637",
+        name: "Glyza",
+      },
+    };
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error making API call:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   return (
     <PaperProvider theme={theme}>
       {authState.isLoggedIn ? (
@@ -104,7 +137,15 @@ const Messages = ({ navigation }) => {
                 )}
               </View>
             </ScrollView>
-            <View style={{ position: "absolute", bottom: 20, right: 20 }}>
+            <View
+              style={{
+                position: "absolute",
+                bottom: 20,
+                right: 20,
+                flexDirection: "row",
+                gap: 5,
+              }}
+            >
               <FAB
                 icon="plus"
                 label="Create New"
@@ -112,6 +153,7 @@ const Messages = ({ navigation }) => {
                   navigation.navigate("Chat", { isNew: true, chatId: null })
                 }
               />
+              <FAB icon="phone" variant="tertiary" onPress={makeVapiCall} />
             </View>
           </View>
         </TouchableWithoutFeedback>
