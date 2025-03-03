@@ -6,6 +6,8 @@ import NotificationBell from "../(tabs)/NotificationBell";
 import Octicons from "@expo/vector-icons/Octicons";
 
 const LayoutGame = ({ navigation }) => {
+
+  
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -30,33 +32,33 @@ const LayoutGame = ({ navigation }) => {
 
         <View style={styles.supportContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('TakeABreath')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://i.pinimg.com/736x/1c/dd/2f/1cdd2fe0d9e09d886acb186e0facfc20.jpg" }} style={styles.avatar} />
+            <Image source={{ uri: "https://img.freepik.com/free-vector/woman-doing-yoga-park_1308-122857.jpg?semt=ais_hybrid" }} style={styles.avatar} />
             <Text style={styles.buttonText}>1 min Breathing</Text>
           </TouchableOpacity>
           
           <TouchableOpacity onPress={() => navigation.navigate('SleepTracker')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://i.pinimg.com/736x/ee/57/55/ee5755c69e71f88d3007605b8659ff50.jpg" }} style={styles.avatar} />
+            <Image source={{ uri: "https://img.freepik.com/free-vector/sleep-analysis-concept-illustration_114360-1129.jpg" }} style={styles.avatar} />
             <Text style={styles.buttonText}>Sleep Quality</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('MoodTrackerScreen')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://img.freepik.com/free-vector/cute-girl-thinking-pose-logo-banner-hand-drawn-cartoon-art-illustration_56104-1360.jpg" }} style={styles.avatar} />
+            <Image source={{ uri: "https://media.istockphoto.com/id/1304715728/vector/emotions-scale-on-smartphone-screen-mood-concept-tiny-girl-leave-feedback-online-emoji-set.jpg?s=612x612&w=0&k=20&c=aL0usVoe-3cOGY_Opru5f_NJnsLpZLZqqiuqMVkPbK8=" }} style={styles.avatar} />
             <Text style={styles.buttonText}>Mood Track</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('ClipCardGame')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb7qpZ0aWG6FuhoJaqeugsic3J8a4noUM0Hw&s" }} style={styles.avatar} />
-            <Text style={styles.buttonText}>ClipCardGame</Text>
+            <Image source={require("../../../assets/images/flipcard.jpg")} style={styles.avatar} />
+            <Text style={styles.buttonText}>FlipCardGame</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Diary')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://i.pinimg.com/474x/60/68/68/6068681ca5aacacf8010e41bf87e9ec2.jpg" }} style={styles.avatar} />
-            <Text style={styles.buttonText}>Diary</Text>
+            <Image source={{ uri: "https://thumbs.dreamstime.com/b/glass-jar-filled-strips-paper-each-one-containing-handwritten-message-buried-beneath-tree-waiting-to-be-unearthed-322199911.jpg" }} style={styles.avatar} />
+            <Text style={styles.buttonText}>Diary Jar</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.tipsContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('WeeklyWellnessReport')} style={styles.buttonContainer}>
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate('WeeklyWellnessReport')} style={styles.report}>
             <Image source={{ uri: "https://cdn.prod.website-files.com/59e16042ec229e00016d3a66/613158262dde4943a51937aa_data%20visualization%20tips_blog%20hero.webp" }} style={styles.reports} />
             <Text style={styles.buttonText}>Report</Text>
           </TouchableOpacity>
@@ -130,19 +132,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
   },
+  report: {
+   
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    marginBottom: 20,
+  },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 10,
   },
   reports: {
-    width: 250,
-    height: 90,
+    width: 340,
+    height: 150,
     borderRadius: 10,
+    marginTop: -15,
   },
   buttonText: {
     textAlign: "center",
     marginTop: 10,
+    
   },
   tipsContainer: {
     backgroundColor: "#ddd",

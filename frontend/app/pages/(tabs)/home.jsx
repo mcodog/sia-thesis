@@ -318,7 +318,6 @@ const styles = StyleSheet.create({
     borderRadius: 15, // Rounded corners for a cute look 🎀
     overflow: "hidden",
     marginVertical: 8,
-    width: 344, // Smaller width 📏
     height: 80, // Smaller height 📐
     shadowColor: "#000",
     shadowOpacity: 0.1,

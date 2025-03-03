@@ -9,7 +9,7 @@ const images = [
   require("../../../assets/images/resources/PATHFINDER/4.png"),
 ];
 
-export default function slider3() {
+export default function Slider3() {
   const [index, setIndex] = useState(0);
   const navigation = useNavigation();
 

@@ -12,7 +12,7 @@ const Resources = () => {
   const resources = [
     { 
       id: 1, 
-      category: "Health", 
+      category: "Family", 
       title: "Take Care of Your Mind", 
       image: "https://lafayettefamilyymca.org/wp-content/uploads/2022/01/155210504_m.jpg", 
       navigateTo: "MentalHealth" 
@@ -22,21 +22,21 @@ const Resources = () => {
       category: "Health", 
       title: "Healthy mind, healthy life", 
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC6PUWWn6900b4PQZjIhmWcOi8HpfhnxLBiw&s", 
-      navigateTo: "slider2" 
+      navigateTo: "Slider2" 
     },
     { 
       id: 3, 
       category: "Professional", 
       title: "PATHFINDER", 
       image: "https://media.istockphoto.com/id/1383880527/vector/psychologist-counseling-a-sad-african-young-woman.jpg?s=612x612&w=0&k=20&c=d4j_RyvvfxrB3B4L0rOgF747htnfTxBD-PDLF0agopI=", 
-      navigateTo: "slider3" 
+      navigateTo: "Slider3" 
     },
     { 
       id: 4, 
       category: "Academic", 
       title: "Education saves lives by breaking the silence and building hope.", 
       image: "https://img.freepik.com/premium-photo/globe-world-education-logo-children-save-school-taking-care-hands-books-kids-icon_1029469-88679.jpg", 
-      navigateTo: "slider4" 
+      navigateTo: "Slider4" 
     },
   ];
 

@@ -30,9 +30,9 @@ import { AuthProvider } from "../context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import MentalHealthSlider from "./pages/resources/MentalHealthSlider";
-import slider2 from "./pages/resources/slider2";
-import slider3 from "./pages/resources/slider3";
-import slider4 from "./pages/resources/slider4";
+import Slider2 from "./pages/resources/Slider2";
+import Slider3 from "./pages/resources/Slider3";
+import Slider4 from "./pages/resources/Slider4";
 import Resources from "./pages/resources/Resources";
 const index = () => {
   const [fontsLoaded] = useFonts({
@@ -73,10 +73,11 @@ const AuthStack = () => {
       <Stack.Screen name="Diary" component={Diary} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} /> 
       <Stack.Screen name="MentalHealth" component={MentalHealthSlider} />
-      <Stack.Screen name="slider2" component={slider2} />
-      <Stack.Screen name="slider3" component={slider3} />
-      <Stack.Screen name="slider4" component={slider4} />
+      <Stack.Screen name="Slider2" component={Slider2} />
+      <Stack.Screen name="Slider3" component={Slider3} />
+      <Stack.Screen name="Slider4" component={Slider4} />
       <Stack.Screen name="Resources" component={Resources} />
+      
       <Stack.Screen
         name="Quiz"
         component={Quiz}

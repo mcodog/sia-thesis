@@ -9,7 +9,7 @@ const images = [
     require("../../../assets/images/resources/Education saves lives/4.png"),
 ];
 
-export default function slider4() {
+export default function Slider4() {
   const [index, setIndex] = useState(0);
   const navigation = useNavigation();
 

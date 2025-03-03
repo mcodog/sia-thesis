@@ -1,211 +1,167 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { format, differenceInSeconds } from "date-fns";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { DataTable } from "react-native-paper";
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import DatePicker from 'react-native-modern-datepicker';
+import { getToday } from 'react-native-modern-datepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SleepTracker = () => {
-  const navigation = useNavigation();
-  const [sleepStart, setSleepStart] = useState(null);
-  const [sleepDuration, setSleepDuration] = useState({ hours: 0, minutes: 0 });
-  const [wakeUpTime, setWakeUpTime] = useState(null);
-  const [isSleeping, setIsSleeping] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(0);
-  const [sleepHistory, setSleepHistory] = useState([]);
+const generateHourOptions = () => Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+const generateMinuteOptions = () => ['00', '15', '30', '45'];
 
-  useEffect(() => {
-    const loadSleepData = async () => {
-      const savedSleepStart = await AsyncStorage.getItem("sleepStart");
-      const savedDuration = await AsyncStorage.getItem("sleepDuration");
-      const savedHistory = await AsyncStorage.getItem("sleepHistory");
+const SleepTracker = ({ onUpdateReport }) => {
+    const today = getToday();
+    const [selectedDate, setSelectedDate] = useState(today);
+    const [sleepHour, setSleepHour] = useState('10');
+    const [sleepMinute, setSleepMinute] = useState('00');
+    const [sleepPeriod, setSleepPeriod] = useState('PM');
+    const [wakeHour, setWakeHour] = useState('06');
+    const [wakeMinute, setWakeMinute] = useState('00');
+    const [wakePeriod, setWakePeriod] = useState('AM');
+    const [sleepData, setsleepData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-      if (savedHistory) {
-        setSleepHistory(JSON.parse(savedHistory));
-      }
+    useEffect(() => {
+        loadsleepData().then(() => setLoading(false));
+    }, []);
 
-      if (savedSleepStart && savedDuration) {
-        const parsedStart = new Date(savedSleepStart);
-        const parsedDuration = JSON.parse(savedDuration);
-        const calculatedWakeUp = new Date(parsedStart);
-        calculatedWakeUp.setHours(parsedStart.getHours() + parsedDuration.hours);
-        calculatedWakeUp.setMinutes(parsedStart.getMinutes() + parsedDuration.minutes);
-
-        setSleepStart(parsedStart.toISOString());
-        setSleepDuration(parsedDuration);
-        setWakeUpTime(calculatedWakeUp);
-        setIsSleeping(true);
-      }
-    };
-    loadSleepData();
-  }, []);
-
-  useEffect(() => {
-    if (wakeUpTime && isSleeping) {
-      const updateRemainingTime = () => {
-        const remaining = differenceInSeconds(wakeUpTime, new Date());
-        setRemainingTime(remaining > 0 ? remaining : 0);
-        if (remaining <= 0) stopSleep();
-      };
-      updateRemainingTime();
-      const interval = setInterval(updateRemainingTime, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [wakeUpTime, isSleeping]);
-
-  const startSleep = async () => {
-    if (isSleeping) {
-      Alert.alert("Sleep in Progress", "You are already tracking sleep.");
-      return;
-    }
-    if (sleepDuration.hours === 0 && sleepDuration.minutes === 0) {
-      Alert.alert("Error", "Please set a sleep duration before starting.");
-      return;
-    }
-
-    const startTime = new Date();
-    const wakeUp = new Date(startTime);
-    wakeUp.setHours(startTime.getHours() + sleepDuration.hours);
-    wakeUp.setMinutes(startTime.getMinutes() + sleepDuration.minutes);
-
-    setSleepStart(startTime.toISOString());
-    setWakeUpTime(wakeUp);
-    setIsSleeping(true);
-
-    await AsyncStorage.setItem("sleepStart", startTime.toISOString());
-    await AsyncStorage.setItem("sleepDuration", JSON.stringify(sleepDuration));
-    await AsyncStorage.setItem("notification", "Sleep tracking started! ⏳");
-
-    Alert.alert("Sleep Tracking Started", `You will wake up at ${format(wakeUp, "p")}`);
-  };
-
-  const stopSleep = async () => {
-    if (!sleepStart || !wakeUpTime) return;
-
-    const newEntry = {
-      date: format(new Date(sleepStart), "yyyy-MM-dd"),
-      startTime: format(new Date(sleepStart), "p"),
-      wakeUpTime: format(new Date(wakeUpTime), "p"),
-      duration: `${sleepDuration.hours}h ${sleepDuration.minutes}m`,
+    const calculateDuration = () => {
+        const parseTime = (hour, minute, period) => {
+            let h = parseInt(hour, 10);
+            let m = parseInt(minute, 10);
+            if (period === 'PM' && h !== 12) h += 12;
+            if (period === 'AM' && h === 12) h = 0;
+            return h * 60 + m;
+        };
+        let sleepMinutes = parseTime(sleepHour, sleepMinute, sleepPeriod);
+        let wakeMinutes = parseTime(wakeHour, wakeMinute, wakePeriod);
+        if (wakeMinutes < sleepMinutes) wakeMinutes += 24 * 60;
+        const durationMinutes = wakeMinutes - sleepMinutes;
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        return `${hours}h ${minutes}m`;
     };
 
-    const updatedHistory = [newEntry, ...sleepHistory];
-    setSleepHistory(updatedHistory);
-    await AsyncStorage.setItem("sleepHistory", JSON.stringify(updatedHistory));
+    const saveSleepData = async () => {
+        const newEntry = {
+            id: Date.now(),
+            date: selectedDate,
+            sleepTime: `${sleepHour}:${sleepMinute} ${sleepPeriod}`,
+            wakeTime: `${wakeHour}:${wakeMinute} ${wakePeriod}`,
+            duration: calculateDuration(),
+        };
+    
+        try {
+            const existingEntryIndex = sleepData.findIndex(entry => entry.date === selectedDate);
+            let updatedHistory = [...sleepData];
+            if (existingEntryIndex !== -1) {
+                updatedHistory[existingEntryIndex] = newEntry;
+            } else {
+                updatedHistory = [newEntry, ...sleepData]; 
+            }
+    
+            // Sort by date in descending order (latest first)
+           
+    
+            setsleepData(updatedHistory);
+            await AsyncStorage.setItem('sleepData', JSON.stringify(updatedHistory));
+            console.log("Saved Sleep Data:", JSON.stringify(updatedHistory, null, 2)); // Debug log
+            if (onUpdateReport) onUpdateReport(updatedHistory);
+        } catch (error) {
+            console.error("Error saving sleep history:", error);
+        }
+    };
+    
 
-    setSleepStart(null);
-    setWakeUpTime(null);
-    setIsSleeping(false);
+    const loadsleepData = async () => {
+        try {
+            const storedHistory = await AsyncStorage.getItem("sleepData");
+            console.log("Loaded Sleep Data:", storedHistory); // Debug log
+            if (storedHistory) {
+                const parsedHistory = JSON.parse(storedHistory);
+                // Sort by date in descending order (latest first)
+                parsedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+                setsleepData(parsedHistory);
+            }
+        } catch (error) {
+            console.error("Error loading sleep history:", error);
+        }
+    };
+    
 
-    await AsyncStorage.removeItem("sleepStart");
-    await AsyncStorage.removeItem("sleepDuration");
-    await AsyncStorage.setItem("notification", "Sleep duration is finished! Click to stop the alarm.");
+    const deleteEntry = async (id) => {
+        const updatedHistory = sleepData.filter(entry => entry.id !== id);
+        setsleepData(updatedHistory);
+        await AsyncStorage.setItem('sleepData', JSON.stringify(updatedHistory));
+        if (onUpdateReport) onUpdateReport(updatedHistory);
+    };
 
-    Alert.alert("Sleep Tracking Stopped", "Time to wake up! ☀️");
-  };
+    return (
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Sleep Tracker</Text>
+            <DatePicker 
+                mode="calendar" 
+                current={selectedDate} 
+                onDateChange={(date) => setSelectedDate(date)} 
+                selected={today}  // Highlights today with a default circle
+                options={{
+                    selectedTextColor: "#fff",  // Text color inside the circle
+                    selectedBackgroundColor: "#388E3C", // Green circle
+                }}
+/>
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <AntDesign name="arrowleft" size={24} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Sleep Tracker</Text>
+            
+            <Text style={styles.text}>Sleep Time:</Text>
+            <View style={styles.pickerContainer}>
+                <Picker selectedValue={sleepHour} onValueChange={setSleepHour} style={styles.picker}>{generateHourOptions().map(hour => <Picker.Item key={hour} label={hour} value={hour} />)}</Picker>
+                <Picker selectedValue={sleepMinute} onValueChange={setSleepMinute} style={styles.picker}>{generateMinuteOptions().map(minute => <Picker.Item key={minute} label={minute} value={minute} />)}</Picker>
+                <Picker selectedValue={sleepPeriod} onValueChange={setSleepPeriod} style={styles.picker}><Picker.Item label="AM" value="AM" /><Picker.Item label="PM" value="PM" /></Picker>
+            </View>
 
-      {isSleeping ? (
-        <Text style={styles.timerText}>Remaining Time: {remainingTime}s</Text>
-      ) : (
-        <>
-          <Text style={styles.label}>Set Sleep Duration:</Text>
-          <View style={styles.pickerContainer}>
-          <Text>Hours</Text>
-            <Picker
-              selectedValue={sleepDuration.hours}
-              style={styles.picker}
-              onValueChange={(value) => setSleepDuration({ ...sleepDuration, hours: value })}
-            >
-              {[...Array(12).keys()].map((hour) => (
-                <Picker.Item key={hour} label={`${hour} hr`} value={hour} />
-              ))}
-            </Picker>
-            <Text>Minutes</Text>
-            <Picker
-              selectedValue={sleepDuration.minutes}
-              style={styles.picker}
-              onValueChange={(value) => setSleepDuration({ ...sleepDuration, minutes: value })}
-            >
-              {[0, 5, 10, 15, 30, 45].map((minute) => (
-                <Picker.Item key={minute} label={`${minute} min`} value={minute} />
-              ))}
-            </Picker>
-          </View>
-          <Button title="Start Sleep" onPress={startSleep} disabled={isSleeping} color="#4CAF50" />
-        </>
-      )}
+            <Text style={styles.text}>Wake Time:</Text>
+            <View style={styles.pickerContainer}>
+                <Picker selectedValue={wakeHour} onValueChange={setWakeHour} style={styles.picker}>{generateHourOptions().map(hour => <Picker.Item key={hour} label={hour} value={hour} />)}</Picker>
+                <Picker selectedValue={wakeMinute} onValueChange={setWakeMinute} style={styles.picker}>{generateMinuteOptions().map(minute => <Picker.Item key={minute} label={minute} value={minute} />)}</Picker>
+                <Picker selectedValue={wakePeriod} onValueChange={setWakePeriod} style={styles.picker}><Picker.Item label="AM" value="AM" /><Picker.Item label="PM" value="PM" /></Picker>
+            </View>
 
-<Text style={styles.historyTitle}>Sleep History</Text>
-      <ScrollView horizontal>
-        <DataTable style={styles.dataTable}>
-          <DataTable.Header style={styles.dataTableHeader}>
-            <DataTable.Title textStyle={styles.headerText}>Full Date</DataTable.Title>
-            <DataTable.Title textStyle={styles.headerText}>                             Start</DataTable.Title>
-            <DataTable.Title textStyle={styles.headerText}>             Wake Up</DataTable.Title>
-            <DataTable.Title textStyle={styles.headerText}>     Duration</DataTable.Title>
-          </DataTable.Header>
-          {sleepHistory.map((entry, index) => (
-            <DataTable.Row key={index} style={[styles.dataTableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-              <DataTable.Cell textStyle={styles.cellText}> {format(new Date(entry.date), "PPP")} </DataTable.Cell>
-              <DataTable.Cell textStyle={styles.cellText}> {entry.startTime} </DataTable.Cell>
-              <DataTable.Cell textStyle={styles.cellText}> {entry.wakeUpTime} </DataTable.Cell>
-              <DataTable.Cell textStyle={styles.cellText}> {entry.duration} </DataTable.Cell>
-            </DataTable.Row>
-          ))}
-        </DataTable>
-      </ScrollView>
-    </View>
-  );
+            <Text style={styles.text}>Sleep Duration: {calculateDuration()}</Text>
+            <Button title="Save Sleep Data" onPress={saveSleepData} color="#66BB6A" />
+            
+            <Text style={styles.historyTitle}>Sleep History</Text>
+                
+            {loading ? <Text>Loading...</Text> : (
+                <ScrollView style={styles.table} nestedScrollEnabled>
+                    {sleepData
+                       .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort before rendering
+                        .map((entry) => (
+                            <View key={entry.id} style={styles.row}>
+                                <Text style={styles.cell}>{entry.date}</Text>
+                                <Text style={styles.cell}>{entry.sleepTime}</Text>
+                                <Text style={styles.cell}>{entry.wakeTime}</Text>
+                                <Text style={styles.cell}>{entry.duration}</Text>
+                                <TouchableOpacity onPress={() => deleteEntry(entry.id)} style={styles.deleteButton}>
+                                    <Text style={styles.deleteText}>X</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                </ScrollView>
+)}
+
+        </ScrollView>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#E8F5E9" },
-  backButton: { position: "absolute", top: 10, left: 10 },
-  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20, color: "#2E7D32" },
-  pickerContainer: { 
-    flexDirection: "row", 
-    justifyContent: "space-between",
-    marginBottom: 10, 
-    backgroundColor: "#C8E6C9", // Softer green background
-    padding: 5, 
-    borderRadius: 10,
-    
-  },
-  picker: { 
-    width: 120, 
-    color: "#1B5E20" // Deep green text
-  },
-  timerText: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    marginVertical: 10, 
-    color: "#388E3C" // Medium green text
-  },
-  button: { 
-    backgroundColor: "#66BB6A", // Lighter green button
-    padding: 10, 
-    borderRadius: 8, 
-    alignItems: "center", 
-    marginVertical: 10
-  },
-  historyTitle: { fontSize: 18, fontWeight: "bold", marginTop: 20, color: "#388E3C" },
-  dataTable: { backgroundColor: "#C8E6C9", borderRadius: 10, padding: 10 },
-  dataTableHeader: { backgroundColor: "#A5D6A7", borderTopLeftRadius: 10, borderTopRightRadius: 10 },
-  dataTableRow: { borderBottomWidth: 1, borderBottomColor: "#C8E6C9" },
-  evenRow: { backgroundColor: "#E8F5E9" },
-  oddRow: { backgroundColor: "#C8E6C9" },
-  headerText: { fontWeight: "bold", color: "#1B5E20" },
-  cellText: { fontSize: 14, color: "#2E7D32" }
+    container: { flex: 1, backgroundColor: '#E0F7FA', padding: 20 },
+    title: { fontSize: 26, fontWeight: 'bold', color: '#388E3C', textAlign: 'center', marginBottom: 20 },
+    text: { fontSize: 18, fontWeight: '500', color: '#2E7D32', marginBottom: 5 },
+    pickerContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+    picker: { flex: 1, backgroundColor: '#A5D6A7', borderRadius: 10, marginHorizontal: 1 },
+    table: { marginTop: 10, borderWidth: 1, borderColor: '#66BB6A' },
+    row: { flexDirection: 'row', borderBottomWidth: 1, borderColor: '#A5D6A7', padding: 5 },
+    cell: { flex: 1, textAlign: 'center', fontSize: 15, color: '#1B5E20' },
+    deleteButton: { padding: 5 },
+    deleteText: { color: 'red', fontWeight: 'bold' },
 });
 
 export default SleepTracker;

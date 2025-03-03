@@ -9,7 +9,7 @@ const images = [
   require("../../../assets/images/resources/Healthy mind, healthy life/4.png"),
 ];
 
-export default function slider2() {
+export default function Slider2() {
   const [index, setIndex] = useState(0);
   const navigation = useNavigation();
 
