@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   jarImage: {
-    width: "100%",
-    height: "100%",
+    width: 600,
+    height: 300,
     resizeMode: "contain",
   },
   entriesOverlay: {
@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   entryIcon: {
-    fontSize: 20,
+    fontSize: 15,
     margin: 5,
-    marginLeft: 45,
+    marginLeft: 25,
   },
   input: {
     height: 100,

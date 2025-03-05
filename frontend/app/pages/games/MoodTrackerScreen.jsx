@@ -10,7 +10,7 @@ const moods = [
   { animation: require("../../../assets/images/animations/anxious.json"), mood: "Anxious" },
   { animation: require("../../../assets/images/animations/tired.json"), mood: "Tired" },
   { animation: require("../../../assets/images/animations/relax.json"), mood: "Relaxed" },
-  { animation: require("../../../assets/images/animations/content.json"), mood: "Content" }
+  { animation: require("../../../assets/images/animations/content.json"), mood: "Calm" }
 ];
 
 const MoodTrackerScreen = () => {

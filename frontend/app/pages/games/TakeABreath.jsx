@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, Animated, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, Animated, View, TouchableOpacity, FlatList  } from 'react-native';
 import { Audio } from 'expo-av';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 
 // Import local audio files
 import getReadyAudio from '../../../assets/audio/breath/get-ready-in.mp3';
+import getReadyTagalogAudio from '../../../assets/audio/breath/humandakasabilang.mp3';
 import countdown3 from '../../../assets/audio/breath/countdown3.mp3';
 import countdown2 from '../../../assets/audio/breath/countdown2.mp3';
 import countdown1 from '../../../assets/audio/breath/countdown1.mp3';
+import countdown3tag from '../../../assets/audio/breath/countdown3tagalog.mp3';
+import countdown2tag from '../../../assets/audio/breath/countdown2tagalog.mp3';
+import countdown1tag from '../../../assets/audio/breath/countdown1tagalog.mp3';
 import inhaleAudio from '../../../assets/audio/breath/inhale.mp3';
 import exhaleAudio from '../../../assets/audio/breath/exhale.mp3';
+import holdAudio from '../../../assets/audio/breath/hold.mp3';
+import holdAudiotag from '../../../assets/audio/breath/Pigil.mp3';
+import tagalogExhaleAudio from '../../../assets/audio/breath/huminganangpalabas.mp3';
+import tagalogInhaleAudio from '../../../assets/audio/breath/huminga.mp3';
 
 const TakeABreath = () => {
   const [breathingStage, setBreathingStage] = useState(0);
   const [breathAnimation] = useState(new Animated.Value(1));
   const [isBreathing, setIsBreathing] = useState(false);
-  const [cycleCount, setCycleCount] = useState(0);
   const [repeatCount, setRepeatCount] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [history, setHistory] = useState([]);
+  const settingsConfig = useSelector((state) => state.settings.settings);
 
   useEffect(() => {
     loadHistory();
@@ -31,9 +40,9 @@ const TakeABreath = () => {
     if (!isBreathing || countdown > 0) return;
 
     let timing = 0;
-
+    
     if (breathingStage === 0) {
-      playAudio(inhaleAudio);
+      playAudio(inhaleAudio, tagalogInhaleAudio);
       Animated.timing(breathAnimation, {
         toValue: 1.5,
         duration: 6000,
@@ -41,9 +50,10 @@ const TakeABreath = () => {
       }).start();
       timing = 6000;
     } else if (breathingStage === 1) {
+      playAudio(holdAudio, holdAudiotag);
       timing = 7000;
     } else if (breathingStage === 2) {
-      playAudio(exhaleAudio);
+      playAudio(exhaleAudio, tagalogExhaleAudio);
       Animated.timing(breathAnimation, {
         toValue: 1,
         duration: 8000,
@@ -69,11 +79,12 @@ const TakeABreath = () => {
     }, timing);
 
     return () => clearTimeout(timer);
-  }, [breathingStage, isBreathing, countdown, repeatCount]);
+  }, [breathingStage, isBreathing, countdown, repeatCount, settingsConfig.language]);
 
-  const playAudio = async (audioFile) => {
+  const playAudio = async (audioFile, tagalogAudioFile) => {
     try {
-      const { sound } = await Audio.Sound.createAsync(audioFile);
+      const selectedAudio = settingsConfig.language === 'Tagalog' ? tagalogAudioFile : audioFile;
+      const { sound } = await Audio.Sound.createAsync(selectedAudio);
       await sound.playAsync();
       sound.setOnPlaybackStatusUpdate(async (status) => {
         if (status.didJustFinish) {
@@ -89,7 +100,7 @@ const TakeABreath = () => {
     const now = new Date();
     const date = now.toLocaleDateString();
     const time = now.toLocaleTimeString();
-    const newHistory = [...history, { session: history.length + 1, date, time }, ...history];
+    const newHistory = [{ session: history.length + 1, date, time }, ...history];
 
     setHistory(newHistory);
     await AsyncStorage.setItem('breathingHistory', JSON.stringify(newHistory));
@@ -106,21 +117,21 @@ const TakeABreath = () => {
     setIsBreathing(true);
     setBreathingStage(0);
     setCountdown(3);
-
-    await playAudio(getReadyAudio);
+    
+    await playAudio(getReadyAudio, getReadyTagalogAudio);
     setTimeout(async () => {
       setCountdown(3);
-      await playAudio(countdown3);
+      await playAudio(countdown3, countdown3tag);
     }, 1000);
 
     setTimeout(async () => {
       setCountdown(2);
-      await playAudio(countdown2);
+      await playAudio(countdown2, countdown2tag);
     }, 2000);
 
     setTimeout(async () => {
       setCountdown(1);
-      await playAudio(countdown1);
+      await playAudio(countdown1, countdown1tag);
     }, 3000);
 
     setTimeout(() => {
@@ -153,30 +164,27 @@ const TakeABreath = () => {
         <Text style={styles.historyTitle}>Breathing History</Text>
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
-            <Text style={styles.tableHeaderText}>Session #</Text>
+          
             <Text style={styles.tableHeaderText}>Date</Text>
             <Text style={styles.tableHeaderText}>Time</Text>
           </View>
-          <ScrollView style={styles.tableBody} nestedScrollEnabled>
-            {history.length === 0 ? (
-              <View style={styles.emptyRow}>
-                <Text style={styles.emptyText}>No history yet</Text>
-              </View>
-            ) : (
-              history.map((entry, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <Text style={styles.tableCell}>{entry.session}</Text>
-                  <Text style={styles.tableCell}>{entry.date}</Text>
-                  <Text style={styles.tableCell}>{entry.time}</Text>
-                </View>
-              ))
-            )}
-          </ScrollView>
+          <FlatList
+  data={history}
+  keyExtractor={(item, index) => index.toString()}
+  ListEmptyComponent={<Text style={styles.emptyText}>No history yet</Text>}
+  renderItem={({ item }) => (
+    <View style={styles.tableRow}>
+      <Text style={styles.tableCell}>{item.date}</Text>
+      <Text style={styles.tableCell}>{item.time}</Text>
+    </View>
+  )}
+/>
         </View>
       </View>
     </LinearGradient>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

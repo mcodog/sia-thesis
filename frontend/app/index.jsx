@@ -34,6 +34,8 @@ import Slider2 from "./pages/resources/Slider2";
 import Slider3 from "./pages/resources/Slider3";
 import Slider4 from "./pages/resources/Slider4";
 import Resources from "./pages/resources/Resources";
+import Fallinggame from "./pages/games/Fallinggame";
+
 const index = () => {
   const [fontsLoaded] = useFonts({
     Primary: require("../assets/fonts/GlacialIndifference-Regular.otf"),
@@ -77,6 +79,7 @@ const AuthStack = () => {
       <Stack.Screen name="Slider3" component={Slider3} />
       <Stack.Screen name="Slider4" component={Slider4} />
       <Stack.Screen name="Resources" component={Resources} />
+      <Stack.Screen name="Fallinggame" component={Fallinggame} />
       
       <Stack.Screen
         name="Quiz"

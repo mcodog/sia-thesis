@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Linking } from "react-native";
 import { rem } from "../../../components/stylings/responsiveSize";
 import logo from "../../../assets/images/logo.png";
 import NotificationBell from "../(tabs)/NotificationBell";
@@ -7,6 +7,9 @@ import Octicons from "@expo/vector-icons/Octicons";
 
 const LayoutGame = ({ navigation }) => {
 
+  const copyToClipboard = (number) => {
+    Linking.openURL(`tel:${number}`);
+  };
   
   return (
     <View style={styles.container}>
@@ -51,6 +54,11 @@ const LayoutGame = ({ navigation }) => {
             <Text style={styles.buttonText}>FlipCardGame</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={() => navigation.navigate('Fallinggame')} style={styles.buttonContainer}>
+            <Image source={{ uri: "https://img.freepik.com/premium-photo/cute-cat-hold-full-love-basket_1298798-2327.jpg"}} style={styles.avatar} />
+            <Text style={styles.buttonText}>Catch It!</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={() => navigation.navigate('Diary')} style={styles.buttonContainer}>
             <Image source={{ uri: "https://thumbs.dreamstime.com/b/glass-jar-filled-strips-paper-each-one-containing-handwritten-message-buried-beneath-tree-waiting-to-be-unearthed-322199911.jpg" }} style={styles.avatar} />
             <Text style={styles.buttonText}>Diary Jar</Text>
@@ -72,6 +80,24 @@ const LayoutGame = ({ navigation }) => {
           <Text>- Rub an ice cube on your skin.</Text>
           <Text>- Carry essential oil, a stress ball, or mint gum.</Text>
         </View>
+
+        <View style={styles.tipsContainer}>
+          <Text style={styles.tipsTitle}>🧘‍♂️ Mindfulness Tips</Text>
+          <Text>- Focus on your breathing for a few minutes.</Text>
+          <Text>- Practice gratitude by listing three things you're thankful for.</Text>
+          <Text>- Take a short walk and observe your surroundings mindfully.</Text>
+        </View>
+
+        <View style={styles.hotlineContainer}>
+          <Text style={styles.tipsTitle}>📞 Mental Health Hotline</Text>
+          <Text>If you need urgent support, please reach out to:</Text>
+          <TouchableOpacity onPress={() => copyToClipboard("1553")}>
+            <Text style={[styles.hotlineNumber, styles.underline]}>📍 National Mental Health Crisis Hotline: 1553</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => copyToClipboard("09178998727")}>
+            <Text style={[styles.hotlineNumber, styles.underline]}>📍 Local Support: 0917-899-8727</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
@@ -80,6 +106,32 @@ const LayoutGame = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#f8f8e8",
+  },
+  hotlineNumber: {
+    color: "blue",
+  },
+  tipsTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  hotlineContainer: {
+    backgroundColor: "#ffebeb",
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    marginBottom: 20,
+  },
+  hotlineContainer: {
+    backgroundColor: "#ffebeb",
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    marginBottom: 20,
   },
   scrollContent: {
     flexGrow: 1,

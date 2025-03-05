@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LineChart, PieChart } from 'react-native-chart-kit';
+import { LineChart, PieChart, BarChart  } from 'react-native-chart-kit';
 import { format, parseISO } from 'date-fns';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from 'expo-router';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -15,10 +16,13 @@ const WeeklyWellnessReport = () => {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [chartData, setChartData] = useState({ labels: [], data: [] });
   const [sleepAnalysis, setSleepAnalysis] = useState("");
+  const [breathingData, setBreathingData] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     loadSleepData();
     loadMoodData();
+    loadBreathingHistory();
   }, []);
 
   const loadSleepData = async () => {
@@ -32,10 +36,14 @@ const WeeklyWellnessReport = () => {
     }
 };
 
+console.log("Sleep Data:", sleepData);
+
 const dataPoints = sleepData.map(entry => {
+  if (!entry.duration) return 0; // Default to 0 if duration is missing
   const [hours, minutes] = entry.duration.split('h ').map(num => parseInt(num, 10) || 0);
-  return hours + minutes / 60; // Convert duration to decimal hours
+  return hours + minutes / 60;
 });
+
 
   const loadMoodData = async () => {
     const moodData = await AsyncStorage.getItem('moodHistory');
@@ -90,7 +98,7 @@ const dataPoints = sleepData.map(entry => {
   const handleDataPointClick = ({ index }) => {
     const entry = sleepData[index];
     setSelectedEntry(entry);
-    Alert.alert("Sleep Details", `Date: ${entry.date}\nSleep Time: ${entry.sleepTime}\nWake Time: ${entry.wakeTime}\nDuration: ${entry.duration} \n${getSleepMessage(parseFloat(entry.duration))} \n"Rest is the best investment for a productive tomorrow!"`);
+    Alert.alert("Sleep Details", `Date: ${entry.date}\nSleep Time: ${entry.sleepTime}\nWake Time: ${entry.wakeTime}\nDuration: ${entry.duration} \n${getSleepMessage(parseFloat(entry.duration) || 0)} \n"Rest is the best investment for a productive tomorrow!"`);
 };
 
   const pieData = Object.keys(moodCounts).map((key, index) => ({
@@ -100,6 +108,43 @@ const dataPoints = sleepData.map(entry => {
     legendFontColor: '#000',
     legendFontSize: 14,
   }));
+
+  const loadBreathingHistory = async () => {
+    try {
+      const savedHistory = await AsyncStorage.getItem('breathingHistory');
+      if (savedHistory) {
+        const parsedHistory = JSON.parse(savedHistory);
+        const groupedData = groupByDay(parsedHistory);
+        setBreathingData(groupedData);
+      }
+    } catch (error) {
+      console.error('Error loading breathing history:', error);
+    }
+  };
+
+  const groupByDay = (history) => {
+    const grouped = {};
+    history.forEach((entry) => {
+      const date = entry.date;
+      grouped[date] = (grouped[date] || 0) + 1;
+    });
+    return grouped;
+  };
+
+  const chartDatas = {
+    labels: Object.keys(breathingData),
+    datasets: [{ data: Object.values(breathingData) }],
+  };
+
+  const interpretBreathingData = (count) => {
+    if (count === 0) 
+      return "Mababang relaxation activity. Maaring hindi mo pa nakasanayan o hindi mo pa kailangan mag-relax ngayon.";
+    if (count >= 1 && count <= 4) 
+      return "Moderate stress management. Ginagamit mo ito bilang paraan para kumalma sa ilang stressful moments.";
+    if (count >= 5 && count <= 7) 
+      return "High stress o intentional relaxation. Marahil ay mataas ang stress level mo o ginagawa mo ito bilang habit.";
+    return "Possible anxiety o extreme relaxation practice. Kung sobra-sobra ito, baka kailangan mong tingnan ang iyong stress levels.";
+  };
 
   return (
     <ScrollView>
@@ -166,6 +211,36 @@ const dataPoints = sleepData.map(entry => {
               )}
             </ScrollView>
             <Text style={{ textAlign: 'center', marginTop: 10, fontWeight: 'bold' }}>{analyzeSleepTrend()}</Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Breathing Sessions Per </Text>
+            <ScrollView horizontal>
+                {Object.keys(breathingData).length > 0 ? (
+                  <BarChart
+                    data={chartDatas}
+                    width={Dimensions.get('window').width - 40}
+                    height={300}
+                    yAxisLabel=""
+                    chartConfig={{
+                      backgroundColor: '#ffffff',
+                      backgroundGradientFrom: '#e3f2fd',
+                      backgroundGradientTo: '#90caf9',
+                      decimalPlaces: 0,
+                      color: (opacity = 1) => `rgba(30, 136, 229, ${opacity})`,
+                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    }}
+                    style={styles.chart}
+                  />
+                ) : (
+                  <Text style={styles.noDataText}>No breathing data available.</Text>
+                )}
+            </ScrollView>
+            <Text style={{ textAlign: 'center', marginTop: 10, fontWeight: 'bold' }}>
+                {chartDatas.datasets[0].data.length > 0
+                  ? interpretBreathingData(Math.max(...chartDatas.datasets[0].data))
+                  : "Wala pang sapat na datos para sa analysis."}
+            </Text>
           </View>
         </ScrollView>
       </View>  
