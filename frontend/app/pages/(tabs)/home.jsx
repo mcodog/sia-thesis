@@ -37,6 +37,9 @@ import Feather from "@expo/vector-icons/Feather";
 import PostTile from "../../../components/tiles/PostTile";
 import { useAuth } from "../../../context/AuthContext";
 import SoundButton from "../../../components/SoundButton";
+import Octicons from "@expo/vector-icons/Octicons";
+
+import NotificationBell from "./NotificationBell";
 
 import { useSelector } from "react-redux";
 
@@ -77,9 +80,11 @@ const Home = ({ navigation }) => {
                   }}
                 />
               </View>
-              <View className="w-1/2 justify-end flex-row items-center p-1 gap-5">
-                <AntDesign name="bells" size={20} color="black" />
-                <Feather name="info" size={20} color="black" />
+              <View style={{ width: "50%", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", padding: 5, gap: 10 }}>
+                <NotificationBell />
+                <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+                  <Octicons name="gear" size={20} color="black" />
+                </TouchableOpacity>
               </View>
             </View>
             {/* <View className="p-2">
@@ -185,8 +190,20 @@ const Home = ({ navigation }) => {
           </View>
         </View> */}
 
-            <TouchableOpacity style={styles.card}>
-              <Text style={styles.cardText}>Mood Tracking</Text>
+             {/* Mood Tracker Button */}
+            <TouchableOpacity 
+              style={styles.card} 
+              onPress={() => navigation.navigate("MoodTrackerScreen")}
+            >
+              <LinearGradient 
+                colors={["#AFE1AF", "#097969"]} // Soft pastel green & pink 🎀
+                style={styles.gradientCard}
+              >
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardText}>✨ Mood Check! ✨</Text>
+                  <Text style={styles.subText}>How's your vibe? 😍😜</Text>
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
             <View className="items-center flex-row px-2">
               <Text className="font-bold w-3/4" style={{ fontSize: rem(14) }}>
@@ -298,13 +315,39 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: "100%",
-    backgroundColor: "#D4EDDA",
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 15,
+    borderRadius: 15, // Rounded corners for a cute look 🎀
+    overflow: "hidden",
+    marginVertical: 8,
+    height: 80, // Smaller height 📐
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 5,
   },
-  cardImage: { width: "100%", height: 100, borderRadius: 10 },
-  cardText: { marginTop: 5, fontSize: 14, fontWeight: "bold" },
+  gradientCard: {
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+  },
+  cardContent: {
+    alignItems: "center",
+  },
+  cardText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000000", // Cute deep purple 💜
+    textAlign: "center",
+  },
+  subText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#ffffff", // Soft pink 🌸
+    textAlign: "center",
+    marginTop: 5,
+  },
 });
+
+
 export default Home;

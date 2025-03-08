@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 // import { Tabs } from "expo-router";
-import Home from "../(tabs)/Home";
-import Messages from "./Messages";
-import Profile from "./Profile";
-// import Resources from "./Resources";
-import Games from "../games/LayoutGame";
+import Home from "../(tabs)/home";
+import Messages from "./messages";
+import Profile from "./profile";
+import Resources from "../resources/Resources";
+import Games from "../games/layoutgame";
 import Settings from "./Settings";
 
 //import Games from "../games/TakeABreath"
@@ -68,7 +68,7 @@ const _layout = () => {
         }}
       />
 
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="Resources"
         component={Resources}
         options={{
@@ -81,7 +81,7 @@ const _layout = () => {
             />
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="Profile"
         component={Profile}
@@ -92,7 +92,7 @@ const _layout = () => {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="Settings"
         component={Settings}
         options={{
@@ -101,7 +101,7 @@ const _layout = () => {
             <Octicons name="gear" size={24} color={color} />
           ),
         }}
-      />
+      /> */}
     </Tabs.Navigator>
   );
 };

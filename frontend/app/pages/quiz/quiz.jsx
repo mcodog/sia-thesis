@@ -308,9 +308,7 @@ const Quiz = ({ navigation }) => {
     console.log("Updated Value:", newValue);
   };
 
-  // const handleValueChange = (newValue) => {
-  //   setAnswerValue(newValue);
-  // };
+  
 
   const [questions, setQuestions] = useState([
     {
@@ -586,16 +584,7 @@ const Quiz = ({ navigation }) => {
 
   const { playSound, stopSound, isPlaying } = useAudioPlayer();
 
-  // useEffect(() => {
-  //   setQuestionNum((prev) => prev + 1);
-  //   if (quizProgress === 1) {
-  //     showModal();
-  //   }
-  // }, [quizProgress]);
-
-  // useEffect(() => {
-  //   console.log(settingsConfig);
-  // }, []);
+  
 
   useEffect(() => {
     if (!start) return;
