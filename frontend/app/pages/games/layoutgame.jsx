@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Linking } from "react-native";
 import { rem } from "../../../components/stylings/responsiveSize";
 import logo from "../../../assets/images/logo.png";
-import NotificationBell from "../(tabs)/NotificationBell";
 import Octicons from "@expo/vector-icons/Octicons";
 
 const LayoutGame = ({ navigation }) => {
@@ -17,7 +16,7 @@ const LayoutGame = ({ navigation }) => {
        <View style={styles.header}>
           <Image source={logo} style={styles.logo} />
           <View style={styles.headerIcons}>
-            <NotificationBell />
+            
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Octicons name="gear" size={20} color="black" />
             </TouchableOpacity>

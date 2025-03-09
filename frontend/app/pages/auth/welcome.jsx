@@ -51,7 +51,7 @@ const Welcome = ({ navigation }) => {
                 className="w-full"
                 onPress={() => {
                   // router.push("pages/auth/Register");
-                  navigation.navigate("Register");
+                  navigation.navigate("register");
                 }}
                 mode="contained"
               >

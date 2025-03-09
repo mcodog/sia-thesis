@@ -2,7 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+class Diary(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="diary_entries")
+    text = models.TextField()
+    type = models.CharField(max_length=50, default="heart")
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Diary Entry by {self.user.username} on {self.created_at.strftime('%Y-%m-%d')}"
+        
 class UserAnalysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     analysis_result = models.JSONField()
@@ -47,3 +55,31 @@ class CounselingAnalysis(models.Model):
 
     def __str__(self):
         return f"Counseling Analysis for {self.user.username}"
+
+class BreathingSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    duration = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"BreathingSession {self.user.username} - {self.timestamp}"
+
+class SleepEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    sleep_time = models.CharField(max_length=10)
+    wake_time = models.CharField(max_length=10)
+    duration = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f"SleepEntry {self.user.username} - {self.date}"
+
+class MoodEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    mood = models.CharField(max_length=50)
+    reason = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.mood} ({self.timestamp})"
+

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-eh1za5i=g5mu&!m=z7qug725)*@!tlcp+fp87q=v3(mqybr(vf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101', 'http://localhost:5173', '192.168.98.101', '192.168.75.101']
+# ALLOWED_HOSTS = ['192.168.1.47', 'localhost', '127.0.0.1', '172.34.99.53', '192.168.119.101', '192.168.28.101', 'http://localhost:5173', '192.168.98.101', '192.168.75.101','192.168.100.54']
 ALLOWED_HOSTS =['*']
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'counseling',
     'corsheaders',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -82,6 +83,7 @@ CSRF_USE_SESSIONS = False
 #     "http://localhost:5173",  # Allow Vite frontend
 #     "http://192.168.1.47:5173",  # Allow LAN access if needed
 #     "http://192.168.98.101:5173",  # Allow LAN access if needed
+#     "http://192.168.100.54:5173"  #  Add your frontend IP here
 # ]
 
 ROOT_URLCONF = 'app.urls'

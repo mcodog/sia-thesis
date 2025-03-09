@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView
 
-from .serializers import UserAnalysisSerializer, ChatLogSerializer, MessageSerializer, UserSerializer, CounselingAnalysisSerializer, PhoneSerializer, OTPVerificationSerializer
-from .models import ChatLog, Message, CounselingAnalysis, UserAnalysis
+from .serializers import UserAnalysisSerializer,  ChatLogSerializer, MessageSerializer, UserSerializer, CounselingAnalysisSerializer, PhoneSerializer, OTPVerificationSerializer, BreathingSessionSerializer, SleepEntrySerializer, MoodEntrySerializer, DiarySerializer
+from .models import ChatLog, Message, CounselingAnalysis, UserAnalysis, BreathingSession, SleepEntry, MoodEntry, Diary
 from django.contrib.auth.models import User
 
 from .chat.Prompt import generate_chat_response
@@ -20,6 +22,75 @@ from twilio.rest import Client
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
+from rest_framework import generics
+
+class DiaryListCreateView(generics.ListCreateAPIView):
+    serializer_class = DiarySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Diary.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class DiaryDetailView(generics.RetrieveDestroyAPIView):
+    serializer_class = DiarySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Diary.objects.filter(user=self.request.user)
+
+
+class MoodEntryListCreateView(generics.ListCreateAPIView):
+    serializer_class = MoodEntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = MoodEntry.objects.none()  # Avoid issues before get_queryset runs
+
+    def get_queryset(self):
+        return MoodEntry.objects.filter(user=self.request.user).order_by('-timestamp')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  # Ensure user is assigned to the mood entry
+        serializer.save(user=self.request.user)
+
+class SleepEntryListCreate(generics.ListCreateAPIView):
+    serializer_class = SleepEntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return SleepEntry.objects.filter(user=self.request.user).order_by('-date')
+
+    def perform_create(self, serializer):
+        print("Request Data:", self.request.data)  # Debugging Line
+        print("Authenticated User:", self.request.user)  # Debugging Line
+        serializer.save(user=self.request.user)
+
+class SleepEntryDelete(generics.DestroyAPIView):
+    serializer_class = SleepEntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return SleepEntry.objects.filter(user=self.request.user)
+
+# ✅ Breathing Session API
+class BreathingSessionView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is logged in
+
+    def get(self, request):
+        """Retrieve all breathing sessions for the logged-in user"""
+        sessions = BreathingSession.objects.filter(user=request.user).order_by('-timestamp')
+        serializer = BreathingSessionSerializer(sessions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """Create a new breathing session"""
+        serializer = BreathingSessionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)  # Assign the logged-in user
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # 1️⃣ Send OTP to User
 class SendOTPView(APIView):

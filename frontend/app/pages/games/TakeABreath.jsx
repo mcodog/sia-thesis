@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, Animated, View, TouchableOpacity, FlatList  } from 'react-native';
+import { StyleSheet, Text, Animated, View, TouchableOpacity, FlatList } from 'react-native';
 import { Audio } from 'expo-av';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+import { useAuth } from "../../../context/AuthContext";
 
 // Import local audio files
 import getReadyAudio from '../../../assets/audio/breath/get-ready-in.mp3';
@@ -31,6 +32,7 @@ const TakeABreath = () => {
   const [countdown, setCountdown] = useState(0);
   const [history, setHistory] = useState([]);
   const settingsConfig = useSelector((state) => state.settings.settings);
+  const { axiosInstanceWithBearer } = useAuth();
 
   useEffect(() => {
     loadHistory();
@@ -40,7 +42,7 @@ const TakeABreath = () => {
     if (!isBreathing || countdown > 0) return;
 
     let timing = 0;
-    
+
     if (breathingStage === 0) {
       playAudio(inhaleAudio, tagalogInhaleAudio);
       Animated.timing(breathAnimation, {
@@ -98,26 +100,46 @@ const TakeABreath = () => {
 
   const addHistory = async () => {
     const now = new Date();
-    const date = now.toLocaleDateString();
-    const time = now.toLocaleTimeString();
-    const newHistory = [{ session: history.length + 1, date, time }, ...history];
+    const duration = 17;
 
-    setHistory(newHistory);
-    await AsyncStorage.setItem('breathingHistory', JSON.stringify(newHistory));
+    try {
+      const response = await axiosInstanceWithBearer.post('/api/breathing-sessions/', {
+        timestamp: now,
+        duration: duration,
+      });
+      console.log('Successfully saved session:', response.data);
+      loadHistory(); // Refresh history after saving
+    } catch (error) {
+      console.error('Failed to save breathing session:', error.response?.data || error.message);
+    }
   };
 
   const loadHistory = async () => {
-    const savedHistory = await AsyncStorage.getItem('breathingHistory');
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory).sort((a, b) => b.session - a.session));
+    try {
+        const response = await axiosInstanceWithBearer.get('/api/breathing-sessions/');
+        const convertedData = response.data.map(item => {
+            const localDate = new Date(item.timestamp);
+            return {
+                ...item,
+                localTimestamp: localDate.toLocaleString(), // Convert to readable local time
+            };
+        });
+
+        console.log("API Response (converted):", convertedData); // Logs correct local time
+        setHistory(response.data);
+        await AsyncStorage.setItem('breathingHistory', JSON.stringify(response.data));
+    } catch (error) {
+        console.error('Error loading breathing history:', error);
     }
-  };
+};
+
+
+  
 
   const startBreathing = async () => {
     setIsBreathing(true);
     setBreathingStage(0);
     setCountdown(3);
-    
     await playAudio(getReadyAudio, getReadyTagalogAudio);
     setTimeout(async () => {
       setCountdown(3);
@@ -164,21 +186,28 @@ const TakeABreath = () => {
         <Text style={styles.historyTitle}>Breathing History</Text>
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
-          
             <Text style={styles.tableHeaderText}>Date</Text>
             <Text style={styles.tableHeaderText}>Time</Text>
           </View>
           <FlatList
-  data={history}
-  keyExtractor={(item, index) => index.toString()}
-  ListEmptyComponent={<Text style={styles.emptyText}>No history yet</Text>}
-  renderItem={({ item }) => (
-    <View style={styles.tableRow}>
-      <Text style={styles.tableCell}>{item.date}</Text>
-      <Text style={styles.tableCell}>{item.time}</Text>
-    </View>
-  )}
-/>
+          data={history}
+          keyExtractor={(item, index) => index.toString()}
+          ListEmptyComponent={<Text style={styles.emptyText}>No history yet</Text>}
+          renderItem={({ item }) => {
+            const date = new Date(item.timestamp);
+            const formattedDate = date.toLocaleDateString(); // Formats as MM/DD/YYYY or based on locale
+            const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // HH:MM AM/PM
+
+            return (
+              <View style={styles.tableRow}>
+                <Text style={styles.tableCell}>{formattedDate}</Text>
+                <Text style={styles.tableCell}>{formattedTime}</Text>
+              </View>
+            );
+          }}
+        />
+
+
         </View>
       </View>
     </LinearGradient>
@@ -278,5 +307,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default TakeABreath;  
+export default TakeABreath;

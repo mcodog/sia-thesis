@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart, PieChart, BarChart  } from 'react-native-chart-kit';
-import { format, parseISO } from 'date-fns';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from 'expo-router';
+import { useAuth } from "../../../context/AuthContext";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -14,10 +14,10 @@ const WeeklyWellnessReport = () => {
   const navigation = useNavigation();
   const [sleepData, setSleepData] = useState([]);
   const [selectedEntry, setSelectedEntry] = useState(null);
-  const [chartData, setChartData] = useState({ labels: [], data: [] });
   const [sleepAnalysis, setSleepAnalysis] = useState("");
   const [breathingData, setBreathingData] = useState({});
   const router = useRouter();
+  const { axiosInstanceWithBearer } = useAuth();
 
   useEffect(() => {
     loadSleepData();
@@ -37,6 +37,7 @@ const WeeklyWellnessReport = () => {
 };
 
 console.log("Sleep Data:", sleepData);
+console.log("breath data:", breathingData);
 
 const dataPoints = sleepData.map(entry => {
   if (!entry.duration) return 0; // Default to 0 if duration is missing
@@ -45,21 +46,26 @@ const dataPoints = sleepData.map(entry => {
 });
 
 
-  const loadMoodData = async () => {
-    const moodData = await AsyncStorage.getItem('moodHistory');
+const loadMoodData = async () => {
+  try {
+    const moodData = await AsyncStorage.getItem("moodEntries"); // Ensure the correct key
     if (moodData) {
       const parsedMoodLogs = JSON.parse(moodData);
       processMoodData(parsedMoodLogs);
     }
-  };
+  } catch (error) {
+    console.error("Error loading mood data:", error);
+  }
+};
 
-  const processMoodData = (logs) => {
-    const counts = logs.reduce((acc, log) => {
-      acc[log.mood.mood] = (acc[log.mood.mood] || 0) + 1;
-      return acc;
-    }, {});
-    setMoodCounts(counts);
-  };
+const processMoodData = (logs) => {
+  const counts = logs.reduce((acc, log) => {
+    const mood = log.mood; // Ensure correct key usage
+    acc[mood] = (acc[mood] || 0) + 1;
+    return acc;
+  }, {});
+  setMoodCounts(counts);
+};
 
   const labels = sleepData.map(entry => entry.date.slice(5)); // Show MM/DD format
 
@@ -95,11 +101,30 @@ const dataPoints = sleepData.map(entry => {
     }
 };
 
-  const handleDataPointClick = ({ index }) => {
-    const entry = sleepData[index];
-    setSelectedEntry(entry);
-    Alert.alert("Sleep Details", `Date: ${entry.date}\nSleep Time: ${entry.sleepTime}\nWake Time: ${entry.wakeTime}\nDuration: ${entry.duration} \n${getSleepMessage(parseFloat(entry.duration) || 0)} \n"Rest is the best investment for a productive tomorrow!"`);
+const handleDataPointClick = ({ index }) => {
+  const entry = sleepData[index];
+
+  if (!entry) {
+      Alert.alert("Error", "Sleep entry not found.");
+      return;
+  }
+
+  // Ensure correct keys
+  const sleepTime = entry.sleepTime || entry.sleep_time || "Unknown";
+  const wakeTime = entry.wakeTime || entry.wake_time || "Unknown";
+  const duration = entry.duration || "Unknown";
+
+  Alert.alert(
+      "Sleep Details",
+      `Date: ${entry.date || "Unknown"}\n` +
+      `Sleep Time: ${sleepTime}\n` +
+      `Wake Time: ${wakeTime}\n` +
+      `Duration: ${duration}\n` +
+      `${getSleepMessage(parseFloat(duration) || 0)}\n\n` +
+      `"Rest is the best investment for a productive tomorrow!"`
+  );
 };
+
 
   const pieData = Object.keys(moodCounts).map((key, index) => ({
     name: key,
@@ -111,30 +136,40 @@ const dataPoints = sleepData.map(entry => {
 
   const loadBreathingHistory = async () => {
     try {
-      const savedHistory = await AsyncStorage.getItem('breathingHistory');
-      if (savedHistory) {
-        const parsedHistory = JSON.parse(savedHistory);
-        const groupedData = groupByDay(parsedHistory);
+      const response = await axiosInstanceWithBearer.get('/api/breathing-sessions/'); 
+      if (response.status === 200) {
+        const apiHistory = response.data.map((session) => ({
+          date: new Date(session.timestamp).toISOString().split('T')[0], // Format date YYYY-MM-DD
+        }));
+  
+        // Save to AsyncStorage for offline use
+        await AsyncStorage.setItem('breathingHistory', JSON.stringify(apiHistory));
+  
+        // Process and update state
+        const groupedData = groupByDay(apiHistory);
         setBreathingData(groupedData);
       }
     } catch (error) {
-      console.error('Error loading breathing history:', error);
+      console.error('Error fetching breathing history:', error);
     }
   };
+  
 
   const groupByDay = (history) => {
     const grouped = {};
     history.forEach((entry) => {
       const date = entry.date;
-      grouped[date] = (grouped[date] || 0) + 1;
+      grouped[date] = (grouped[date] || 0) + 1; // Count occurrences per day
     });
     return grouped;
   };
+  
 
   const chartDatas = {
     labels: Object.keys(breathingData),
     datasets: [{ data: Object.values(breathingData) }],
   };
+  
 
   const interpretBreathingData = (count) => {
     if (count === 0) 

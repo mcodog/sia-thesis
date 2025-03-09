@@ -5,24 +5,28 @@ import { PaperProvider } from "react-native-paper";
 import { useFonts } from "expo-font";
 
 import Login from "./pages/auth/login";
-import Register from "./pages/auth/register";
+import register from "./pages/auth/register";
 import Welcome from "./pages/auth/welcome";
-//import Home from "./pages/(tabs)/home";
+import Home from "./pages/(tabs)/home";
 import Settings from "./pages/(tabs)/Settings";
 import _layout from "./pages/(tabs)/_layout";
 import Chat from "./pages/messages/chat";
 import Games from "./pages/games/layoutgame";
-import TakeABreath from "./pages/games/TakeABreath";
 import Quiz from "./pages/quiz/quiz";
 import Result from "./pages/quiz/result";
 import Conditions from "./pages/quiz/conditions";
-import SleepTracker from "./pages/games/SleepTracker";
-import MoodTrackerScreen from "./pages/games/MoodTrackerScreen";
 import WeeklyWellnessReport from "./pages/games/WeeklyWellnessReport";
 import ClipCardGame from "./pages/games/ClipCardGame"; 
 import Diary from "./pages/games/Diary";
-import NotificationsScreen from "./pages/notification/Notifications";
-
+import MentalHealthSlider from "./pages/resources/MentalHealthSlider";
+import Slider2 from "./pages/resources/Slider2";
+import Slider3 from "./pages/resources/Slider3";
+import Slider4 from "./pages/resources/Slider4";
+import Resources from "./pages/resources/Resources";
+import Fallinggame from "./pages/games/Fallinggame";
+import SleepTracker from "./pages/games/SleepTracker";
+import MoodTrackerScreen from "./pages/games/MoodTrackerScreen";
+import TakeABreath from "./pages/games/TakeABreath";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -60,7 +64,7 @@ const AuthStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="register" component={register} />
       <Stack.Screen name="Main" component={_layout} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Game" component={Games} />
@@ -73,7 +77,6 @@ const AuthStack = () => {
       <Stack.Screen name="WeeklyWellnessReport" component={WeeklyWellnessReport} />
       <Stack.Screen name="ClipCardGame" component={ClipCardGame} />
       <Stack.Screen name="Diary" component={Diary} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} /> 
       <Stack.Screen name="MentalHealth" component={MentalHealthSlider} />
       <Stack.Screen name="Slider2" component={Slider2} />
       <Stack.Screen name="Slider3" component={Slider3} />
