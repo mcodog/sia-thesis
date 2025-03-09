@@ -18,7 +18,6 @@ import Conditions from "./pages/quiz/conditions";
 import WeeklyWellnessReport from "./pages/games/WeeklyWellnessReport";
 import ClipCardGame from "./pages/games/ClipCardGame"; 
 import Diary from "./pages/games/Diary";
-import MentalHealthSlider from "./pages/resources/MentalHealthSlider";
 import Slider2 from "./pages/resources/Slider2";
 import Slider3 from "./pages/resources/Slider3";
 import Slider4 from "./pages/resources/Slider4";
@@ -34,11 +33,6 @@ import { AuthProvider } from "../context/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import MentalHealthSlider from "./pages/resources/MentalHealthSlider";
-import Slider2 from "./pages/resources/Slider2";
-import Slider3 from "./pages/resources/Slider3";
-import Slider4 from "./pages/resources/Slider4";
-import Resources from "./pages/resources/Resources";
-import Fallinggame from "./pages/games/Fallinggame";
 
 const index = () => {
   const [fontsLoaded] = useFonts({

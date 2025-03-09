@@ -45,6 +45,7 @@ const Diary = () => {
 
     try {
       const response = await axiosInstanceWithBearer.post("diary/", newEntry);
+      console.log("Saved Entry Response:", response.data);
       setEntries([response.data, ...entries]); 
       await AsyncStorage.setItem("diaryEntries", JSON.stringify([response.data, ...entries]));
       setEntry("");

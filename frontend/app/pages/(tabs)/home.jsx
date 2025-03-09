@@ -38,12 +38,6 @@ import PostTile from "../../../components/tiles/PostTile";
 import { useAuth } from "../../../context/AuthContext";
 import SoundButton from "../../../components/SoundButton";
 import Octicons from "@expo/vector-icons/Octicons";
-
-<<<<<<< HEAD
-import NotificationBell from "./NotificationBell";
-=======
->>>>>>> ecf50f6 (auth gimi sleep,mood,breath,diary)
-
 import { useSelector } from "react-redux";
 
 const Home = ({ navigation }) => {
@@ -84,11 +78,7 @@ const Home = ({ navigation }) => {
                 />
               </View>
               <View style={{ width: "50%", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", padding: 5, gap: 10 }}>
-<<<<<<< HEAD
-                <NotificationBell />
-=======
                 
->>>>>>> ecf50f6 (auth gimi sleep,mood,breath,diary)
                 <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
                   <Octicons name="gear" size={20} color="black" />
                 </TouchableOpacity>

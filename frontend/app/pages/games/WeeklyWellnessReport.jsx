@@ -48,10 +48,18 @@ const dataPoints = sleepData.map(entry => {
 
 const loadMoodData = async () => {
   try {
-    const moodData = await AsyncStorage.getItem("moodEntries"); // Ensure the correct key
+    const moodData = await AsyncStorage.getItem("moodEntries");
     if (moodData) {
       const parsedMoodLogs = JSON.parse(moodData);
-      processMoodData(parsedMoodLogs);
+
+      if (user && user.id) {
+        // Filter moods to include only the logged-in user's data
+        const userMoodLogs = parsedMoodLogs.filter((entry) => entry.userId === user.id);
+        processMoodData(userMoodLogs);
+      } else {
+        console.warn("User ID not found. No mood data loaded.");
+        processMoodData([]);
+      }
     }
   } catch (error) {
     console.error("Error loading mood data:", error);
@@ -60,12 +68,12 @@ const loadMoodData = async () => {
 
 const processMoodData = (logs) => {
   const counts = logs.reduce((acc, log) => {
-    const mood = log.mood; // Ensure correct key usage
-    acc[mood] = (acc[mood] || 0) + 1;
+    acc[log.mood] = (acc[log.mood] || 0) + 1;
     return acc;
   }, {});
   setMoodCounts(counts);
 };
+
 
   const labels = sleepData.map(entry => entry.date.slice(5)); // Show MM/DD format
 
