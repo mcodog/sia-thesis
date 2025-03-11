@@ -7,6 +7,8 @@ import Welcome from "./Pages/Welcome";
 import Quiz from "./Pages/Quiz";
 import About from "./Pages/About";
 import Admin from "./Pages/Admin";
+import Admin2 from "./Pages/Admin2";
+import Admin3 from "./Pages/Admin3";
 import Print from "./Pages/Print";
 
 import Login from "./Pages/Auth/Login";
@@ -28,6 +30,8 @@ const App = () => {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin2" element={<Admin2 />} />
+            <Route path="/admin3" element={<Admin3 />} />
             <Route path="/print" element={<Print />} />
           </Route>
           <Route path="/login" element={<Login />} />
