@@ -80,9 +80,21 @@ const Home = ({ navigation }) => {
                   }}
                 />
               </View>
-              <View style={{ width: "50%", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", padding: 5, gap: 10 }}>
+              <View
+                style={{
+                  width: "50%",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  padding: 5,
+                  gap: 10,
+                }}
+              >
                 <NotificationBell />
-                <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Settings")}
+                >
                   <Octicons name="gear" size={20} color="black" />
                 </TouchableOpacity>
               </View>
@@ -190,12 +202,12 @@ const Home = ({ navigation }) => {
           </View>
         </View> */}
 
-             {/* Mood Tracker Button */}
-            <TouchableOpacity 
-              style={styles.card} 
+            {/* Mood Tracker Button */}
+            <TouchableOpacity
+              style={styles.card}
               onPress={() => navigation.navigate("MoodTrackerScreen")}
             >
-              <LinearGradient 
+              <LinearGradient
                 colors={["#AFE1AF", "#097969"]} // Soft pastel green & pink 🎀
                 style={styles.gradientCard}
               >
@@ -348,6 +360,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
-
 
 export default Home;

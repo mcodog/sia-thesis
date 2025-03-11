@@ -308,8 +308,6 @@ const Quiz = ({ navigation }) => {
     console.log("Updated Value:", newValue);
   };
 
-  
-
   const [questions, setQuestions] = useState([
     {
       question:
@@ -583,8 +581,6 @@ const Quiz = ({ navigation }) => {
   const staggerValue = 200;
 
   const { playSound, stopSound, isPlaying } = useAudioPlayer();
-
-  
 
   useEffect(() => {
     if (!start) return;

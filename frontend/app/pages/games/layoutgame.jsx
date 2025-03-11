@@ -1,79 +1,142 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Linking } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Linking,
+} from "react-native";
 import { rem } from "../../../components/stylings/responsiveSize";
 import logo from "../../../assets/images/logo.png";
 import NotificationBell from "../(tabs)/NotificationBell";
 import Octicons from "@expo/vector-icons/Octicons";
 
 const LayoutGame = ({ navigation }) => {
-
   const copyToClipboard = (number) => {
     Linking.openURL(`tel:${number}`);
   };
-  
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-       <View style={styles.header}>
+        <View style={styles.header}>
           <Image source={logo} style={styles.logo} />
           <View style={styles.headerIcons}>
             <NotificationBell />
+
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Octicons name="gear" size={20} color="black" />
             </TouchableOpacity>
           </View>
         </View>
-      
-        <Image 
-          source={{ uri: "https://mindfulnessexercises.com/wp-content/uploads/2019/11/Visualizing-Your-Peaceful-and-Beautiful-Place-BG.jpg" }} 
-          style={styles.headerImage} 
+
+        <Image
+          source={{
+            uri: "https://mindfulnessexercises.com/wp-content/uploads/2019/11/Visualizing-Your-Peaceful-and-Beautiful-Place-BG.jpg",
+          }}
+          style={styles.headerImage}
         />
 
         <Text style={styles.quote}>
-          “I know this won’t be easy, but I also know you’ve got what it takes to get through it.”
+          “I know this won’t be easy, but I also know you’ve got what it takes
+          to get through it.”
         </Text>
 
         <View style={styles.supportContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('TakeABreath')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://img.freepik.com/free-vector/woman-doing-yoga-park_1308-122857.jpg?semt=ais_hybrid" }} style={styles.avatar} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("TakeABreath")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={{
+                uri: "https://img.freepik.com/free-vector/woman-doing-yoga-park_1308-122857.jpg?semt=ais_hybrid",
+              }}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>1 min Breathing</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity onPress={() => navigation.navigate('SleepTracker')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://img.freepik.com/free-vector/sleep-analysis-concept-illustration_114360-1129.jpg" }} style={styles.avatar} />
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SleepTracker")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={{
+                uri: "https://img.freepik.com/free-vector/sleep-analysis-concept-illustration_114360-1129.jpg",
+              }}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>Sleep Quality</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('MoodTrackerScreen')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://media.istockphoto.com/id/1304715728/vector/emotions-scale-on-smartphone-screen-mood-concept-tiny-girl-leave-feedback-online-emoji-set.jpg?s=612x612&w=0&k=20&c=aL0usVoe-3cOGY_Opru5f_NJnsLpZLZqqiuqMVkPbK8=" }} style={styles.avatar} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("MoodTrackerScreen")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={{
+                uri: "https://media.istockphoto.com/id/1304715728/vector/emotions-scale-on-smartphone-screen-mood-concept-tiny-girl-leave-feedback-online-emoji-set.jpg?s=612x612&w=0&k=20&c=aL0usVoe-3cOGY_Opru5f_NJnsLpZLZqqiuqMVkPbK8=",
+              }}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>Mood Track</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('ClipCardGame')} style={styles.buttonContainer}>
-            <Image source={require("../../../assets/images/flipcard.jpg")} style={styles.avatar} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ClipCardGame")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={require("../../../assets/images/flipcard.jpg")}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>FlipCardGame</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Fallinggame')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://img.freepik.com/premium-photo/cute-cat-hold-full-love-basket_1298798-2327.jpg"}} style={styles.avatar} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Fallinggame")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={{
+                uri: "https://img.freepik.com/premium-photo/cute-cat-hold-full-love-basket_1298798-2327.jpg",
+              }}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>Catch It!</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Diary')} style={styles.buttonContainer}>
-            <Image source={{ uri: "https://thumbs.dreamstime.com/b/glass-jar-filled-strips-paper-each-one-containing-handwritten-message-buried-beneath-tree-waiting-to-be-unearthed-322199911.jpg" }} style={styles.avatar} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Diary")}
+            style={styles.buttonContainer}
+          >
+            <Image
+              source={{
+                uri: "https://thumbs.dreamstime.com/b/glass-jar-filled-strips-paper-each-one-containing-handwritten-message-buried-beneath-tree-waiting-to-be-unearthed-322199911.jpg",
+              }}
+              style={styles.avatar}
+            />
             <Text style={styles.buttonText}>Diary Jar</Text>
           </TouchableOpacity>
         </View>
 
         <View>
-          <TouchableOpacity onPress={() => navigation.navigate('WeeklyWellnessReport')} style={styles.report}>
-            <Image source={{ uri: "https://cdn.prod.website-files.com/59e16042ec229e00016d3a66/613158262dde4943a51937aa_data%20visualization%20tips_blog%20hero.webp" }} style={styles.reports} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("WeeklyWellnessReport")}
+            style={styles.report}
+          >
+            <Image
+              source={{
+                uri: "https://cdn.prod.website-files.com/59e16042ec229e00016d3a66/613158262dde4943a51937aa_data%20visualization%20tips_blog%20hero.webp",
+              }}
+              style={styles.reports}
+            />
             <Text style={styles.buttonText}>Report</Text>
           </TouchableOpacity>
         </View>
-     
 
-      
         <View style={styles.tipsContainer}>
           <Text style={styles.tipsTitle}>😊 Calm down tips</Text>
           <Text>- Tense and relax muscles from toes to head.</Text>
@@ -84,18 +147,26 @@ const LayoutGame = ({ navigation }) => {
         <View style={styles.tipsContainer}>
           <Text style={styles.tipsTitle}>🧘‍♂️ Mindfulness Tips</Text>
           <Text>- Focus on your breathing for a few minutes.</Text>
-          <Text>- Practice gratitude by listing three things you're thankful for.</Text>
-          <Text>- Take a short walk and observe your surroundings mindfully.</Text>
+          <Text>
+            - Practice gratitude by listing three things you're thankful for.
+          </Text>
+          <Text>
+            - Take a short walk and observe your surroundings mindfully.
+          </Text>
         </View>
 
         <View style={styles.hotlineContainer}>
           <Text style={styles.tipsTitle}>📞 Mental Health Hotline</Text>
           <Text>If you need urgent support, please reach out to:</Text>
           <TouchableOpacity onPress={() => copyToClipboard("1553")}>
-            <Text style={[styles.hotlineNumber, styles.underline]}>📍 National Mental Health Crisis Hotline: 1553</Text>
+            <Text style={[styles.hotlineNumber, styles.underline]}>
+              📍 National Mental Health Crisis Hotline: 1553
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => copyToClipboard("09178998727")}>
-            <Text style={[styles.hotlineNumber, styles.underline]}>📍 Local Support: 0917-899-8727</Text>
+            <Text style={[styles.hotlineNumber, styles.underline]}>
+              📍 Local Support: 0917-899-8727
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -185,7 +256,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   report: {
-   
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 15,
@@ -209,7 +279,6 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: "center",
     marginTop: 10,
-    
   },
   tipsContainer: {
     backgroundColor: "#ddd",

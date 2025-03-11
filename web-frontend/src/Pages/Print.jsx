@@ -35,8 +35,7 @@ const Print = () => {
       setIsLoading(true);
       const res = await axiosInstance.get("/analysis/");
       if (res.status === 200) {
-        const analyses = res.data;
-        processAnalysisData(analyses);
+        processAnalysisData(res.data);
       }
     } catch (error) {
       console.error("Error fetching analysis data:", error);
@@ -46,68 +45,48 @@ const Print = () => {
   };
 
   const processAnalysisData = (analyses) => {
-    // Count unique users
     const uniqueUserIds = new Set(analyses.map((entry) => entry.user));
     const uniqueUsersCount = uniqueUserIds.size;
     const totalSubmissions = analyses.length;
     const repeatedSubmissions = totalSubmissions - uniqueUsersCount;
 
-    // Prepare user data for the user table
-    const processedUserData = [];
-    const userMap = new Map();
     const genderCounts = {};
     let totalAge = 0;
     let ageCount = 0;
 
-    analyses.forEach((entry) => {
-      // Calculate averages and counts for the user if not already processed
-      if (!userMap.has(entry.user)) {
-        userMap.set(entry.user, true);
-
-        const userData = {
+    const processedUserData = analyses.reduce((acc, entry) => {
+      if (!acc.some((user) => user.userId === entry.user)) {
+        acc.push({
           id: entry.user,
           userId: entry.user,
           gender: entry.gender || "Not specified",
           age: entry.age || "Not specified",
-        };
+        });
 
-        // Count gender
         if (entry.gender) {
           genderCounts[entry.gender] = (genderCounts[entry.gender] || 0) + 1;
         }
-
-        // Add to age calculation
         if (entry.age) {
           totalAge += entry.age;
           ageCount++;
         }
-
-        processedUserData.push(userData);
       }
-    });
+      return acc;
+    }, []);
 
-    // Prepare counseling data for the counseling table
     const processedCounselingData = analyses.map((entry, index) => {
-      const submissionDate = new Date(
-        entry.created_at || entry.timestamp || Date.now()
-      );
-
-      // Extract all counseling types and their values
-      const counselingEntries = {};
-      Object.entries(entry.analysis_result).forEach(([name, value]) => {
-        counselingEntries[name] = (value * 100).toFixed(1) + "%";
-      });
-
       return {
         id: index,
         userId: entry.user,
-        date: submissionDate.toLocaleDateString(),
-        ...counselingEntries,
+        date: new Date(entry.created_at).toLocaleDateString(),
+        ...Object.fromEntries(
+          Object.entries(entry.analysis_result).map(([name, value]) => [
+            name,
+            (value * 100).toFixed(1) + "%",
+          ])
+        ),
       };
     });
-
-    // Calculate average age
-    const averageAge = ageCount > 0 ? (totalAge / ageCount).toFixed(1) : "N/A";
 
     setCounselingData(processedCounselingData);
     setUserData(processedUserData);
@@ -115,7 +94,7 @@ const Print = () => {
       totalSubmissions,
       uniqueUsers: uniqueUsersCount,
       repeatedSubmissions,
-      averageAge,
+      averageAge: ageCount > 0 ? (totalAge / ageCount).toFixed(1) : "N/A",
       genderDistribution: genderCounts,
     });
   };
@@ -123,32 +102,7 @@ const Print = () => {
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
     documentTitle: "Counseling Analysis Report",
-    onAfterPrint: () => console.log("Print completed"),
   });
-
-  // Get all unique counseling types for columns
-  const getCounselingColumns = () => {
-    if (counselingData.length === 0) return [];
-
-    // Get all keys from the first entry that aren't id, userId or date
-    const allKeys = Object.keys(counselingData[0]);
-    const counselingTypes = allKeys.filter(
-      (key) => !["id", "userId", "date"].includes(key)
-    );
-
-    const baseColumns = [
-      { field: "userId", headerName: "User ID", width: 120 },
-      { field: "date", headerName: "Date", width: 120 },
-    ];
-
-    const counselingColumns = counselingTypes.map((type) => ({
-      field: type,
-      headerName: type,
-      width: 150,
-    }));
-
-    return [...baseColumns, ...counselingColumns];
-  };
 
   const userColumns = [
     { field: "userId", headerName: "User ID", width: 120 },
@@ -156,41 +110,36 @@ const Print = () => {
     { field: "age", headerName: "Age", width: 100 },
   ];
 
-  if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress />
-      </Box>
+  const getCounselingColumns = () => {
+    if (!counselingData.length) return [];
+    const allKeys = Object.keys(counselingData[0]).filter(
+      (key) => !["id", "userId", "date"].includes(key)
     );
-  }
+    return [
+      { field: "userId", headerName: "User ID", width: 120 },
+      { field: "date", headerName: "Date", width: 120 },
+      ...allKeys.map((type) => ({ field: type, headerName: type, width: 150 })),
+    ];
+  };
 
   return (
-    <Box p={4}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography variant="h4">Counseling Analysis Report</Typography>
+    <Box p={4} sx={{ backgroundColor: "#e8f5e9", minHeight: "100vh" }}>
+      <Box display="flex" justifyContent="space-between" mb={3}>
+        <Typography variant="h4" fontWeight="bold" color="#2e7d32">
+          Counseling Analysis Report
+        </Typography>
         <Box>
           <Button
             variant="contained"
-            color="primary"
+            sx={{ backgroundColor: "#4caf50", color: "white", mr: 2 }}
             startIcon={<PrintIcon />}
             onClick={handlePrint}
-            sx={{ mr: 2 }}
           >
             Print Report
           </Button>
           <Button
             variant="contained"
-            color="secondary"
+            sx={{ backgroundColor: "#388e3c", color: "white" }}
             startIcon={<PictureAsPdfIcon />}
             onClick={handlePrint}
           >
@@ -198,82 +147,50 @@ const Print = () => {
           </Button>
         </Box>
       </Box>
-
       <div ref={printRef}>
-        <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
+        <Paper sx={{ p: 3, mb: 4, backgroundColor: "#c8e6c9" }}>
+          <Typography variant="h5" gutterBottom color="#1b5e20">
             Summary Statistics
           </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Typography variant="body1">
-                <strong>Total Submissions:</strong>{" "}
-                {summaryData.totalSubmissions}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Typography variant="body1">
-                <strong>Unique Users:</strong> {summaryData.uniqueUsers}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Typography variant="body1">
-                <strong>Repeated Submissions:</strong>{" "}
-                {summaryData.repeatedSubmissions}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Typography variant="body1">
-                <strong>Average Age:</strong> {summaryData.averageAge}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-            Gender Distribution
-          </Typography>
           <Grid container spacing={2}>
-            {Object.entries(summaryData.genderDistribution).map(
-              ([gender, count]) => (
-                <Grid item key={gender} xs={6} sm={4} md={3}>
-                  <Typography variant="body2">
-                    <strong>{gender}:</strong> {count} (
-                    {((count / summaryData.uniqueUsers) * 100).toFixed(1)}%)
-                  </Typography>
-                </Grid>
-              )
+            {Object.entries(summaryData).map(
+              ([key, value]) =>
+                key !== "genderDistribution" && (
+                  <Grid item xs={6} md={3} key={key}>
+                    <Typography variant="body1" color="#2e7d32">
+                      <strong>{key.replace(/([A-Z])/g, " $1").trim()}:</strong>{" "}
+                      {value}
+                    </Typography>
+                  </Grid>
+                )
             )}
           </Grid>
         </Paper>
 
-        <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
+        <Paper sx={{ p: 3, mb: 4, backgroundColor: "#a5d6a7" }}>
+          <Typography variant="h5" gutterBottom color="#1b5e20">
             User Demographics
           </Typography>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={userData}
-              columns={userColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 25]}
-              disableSelectionOnClick
-            />
-          </div>
+          <DataGrid
+            rows={userData}
+            columns={userColumns}
+            pageSize={5}
+            disableSelectionOnClick
+            autoHeight
+          />
         </Paper>
 
-        <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
+        <Paper sx={{ p: 3, backgroundColor: "#81c784" }}>
+          <Typography variant="h5" gutterBottom color="#1b5e20">
             Counseling Analysis Details
           </Typography>
-          <div style={{ height: 600, width: "100%" }}>
-            <DataGrid
-              rows={counselingData}
-              columns={getCounselingColumns()}
-              pageSize={10}
-              rowsPerPageOptions={[10, 25, 50]}
-              disableSelectionOnClick
-            />
-          </div>
+          <DataGrid
+            rows={counselingData}
+            columns={getCounselingColumns()}
+            pageSize={10}
+            disableSelectionOnClick
+            autoHeight
+          />
         </Paper>
       </div>
     </Box>

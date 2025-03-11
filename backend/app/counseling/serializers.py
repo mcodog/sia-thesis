@@ -1,9 +1,11 @@
 # import serializer from rest_framework
 from rest_framework import serializers
+from datetime import datetime
 
 # import model from models.py
-from .models import ChatLog, Message, CounselingAnalysis, UserAnalysis
+from .models import ChatLog, Message, CounselingAnalysis, UserAnalysis, BreathingSession, SleepEntry, MoodEntry, Diary
 from django.contrib.auth.models import User
+
 
 class UserAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,3 +60,34 @@ class CounselingAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = CounselingAnalysis
         fields = '__all__' 
+
+class BreathingSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BreathingSession
+        fields = ['id', 'duration', 'timestamp']  # No need to include 'user', it will be assigned automatically
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        if request and hasattr(request, "user"):
+            validated_data['user'] = request.user  # Assign user before creating
+        return super().create(validated_data)
+
+
+class SleepEntrySerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = SleepEntry
+        fields = ['id', 'username', 'date', 'sleep_time', 'wake_time', 'duration']
+
+class MoodEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MoodEntry
+        fields = ['id', 'user', 'mood', 'reason', 'timestamp']
+        read_only_fields = ['user']
+
+class DiarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diary
+        fields = ['id', 'user', 'text', 'type', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']

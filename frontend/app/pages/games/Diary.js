@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet, Image, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Modal,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,7 +38,10 @@ const Diary = () => {
 
   const saveEntries = async (updatedEntries) => {
     try {
-      await AsyncStorage.setItem("diaryEntries", JSON.stringify(updatedEntries));
+      await AsyncStorage.setItem(
+        "diaryEntries",
+        JSON.stringify(updatedEntries)
+      );
     } catch (error) {
       console.error("Failed to save entries", error);
     }
@@ -36,7 +49,14 @@ const Diary = () => {
 
   const handleSave = () => {
     if (entry.trim() !== "") {
-      const newEntries = [{ text: entry, date: new Date().toLocaleString(), type: getRandomEntryType() }, ...entries];
+      const newEntries = [
+        {
+          text: entry,
+          date: new Date().toLocaleString(),
+          type: getRandomEntryType(),
+        },
+        ...entries,
+      ];
       setEntries(newEntries);
       saveEntries(newEntries);
       setEntry("");
@@ -61,14 +81,26 @@ const Diary = () => {
         </TouchableOpacity>
         <Text style={styles.title}>🫙 Dairy Jar</Text>
       </View>
-      <Text style={styles.subtitle}>Take a moment to reflect on every day.</Text>
+      <Text style={styles.subtitle}>
+        Take a moment to reflect on every day.
+      </Text>
       <View style={styles.jarContainer}>
-        <Image source={require("../../../assets/images/jar.png")} style={styles.jarImage} />
+        <Image
+          source={require("../../../assets/images/jar.png")}
+          style={styles.jarImage}
+        />
         <View style={styles.entriesOverlay}>
           {entries.map((entry, index) => (
-            <TouchableOpacity key={index} onPress={() => handleEntryPress(entry)}>
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleEntryPress(entry)}
+            >
               <Text style={styles.entryIcon}>
-                {entry.type === "heart" ? "❤️" : entry.type === "leaf" ? "🍃" : "🐟"}
+                {entry.type === "heart"
+                  ? "❤️"
+                  : entry.type === "leaf"
+                  ? "🍃"
+                  : "🐟"}
               </Text>
             </TouchableOpacity>
           ))}
@@ -94,7 +126,11 @@ const Diary = () => {
                 <Text style={styles.modalText}>{selectedEntry.text}</Text>
               </>
             )}
-            <Button title="Close" onPress={() => setModalVisible(false)} color="#ff914d" />
+            <Button
+              title="Close"
+              onPress={() => setModalVisible(false)}
+              color="#ff914d"
+            />
           </View>
         </View>
       </Modal>

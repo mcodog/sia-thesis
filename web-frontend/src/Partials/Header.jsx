@@ -20,6 +20,7 @@ const Header = () => {
           <Link to="/">Home</Link>
           <Link to="/quiz">Quiz</Link>
           <Link to="/about">About</Link>
+          <Link to="/profile">Profile</Link>
           {user.isLoggedIn ? (
             <div
               className="cursor-pointer"
