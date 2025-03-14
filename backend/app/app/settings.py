@@ -83,7 +83,7 @@ CSRF_USE_SESSIONS = False
 #     "http://localhost:5173",  # Allow Vite frontend
 #     "http://192.168.1.47:5173",  # Allow LAN access if needed
 #     "http://192.168.98.101:5173",  # Allow LAN access if needed
-#     "http://192.168.100.54:5173"  #  Add your frontend IP here
+#     "http://192.168.55.143:5173"  #  Add your frontend IP here
 # ]
 
 ROOT_URLCONF = 'app.urls'

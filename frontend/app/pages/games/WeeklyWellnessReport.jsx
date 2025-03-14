@@ -11,19 +11,24 @@ const screenWidth = Dimensions.get("window").width;
 
 const WeeklyWellnessReport = () => {
   const [moodCounts, setMoodCounts] = useState({});
+  const [analysis, setAnalysis] = useState("");
   const navigation = useNavigation();
   const [sleepData, setSleepData] = useState([]);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [sleepAnalysis, setSleepAnalysis] = useState("");
   const [breathingData, setBreathingData] = useState({});
   const router = useRouter();
-  const { axiosInstanceWithBearer } = useAuth();
-
+  const { user, axiosInstanceWithBearer } = useAuth();
+  
   useEffect(() => {
     loadSleepData();
-    loadMoodData();
     loadBreathingHistory();
   }, []);
+
+  useEffect(() => {
+    loadMoodData();
+  }, [user]);
+  
 
   const loadSleepData = async () => {
     try {
@@ -37,7 +42,7 @@ const WeeklyWellnessReport = () => {
 };
 
 console.log("Sleep Data:", sleepData);
-console.log("breath data:", breathingData);
+
 
 const dataPoints = sleepData.map(entry => {
   if (!entry.duration) return 0; // Default to 0 if duration is missing
@@ -45,20 +50,17 @@ const dataPoints = sleepData.map(entry => {
   return hours + minutes / 60;
 });
 
+console.log("breath data:", breathingData);
+console.log("mood data:", moodCounts);
 
 const loadMoodData = async () => {
   try {
-    const moodData = await AsyncStorage.getItem("moodEntries");
-    if (moodData) {
-      const parsedMoodLogs = JSON.parse(moodData);
-
-      if (user && user.id) {
-        // Filter moods to include only the logged-in user's data
-        const userMoodLogs = parsedMoodLogs.filter((entry) => entry.userId === user.id);
-        processMoodData(userMoodLogs);
-      } else {
-        console.warn("User ID not found. No mood data loaded.");
-        processMoodData([]);
+    const storedMoods = await AsyncStorage.getItem("moodEntries");
+    if (storedMoods) {
+      const parsedMoods = JSON.parse(storedMoods);
+      if (Array.isArray(parsedMoods)) {
+        const userMoods = parsedMoods.filter(entry => entry.userId === user?.id);
+        processMoodData(userMoods);
       }
     }
   } catch (error) {
@@ -66,14 +68,38 @@ const loadMoodData = async () => {
   }
 };
 
-const processMoodData = (logs) => {
-  const counts = logs.reduce((acc, log) => {
-    acc[log.mood] = (acc[log.mood] || 0) + 1;
-    return acc;
-  }, {});
-  setMoodCounts(counts);
+
+
+const processMoodData = (moods) => {
+  const moodFrequency = {};
+  moods.forEach(entry => {
+    if (entry.mood) {
+      moodFrequency[entry.mood] = (moodFrequency[entry.mood] || 0) + 1;
+    }
+  });
+  setMoodCounts(moodFrequency);
+  analyzeMoodData(moodFrequency);
 };
 
+const analyzeMoodData = (moodCounts) => {
+  const totalMoods = Object.values(moodCounts).reduce((a, b) => a + b, 0);
+  if (totalMoods === 0) {
+    setAnalysis("No sufficient data for analysis.");
+    return;
+  }
+
+  const moodThreshold = (mood) => (moodCounts[mood] || 0) / totalMoods;
+
+  if (moodThreshold("Sad") > 0.4 || moodThreshold("Anxious") > 0.4 || moodThreshold("Angry") > 0.3) {
+    setAnalysis("You may be experiencing stress or emotional distress. Consider relaxation techniques or seeking support.");
+  } else if (moodThreshold("Happy") > 0.5 || moodThreshold("Calm") > 0.5 || moodThreshold("Relaxed") > 0.4) {
+    setAnalysis("You're experiencing a positive emotional state. Keep up the good habits that contribute to your well-being.");
+  } else if (moodThreshold("Tired") > 0.5) {
+    setAnalysis("You might be feeling exhausted. Ensure you get enough rest and manage your workload.");
+  } else {
+    setAnalysis("Your mood appears balanced. Continue monitoring your emotions and maintaining self-care practices.");
+  }
+};
 
   const labels = sleepData.map(entry => entry.date.slice(5)); // Show MM/DD format
 
@@ -134,13 +160,13 @@ const handleDataPointClick = ({ index }) => {
 };
 
 
-  const pieData = Object.keys(moodCounts).map((key, index) => ({
-    name: key,
-    count: moodCounts[key],
-    color: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'][index % 5],
-    legendFontColor: '#000',
-    legendFontSize: 14,
-  }));
+const chartData = Object.keys(moodCounts).map((mood, index) => ({
+  name: mood,
+  count: moodCounts[mood],
+  color: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#FF9F40"][index % 5],
+  legendFontColor: "#7F7F7F",
+  legendFontSize: 12,
+}));
 
   const loadBreathingHistory = async () => {
     try {
@@ -202,28 +228,25 @@ const handleDataPointClick = ({ index }) => {
         <ScrollView>
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Mood Distribution (Past 7 Days)</Text>
-            {pieData.length > 0 ? (
-              <PieChart
-                data={pieData}
-                width={screenWidth - 40}
-                height={220}
-                chartConfig={{
-                  backgroundColor: '#E8F5E9',
-                  backgroundGradientFrom: '#E8F5E9',
-                  backgroundGradientTo: '#C8E6C9',
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                }}
-                accessor="count"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                absolute
-                hasLegend
-              />
-            ) : (
-              <Text style={styles.noDataText}>No mood data available for the past week.</Text>
-            )}
+            {chartData.length > 0 ? (
+        <PieChart
+          data={chartData}
+          width={300}
+          height={200}
+          chartConfig={{
+            backgroundColor: "#f5f5f5",
+            backgroundGradientFrom: "#f5f5f5",
+            backgroundGradientTo: "#f5f5f5",
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          }}
+          accessor="count"
+          backgroundColor="transparent"
+          paddingLeft="15"
+        />
+      ) : (
+        <Text style={styles.noDataText}>No mood data available.</Text>
+      )}
+            <Text style={styles.analysisText}>{analysis}</Text>
           </View>
 
           <View style={styles.card}>
@@ -297,6 +320,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#E8F5E9', // Light green background
   },
+  analysisText: { fontSize: 18, marginTop: 20, textAlign: "center", color: "#2E7D32", fontWeight: "bold" },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
