@@ -8,6 +8,7 @@ import PrimeBtn from "../../Components/PrimeBtn";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Hooks/useAuth";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,10 +22,25 @@ const Register = () => {
   });
 
   const triggerRegister = async () => {
+    const toastId = toast.loading("Registering...");
+
     try {
-      handleRegister(formstate);
+      await handleRegister(formstate);
+
+      toast.update(toastId, {
+        render: "Registered Successfully",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
     } catch (e) {
       console.log(e);
+      toast.update(toastId, {
+        render: "Failed to register",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
     }
   };
 

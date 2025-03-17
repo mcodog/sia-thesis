@@ -12,12 +12,15 @@ import {
 } from "../Redux/Slice/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (formstate) => {
+    const toastId = toast.loading("Logging in...");
     try {
       const result = await axiosInstance.post("/api/token/", formstate);
       Cookies.set("token", result.data.access, {
@@ -25,9 +28,28 @@ export const useAuth = () => {
         secure: true,
         sameSite: "Strict",
       });
+      toast.update(toastId, {
+        render: "Logged in Successfully",
+        type: "success",
+        isLoading: false,
+        autoClose: 1000,
+      });
       await fetchUserProfile(result.data.access);
     } catch (e) {
-      console.log(e);
+      toast.dismiss(toastId);
+      if (e.response.status === 401) {
+        Swal.fire({
+          title: "Login Error",
+          text: "Please check your Username and Password",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Login Error",
+          text: "Something went wrong. Please try again later.",
+          icon: "error",
+        });
+      }
     }
   };
 

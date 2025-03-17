@@ -11,6 +11,7 @@ import { Picker } from "@react-native-picker/picker";
 import DatePicker from "react-native-modern-datepicker";
 import { getToday } from "react-native-modern-datepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../../context/AuthContext";
 
 const generateHourOptions = () =>
   Array.from({ length: 12 }, (_, i) => (i + 1).toString());
@@ -31,6 +32,21 @@ const SleepTracker = ({ onUpdateReport }) => {
   const [sleepData, setSleepData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { axiosInstanceWithBearer } = useAuth();
+
+  const loadSleepData = async () => {
+    try {
+      const storedHistory = await AsyncStorage.getItem("sleepData");
+      console.log("Loaded Sleep Data:", storedHistory); // Debug log
+      if (storedHistory) {
+        const parsedHistory = JSON.parse(storedHistory);
+        // Sort by date in descending order (latest first)
+        parsedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setsleepData(parsedHistory);
+      }
+    } catch (error) {
+      console.error("Error loading sleep history:", error);
+    }
+  };
 
   useEffect(() => {
     loadSleepData().then(() => setLoading(false));
@@ -71,21 +87,6 @@ const SleepTracker = ({ onUpdateReport }) => {
         "Error saving sleep history:",
         error.response?.data || error
       );
-    }
-  };
-
-  const loadsleepData = async () => {
-    try {
-      const storedHistory = await AsyncStorage.getItem("sleepData");
-      console.log("Loaded Sleep Data:", storedHistory); // Debug log
-      if (storedHistory) {
-        const parsedHistory = JSON.parse(storedHistory);
-        // Sort by date in descending order (latest first)
-        parsedHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setsleepData(parsedHistory);
-      }
-    } catch (error) {
-      console.error("Error loading sleep history:", error);
     }
   };
 

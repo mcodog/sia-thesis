@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import bg from "../assets/background.jpg";
 import ProgressCircles from "../Components/Progress/ProgressCircles";
 import AboutContent from "../Partials/Sections/About/AboutContent";
-import { motion } from "framer-motion";
 
-// Main About Component
 const About = () => {
   const [scrollY, setScrollY] = useState(0);
   const totalScrollHeight = 3000;
@@ -17,88 +15,79 @@ const About = () => {
   }, []);
 
   return (
-    <div
-      style={{ height: totalScrollHeight }}
-      className="relative overflow-y-auto scrollbar-right"
-    >
-      {/* Background Image with Motion Effects */}
-      <motion.div
-        className="fixed top-0 left-0 w-full h-screen"
-        initial={{ scale: 1 }}
-        animate={{ scale: 1.05 }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          repeatType: "reverse",
-        }}
-      >
-        <img
-          src={bg}
-          className="w-full h-full object-cover brightness-75"
-          alt="background"
-        />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-green-900/50 via-transparent to-green-700/60"></div>
-      </motion.div>
+    <div style={{ height: totalScrollHeight }}>
+      <div className="absolute top-0 z-10 min-w-screen min-h-screen max-h-screen px-14">
+        <div className="relative z-0 w-full h-full"></div>
 
-      {/* Animated Blobs - Multiple Floating Elements */}
-      <motion.div
-        className="fixed top-10 left-10 w-44 h-44 md:w-60 md:h-60 rounded-full bg-green-400 opacity-50 blur-3xl"
-        animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="fixed bottom-10 right-10 w-56 h-56 md:w-80 md:h-80 rounded-full bg-green-600 opacity-50 blur-3xl"
-        animate={{ y: [0, 15, 0], x: [0, -10, 0] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="fixed top-1/3 left-1/2 w-72 h-72 md:w-96 md:h-96 rounded-full bg-green-300 opacity-40 blur-2xl"
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-      />
+        <div className="fixed w-fit z-10 h-full flex justify-center items-center">
+          {/* <ProgressCircles
+            scrollY={scrollY}
+            totalScrollHeight={totalScrollHeight}
+            numCircles={numCircles}
+          /> */}
+        </div>
 
-      {/* Floating Glow Effect */}
-      <motion.div
-        className="fixed top-0 right-0 w-32 h-32 md:w-44 md:h-44 rounded-full bg-green-500 opacity-40 shadow-2xl"
-        animate={{ y: [0, 10, 0], scale: [1, 1.1, 1] }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Content Wrapper */}
-      <div className="fixed z-10 top-0 left-0 w-full h-screen pt-20 px-14 flex flex-col items-center justify-center">
-        {/* Progress Circles */}
-        <ProgressCircles
-          scrollY={scrollY}
-          totalScrollHeight={totalScrollHeight}
-          numCircles={numCircles}
-        />
-
-        {/* About Content */}
-        <AboutContent
-          scrollPos={scrollY}
-          totalScrollHeight={totalScrollHeight}
-        />
+        <div className="relative top-0 grid grid-cols-2 gap-2 ">
+          <div className="z-10 p-8 pl-20 h-fit">
+            <div className="relative h-screen flex flex-col justify-center text-4xl">
+              <h4 className="font-bold mt-2">About Pathfinder</h4>
+              <div className="mt-2"></div>
+              <p className="text-xl text-gray-600">
+                Pathfinder is a simple yet powerful quiz that helps you discover
+                the best counseling approach for your needs. Whether you're
+                seeking therapy, coaching, or self-help strategies, Pathfinder
+                provides personalized recommendations to guide you toward the
+                best mental health support.
+              </p>
+            </div>
+            <div className="relative h-screen flex flex-col justify-center text-4xl ">
+              <h4 className="font-bold mt-2">Why PathFinder?</h4>
+              <div className="mt-2"></div>
+              <p className="text-xl text-gray-600">
+                Pathfinder is more than just a name—it’s a promise. Just like a
+                compass guiding travelers through uncharted territory, our app
+                helps you navigate the world of counseling and find the path
+                that suits you best. Whether you're feeling overwhelmed, seeking
+                career guidance, or just curious about different therapy styles,
+                Pathfinder leads you in the right direction.
+                <br /> <div className="mt-2"></div>
+                Our AI-driven approach ensures that every recommendation is
+                tailored to your unique responses, making the journey toward
+                self-discovery smooth and insightful. Let Pathfinder illuminate
+                the road ahead and help you take the first step toward a
+                brighter, more balanced future.
+              </p>
+            </div>
+            <div className="relative h-screen flex flex-col justify-center text-4xl">
+              <h4 className="font-bold mt-2">Meet the Team</h4>
+              <div className="mt-2"></div>
+              <p className="text-xl text-gray-600">
+                Our dedicated team of mental health advocates and tech experts
+                built Pathfinder to make counseling more accessible and
+                understandable. We are passionate about bridging the gap between
+                mental health resources and those who need them the most.
+              </p>
+            </div>
+            <div className="relative h-screen flex flex-col justify-center text-4xl">
+              <h4 className="font-bold mt-2">Get Started Today</h4>
+              <div className="mt-2"></div>
+              <p className="text-xl text-gray-600">
+                Take the quiz now and find the counseling approach that fits you
+                best! With just a few minutes of your time, you can gain
+                insights into what type of support suits your personal growth
+                journey. Start today and take the first step toward better
+                mental well-being.
+              </p>
+            </div>
+          </div>
+          <div className="fixed w-full grid grid-cols-2 h-full justify-center items-center">
+            <div></div>
+            <AboutContent
+              scrollPos={scrollY}
+              totalScrollHeight={totalScrollHeight}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

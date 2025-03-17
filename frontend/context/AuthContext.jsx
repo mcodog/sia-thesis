@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const axiosInstanceWithBearer = axios.create({
-    baseURL: "http://192.168.75.101:8000",
+    baseURL: "http://192.168.2.101:8000",
     // baseURL: "http://192.168.1.47:8000",
     // baseURL: "http://192.168.28.101:8000",
     // baseURL: "http://192.168.1.47:8000",

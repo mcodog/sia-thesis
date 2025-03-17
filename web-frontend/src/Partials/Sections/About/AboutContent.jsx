@@ -1,99 +1,182 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import logo from "../../../assets/images/logo.png";
+import graphic from "../../../assets/images/graphic1.png";
+import man from "../../../assets/images/man.png";
 
 const AboutContent = ({ scrollPos, totalScrollHeight }) => {
   const sections = [
     {
-      title: "About Pathfinder",
-      content:
-        "Pathfinder is a simple yet powerful quiz that helps you discover the best counseling approach for your needs. Whether you're seeking therapy, coaching, or self-help strategies, Pathfinder provides personalized recommendations to guide you toward the best mental health support.",
+      image: logo,
     },
     {
-      title: "How It Works",
-      content:
-        "Answer a few fun and engaging questions, and Pathfinder will match you with the counseling type best suited for you. Our smart algorithm evaluates your responses and suggests therapy styles, such as cognitive behavioral therapy (CBT), mindfulness-based counseling, or career coaching, ensuring a perfect fit for your needs.",
+      name: "How It Works",
     },
     {
-      title: "Meet the Team",
-      content:
-        "Our dedicated team of mental health advocates and tech experts built Pathfinder to make counseling more accessible and understandable. We are passionate about bridging the gap between mental health resources and those who need them the most.",
+      name: "Meet the Team",
       team: [
         {
           name: "Mark Codog",
-          role: "Lead Psychologist",
-          image: "/images/team1.jpg",
+          role: "Lead Developer",
+          image: man,
         },
         {
           name: "Glaiza Marie Arcibal",
-          role: "Tech Lead",
-          image: "/images/team2.jpg",
+          role: "Fullstack Developer",
+          image: man,
         },
         {
           name: "Bhea Marie Cervantes",
-          role: "Community Manager",
-          image: "/images/team3.jpg",
+          role: "Frontend Developer",
+          image: man,
         },
       ],
     },
     {
-      title: "Get Started Today",
-      content:
-        "Take the quiz now and find the counseling approach that fits you best! With just a few minutes of your time, you can gain insights into what type of support suits your personal growth journey. Start today and take the first step toward better mental well-being.",
+      title: "",
+      content: "",
     },
   ];
 
   const totalSections = sections.length;
   const sectionHeight = totalScrollHeight / totalSections;
   const currentSection = Math.min(
-    Math.floor(scrollPos / sectionHeight),
+    Math.floor((scrollPos * 1.1) / sectionHeight),
     totalSections - 1
   );
 
+  // Determine which team member should be enlarged based on scroll position
+  const getEnlargedTeamMember = () => {
+    if (sections[currentSection].team) {
+      const teamSection = sections[currentSection];
+      const teamLength = teamSection.team.length;
+
+      // Calculate which team member should be enlarged based on 100 scroll pos intervals
+      const baseScrollPos = (currentSection * sectionHeight) / 1.2; // Convert back to original scroll pos
+      const relativeScrollPos = scrollPos - baseScrollPos;
+      const intervalSize = 250;
+
+      // Only return a valid index if we're within the appropriate scroll range
+      const memberIndex = Math.floor(relativeScrollPos / intervalSize);
+
+      // Return the index only if it's valid
+      if (memberIndex >= 0 && memberIndex < teamLength) {
+        return memberIndex;
+      }
+    }
+    return -1; // No team member enlarged
+  };
+
+  const enlargedTeamMember = getEnlargedTeamMember();
+
   return (
-    <div className="absolute top-0 z-10 w-full h-full grid grid-cols-2 pt-20">
-      <div className="h-full pl-20 flex flex-col justify-center">
+    <div className="w-3/4 h-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center ">
         <motion.div
           key={currentSection}
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -100 }}
           transition={{ duration: 1, type: "spring" }}
-          className="p-8 shadow-custom rounded-2xl bg-white"
+          className="p-8 rounded-2xl bg-white right-0 w-full"
         >
           <p className="font-glacial font-bold text-4xl my-4">
             {sections[currentSection].title}
           </p>
           <p>{sections[currentSection].content}</p>
+          {sections[currentSection].name === "How It Works" && (
+            <div className="relative">
+              <img className="w-full" src={graphic} alt="graphic" />
+            </div>
+          )}
+          {sections[currentSection].image && (
+            <div className="relative">
+              <img
+                className="w-full"
+                src={sections[currentSection].image}
+                alt="logo"
+              />
+            </div>
+          )}
 
           {/* Display the team members when on "Meet the Team" section */}
           {sections[currentSection].team && (
-            <div
-              className="mt-6 p-6 bg-gray-100 rounded-lg shadow-lg relative"
-              style={{
-                backgroundImage: "url('/images/team1.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundBlendMode: "overlay",
-              }}
-            >
-              <div className="grid grid-cols-3 gap-4 bg-white bg-opacity-80 p-6 rounded-lg">
-                {sections[currentSection].team.map((member, index) => (
-                  <div key={index} className="text-center">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-24 h-24 rounded-full mx-auto shadow-lg"
-                    />
-                    <p className="font-bold mt-2">{member.name}</p>
-                    <p className="text-sm text-gray-600">{member.role}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="w-full relative h-96 flex items-center justify-center">
+              <motion.div
+                className="w-full flex justify-between items-center px-4"
+                layout
+              >
+                {sections[currentSection].team.map((member, index) => {
+                  // Calculate x offset for other cards when one is enlarged
+                  const getXOffset = () => {
+                    if (enlargedTeamMember === -1) return 0;
+
+                    // If this card is before the enlarged one, move left
+                    if (index < enlargedTeamMember) return -30;
+
+                    // If this card is after the enlarged one, move right
+                    if (index > enlargedTeamMember) return 30;
+
+                    return 0;
+                  };
+
+                  const isEnlarged = enlargedTeamMember === index;
+
+                  return (
+                    <motion.div
+                      key={index}
+                      className="relative rounded-xl overflow-hidden shadow-custom w-full mx-1"
+                      layout
+                      initial={{ scale: 1, x: 0 }}
+                      animate={{
+                        scale: isEnlarged ? 1.2 : 1,
+                        zIndex: isEnlarged ? 10 : 1,
+                        x: getXOffset(),
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                    >
+                      <div className="h-64 w-full relative bg-gray-100">
+                        <div className="absolute w-full h-64 overflow-hidden">
+                          <motion.img
+                            className="w-full"
+                            src={member.image}
+                            alt={member.name}
+                            initial={{ filter: "grayscale(100%)" }}
+                            animate={{
+                              filter: isEnlarged
+                                ? "grayscale(0%)"
+                                : "grayscale(100%)",
+                            }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </div>
+                        <motion.div
+                          className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-4 pb-6"
+                          initial={{ y: 20, opacity: 0.8 }}
+                          animate={{
+                            y: isEnlarged ? 0 : 20,
+                            opacity: isEnlarged ? 1 : 0.8,
+                          }}
+                          transition={{
+                            delay: isEnlarged ? 0.1 : 0,
+                          }}
+                        >
+                          <h3 className="font-bold text-md">{member.name}</h3>
+                          <p className="text-sm mt-2">{member.role}</p>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
             </div>
           )}
         </motion.div>
       </div>
-      <div className=""></div>
     </div>
   );
 };
