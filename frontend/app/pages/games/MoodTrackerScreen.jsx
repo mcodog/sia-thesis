@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 // import LottieView from "lottie-react-native";
 import {
   View,
-  Text,
   FlatList,
   StyleSheet,
   TouchableOpacity,
@@ -14,6 +13,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
 import { useAuth } from "../../../context/AuthContext";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const moods = [
   {
@@ -46,7 +48,7 @@ const moods = [
   },
 ];
 
-const MoodTrackerScreen = () => {
+const MoodTrackerScreen = ({ navigation }) => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [reason, setReason] = useState("");
   const [moodHistory, setMoodHistory] = useState([]);
@@ -132,7 +134,12 @@ const MoodTrackerScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>How are you feeling today?</Text>
+      <View style={{ marginBottom: 10 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <BoldText style={styles.title}>How are you feeling today?</BoldText>
 
       {!selectedMood ? (
         <View style={styles.moodSelector}>
@@ -157,7 +164,7 @@ const MoodTrackerScreen = () => {
         </View>
       ) : (
         <View style={styles.reasonContainer}>
-          <Text style={styles.selectedMoodText}>You selected:</Text>
+          <BoldText style={styles.selectedMoodText}>You selected:</BoldText>
           <LottieView
             source={selectedMood.animation}
             autoPlay
@@ -176,7 +183,7 @@ const MoodTrackerScreen = () => {
             onPress={saveMood}
             disabled={!selectedMood}
           >
-            <Text style={styles.saveButtonText}>Save Mood</Text>
+            <BoldText style={styles.saveButtonText}>Save Mood</BoldText>
           </TouchableOpacity>
         </View>
       )}
@@ -243,7 +250,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#D4EDDA" },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
     color: "#388E3C",
@@ -270,14 +276,12 @@ const styles = StyleSheet.create({
   smallMoodAnimation: { width: 30, height: 30 },
   moodText: {
     fontSize: 14,
-    fontWeight: "bold",
     marginTop: 5,
     color: "#2E7D32",
   },
   reasonContainer: { alignItems: "center", marginTop: 20 },
   selectedMoodText: {
     fontSize: 20,
-    fontWeight: "bold",
     marginBottom: 10,
     color: "#2E7D32",
   },
@@ -300,7 +304,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     textAlign: "center",
-    fontWeight: "bold",
   },
   historyTitle: {
     fontSize: 20,

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -14,10 +13,14 @@ import { format, parseISO } from "date-fns";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import { useAuth } from "../../../context/AuthContext";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const screenWidth = Dimensions.get("window").width;
 
 const WeeklyWellnessReport = () => {
+  const { axiosInstanceWithBearer } = useAuth();
   const [moodCounts, setMoodCounts] = useState({});
   const navigation = useNavigation();
   const [sleepData, setSleepData] = useState([]);
@@ -35,12 +38,20 @@ const WeeklyWellnessReport = () => {
 
   const loadSleepData = async () => {
     try {
-      const storedData = await AsyncStorage.getItem("sleepData");
-      if (storedData) {
-        setSleepData(JSON.parse(storedData));
+      const response = await axiosInstanceWithBearer.get(
+        "/sleep-tracker/user/1/"
+      );
+      console.log("Loaded Sleep Data:", response.data); // Debug log
+
+      if (response.data) {
+        // Sort by date in descending order (latest first)
+        const sortedHistory = response.data.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setSleepData(sortedHistory);
       }
     } catch (error) {
-      console.error("Error loading sleep data:", error);
+      console.error("Error loading sleep history:", error);
     }
   };
 
@@ -55,10 +66,23 @@ const WeeklyWellnessReport = () => {
   });
 
   const loadMoodData = async () => {
-    const moodData = await AsyncStorage.getItem("moodHistory");
-    if (moodData) {
-      const parsedMoodLogs = JSON.parse(moodData);
-      processMoodData(parsedMoodLogs);
+    try {
+      const response = await axiosInstanceWithBearer.get(
+        "mood-tracker/user/1/"
+      );
+      // console.log("Mood Data Response:", response);
+
+      // Access the data array from the response object
+      const moodData = response.data;
+
+      if (moodData && moodData.length > 0) {
+        processMoodData(moodData);
+        console.log("Processed mood data:", moodData);
+      } else {
+        console.log("No mood data found");
+      }
+    } catch (error) {
+      console.error("Error loading mood data:", error);
     }
   };
 
@@ -118,8 +142,10 @@ const WeeklyWellnessReport = () => {
   };
 
   const pieData = Object.keys(moodCounts).map((key, index) => ({
-    name: key,
-    count: moodCounts[key],
+    name: key, // Keep this if you need it elsewhere
+    value: moodCounts[key], // The actual numeric value
+    label: key, // Add this for the chart label
+    count: moodCounts[key], // Keep this if needed elsewhere
     color: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"][index % 5],
     legendFontColor: "#000",
     legendFontSize: 14,

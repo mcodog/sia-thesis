@@ -5,6 +5,7 @@ import "./App.css";
 
 import Welcome from "./Pages/Welcome";
 import Quiz from "./Pages/Quiz";
+import Profile from "./Pages/Profile";
 import About from "./Pages/About";
 import Admin from "./Pages/Admin";
 import Admin2 from "./Pages/Admin2";
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/" element={<ClientLayout />}>
             <Route index element={<Welcome />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin2" element={<Admin2 />} />

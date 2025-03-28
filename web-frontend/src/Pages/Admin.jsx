@@ -33,7 +33,137 @@ const GENDER_COLORS = {
   Other: "#6B8E23",
 };
 
+// Mock data generation
+const generateMockData = () => {
+  // Mock counseling data
+  const counselingTypes = [
+    "Stress Management",
+    "Depression",
+    "Anxiety",
+    "Relationship Issues",
+    "Career Counseling",
+    "Grief & Loss",
+    "Trauma Recovery",
+    "Addiction Support",
+  ];
+
+  const mockCounselingData = counselingTypes.map((type) => ({
+    name: type,
+    value: Math.floor(Math.random() * 80) + 20, // Random value between 20-100
+  }));
+
+  // Mock gender distribution
+  const mockGenderData = [
+    { name: "Male", value: Math.floor(Math.random() * 200) + 100 },
+    { name: "Female", value: Math.floor(Math.random() * 200) + 100 },
+    { name: "Non-binary", value: Math.floor(Math.random() * 40) + 10 },
+    { name: "Other", value: Math.floor(Math.random() * 20) + 5 },
+  ];
+
+  // Mock sleep data (past 30 days)
+  const mockSleepData = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    return {
+      date: date.toISOString().slice(0, 10),
+      hours: Math.random() * 4 + 4, // Random sleep hours between 4-8
+    };
+  });
+
+  // Mock mood data
+  const mockMoodData = [
+    { mood: "Happy", count: Math.floor(Math.random() * 100) + 50 },
+    { mood: "Sad", count: Math.floor(Math.random() * 50) + 20 },
+    { mood: "Anxious", count: Math.floor(Math.random() * 80) + 30 },
+    { mood: "Calm", count: Math.floor(Math.random() * 70) + 40 },
+    { mood: "Frustrated", count: Math.floor(Math.random() * 60) + 30 },
+    { mood: "Energetic", count: Math.floor(Math.random() * 40) + 20 },
+  ];
+
+  // Mock breathing session data
+  const mockBreathingData = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    return {
+      date: date.toISOString().slice(0, 10),
+      duration: Math.floor(Math.random() * 15) + 5, // Random duration between 5-20 minutes
+    };
+  });
+
+  // Mock user stats
+  const mockUniqueUsers = Math.floor(Math.random() * 300) + 200;
+  const mockRepeatedSubmissions = Math.floor(Math.random() * 200) + 100;
+  const mockTotalSubmissions = mockUniqueUsers + mockRepeatedSubmissions;
+
+  return {
+    // counselingData: mockCounselingData,
+    percentageCounselingData: mockCounselingData.map((item) => ({
+      ...item,
+      value:
+        (item.value / mockCounselingData.reduce((sum, i) => sum + i.value, 0)) *
+        100,
+    })),
+    genderData: mockGenderData,
+    sleepData: mockSleepData,
+    moodData: mockMoodData,
+    breathingData: mockBreathingData,
+    userStats: {
+      totalSubmissions: mockTotalSubmissions,
+      uniqueUsers: mockUniqueUsers,
+      repeatedSubmissions: mockRepeatedSubmissions,
+    },
+  };
+};
+
+// Real data transformation functions
+const transformCounselingData = (apiData) => {
+  // Get all the counseling type keys (excluding non-counseling fields)
+  const counselingTypes = Object.keys(apiData[0]).filter(
+    (key) =>
+      key !== "id" &&
+      key !== "created_at" &&
+      key !== "user" &&
+      key.includes("counseling")
+  );
+
+  // Calculate average values for each counseling type across all entries
+  return counselingTypes.map((type) => {
+    // Calculate average value (and convert to percentage)
+    const average =
+      (apiData.reduce((sum, entry) => sum + entry[type], 0) / apiData.length) *
+      100;
+
+    // Format the counseling type name for display (convert from snake_case to Title Case)
+    const formattedName = type
+      .replace(/_counseling$/, "") // Remove the _counseling suffix
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+    return {
+      name: formattedName,
+      value: parseFloat(average.toFixed(1)), // Round to 1 decimal place
+    };
+  });
+};
+
+// Function to calculate user statistics from API data
+const calculateUserStats = (apiData) => {
+  const uniqueUsers = new Set(apiData.map((entry) => entry.user)).size;
+  const totalSubmissions = apiData.length;
+  const repeatedSubmissions = totalSubmissions - uniqueUsers;
+
+  return {
+    uniqueUsers,
+    totalSubmissions,
+    repeatedSubmissions,
+  };
+};
+
 const Admin = () => {
+  // Add mock data toggle state
+  const [useMockData, setUseMockData] = useState(true);
+
   const [data, setData] = useState([]);
   const [pieData, setPieData] = useState([]);
   const [genderData, setGenderData] = useState([]);
@@ -48,117 +178,168 @@ const Admin = () => {
   // Ref for the content to be printed
   const printRef = useRef(null);
 
+  // Load mock data when useMockData changes
   useEffect(() => {
-    const fetchSleepData = async () => {
-      try {
-        const response = await axiosInstance.get("/sleep-data/");
-        console.log("Sleep Data Response:", response.data); // Debugging log
-        setSleepData(response.data);
-      } catch (error) {
-        console.error("Error fetching sleep data:", error);
-      }
-    };
+    if (useMockData) {
+      const mockData = generateMockData();
+      fetchCounselingData();
+      // setData(mockData.percentageCounselingData);
+      // setPieData(mockData.counselingData);
+      setGenderData(mockData.genderData);
+      setSleepData(mockData.sleepData);
+      setMoodData(mockData.moodData);
+      setBreathingData(mockData.breathingData);
+      setTotalSubmissions(mockData.userStats.totalSubmissions);
+      // setUniqueUsers(mockData.userStats.uniqueUsers);
+      // setRepeatedSubmissions(mockData.userStats.repeatedSubmissions);
+    } else {
+      // Fetch real counseling data
+    }
+  }, [useMockData]);
 
-    fetchSleepData();
-  }, []);
+  // Function to fetch real counseling data
+  const fetchCounselingData = async () => {
+    try {
+      const response = await axiosInstance.get("/api/all-counseling-analyses/");
+      console.log("Counseling Data Response:", response.data);
+
+      // Transform the data
+      const transformedData = transformCounselingData(response.data);
+      setData(transformedData);
+      setPieData(transformedData);
+
+      // Calculate user statistics
+      const userStats = calculateUserStats(response.data);
+      setUniqueUsers(userStats.uniqueUsers);
+      setTotalSubmissions(userStats.totalSubmissions);
+      setRepeatedSubmissions(userStats.repeatedSubmissions);
+    } catch (error) {
+      console.error("Error fetching counseling data:", error);
+    }
+  };
+
+  const transformSleepData = (apiData) => {
+    return apiData.map((entry) => ({
+      date: entry.date, // Keep the same date
+      hours: calculateSleepHours(entry.sleep_time, entry.wake_time), // Convert duration
+    }));
+  };
+
+  // Function to calculate hours between sleep and wake time
+  const calculateSleepHours = (sleepTime, wakeTime) => {
+    const sleepDate = new Date(`2025-03-28 ${sleepTime}`);
+    const wakeDate = new Date(`2025-03-28 ${wakeTime}`);
+
+    let diff = (wakeDate - sleepDate) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+    if (diff < 0) {
+      diff += 24; // Adjust if sleep time is PM and wake time is AM
+    }
+
+    return diff;
+  };
 
   useEffect(() => {
-    const fetchMoodData = async () => {
-      try {
-        const response = await axiosInstance.get("/mood-tracker/");
-        console.log("Mood Data Response:", response.data); // Debugging log
-        setMoodData(response.data);
-      } catch (error) {
-        console.error("Error fetching mood data:", error);
-      }
-    };
+    if (useMockData) {
+      const fetchSleepData = async () => {
+        try {
+          const response = await axiosInstance.get("/sleep-tracker-all/");
+          console.log("Sleep Data Response:", response.data);
+          setSleepData(transformSleepData(response.data));
+        } catch (error) {
+          console.error("Error fetching sleep data:", error);
+        }
+      };
 
-    fetchMoodData();
-  }, []);
-
-  useEffect(() => {
-    const fetchSleepData = async () => {
-      try {
-        const response = await axiosInstance.get("/sleep-data/");
-        setSleepData(response.data);
-      } catch (error) {
-        console.error("Error fetching sleep data:", error);
-      }
-    };
-
-    fetchSleepData();
-  }, []);
+      fetchSleepData();
+    }
+  }, [useMockData]);
 
   useEffect(() => {
-    const fetchBreathingData = async () => {
-      try {
-        const response = await axiosInstance.get("/breathing-session/");
-        setBreathingData(response.data);
-      } catch (error) {
-        console.error("Error fetching breathing data:", error);
-      }
-    };
+    if (useMockData) {
+      const fetchMoodData = async () => {
+        try {
+          const response = await axiosInstance.get("/api/all-mood-entries/");
+          console.log("Mood Data Response:", response.data);
 
-    fetchBreathingData();
-  }, []);
+          // Transform the data to count occurrences of each mood
+          const moodCounts = {};
 
-  useEffect(() => {
-    const fetchAnalysis = async () => {
-      try {
-        const res = await axiosInstance.get("/analysis/");
-        if (res.status === 200) {
-          const analyses = res.data;
-
-          const aggregatedData = {};
-          const genderCounts = {};
-
-          // Count unique users
-          const uniqueUserIds = new Set(analyses.map((entry) => entry.user));
-          setUniqueUsers(uniqueUserIds.size);
-
-          // Calculate repeated submissions
-          setRepeatedSubmissions(analyses.length - uniqueUserIds.size);
-
-          analyses.forEach((entry) => {
-            // Aggregate counseling type data
-            Object.entries(entry.analysis_result).forEach(([name, value]) => {
-              aggregatedData[name] = (aggregatedData[name] || 0) + value;
-            });
-
-            // Count gender distribution
-            if (entry.gender) {
-              genderCounts[entry.gender] =
-                (genderCounts[entry.gender] || 0) + 1;
+          response.data.forEach((entry) => {
+            if (moodCounts[entry.mood]) {
+              moodCounts[entry.mood]++;
+            } else {
+              moodCounts[entry.mood] = 1;
             }
           });
 
-          setTotalSubmissions(analyses.length);
+          // Convert to the required format
+          const transformedData = Object.keys(moodCounts).map((mood) => ({
+            mood: mood,
+            count: moodCounts[mood],
+          }));
 
-          setData(
-            Object.entries(aggregatedData).map(([name, value]) => ({
-              name,
-              value: (value / analyses.length) * 100,
-            }))
-          );
-          setPieData(
-            Object.entries(aggregatedData).map(([name, value]) => ({
-              name,
-              value,
-            }))
-          );
-          setGenderData(
-            Object.entries(genderCounts).map(([gender, count]) => ({
-              name: gender,
-              value: count,
-            }))
-          );
+          setMoodData(transformedData);
+        } catch (error) {
+          console.error("Error fetching mood data:", error);
         }
-      } catch (error) {
-        console.error("Error fetching analysis data:", error);
+      };
+
+      fetchMoodData();
+    }
+  }, [useMockData]);
+
+  useEffect(() => {
+    if (!useMockData) {
+      const fetchBreathingData = async () => {
+        try {
+          const response = await axiosInstance.get("/breathing-session/");
+          setBreathingData(response.data);
+        } catch (error) {
+          console.error("Error fetching breathing data:", error);
+        }
+      };
+
+      fetchBreathingData();
+    }
+  }, [useMockData]);
+
+  useEffect(() => {
+    if (!useMockData) {
+      const fetchGenderData = async () => {
+        try {
+          const response = await axiosInstance.get("/api/users-with-profiles/");
+          const genderCounts = processGenderData(response.data);
+          setGenderData(genderCounts);
+        } catch (error) {
+          console.error("Error fetching user profile data:", error);
+        }
+      };
+
+      fetchGenderData();
+    }
+  }, [useMockData]);
+
+  const processGenderData = (userData) => {
+    const genderMap = {};
+
+    userData.forEach((user) => {
+      const gender = user.gender || "Not Specified";
+
+      if (genderMap[gender]) {
+        genderMap[gender]++;
+      } else {
+        genderMap[gender] = 1;
       }
-    };
-    fetchAnalysis();
-  }, []);
+    });
+
+    const genderData = Object.keys(genderMap).map((gender) => ({
+      name: gender,
+      value: genderMap[gender],
+    }));
+
+    return genderData;
+  };
 
   const userStatsData = [
     { name: "Unique Users", value: uniqueUsers },
@@ -286,8 +467,19 @@ const Admin = () => {
             📊 User Analysis Overview
           </motion.h2>
 
-          {/* Export and Print Buttons */}
+          {/* Export, Print, and Mock Data Toggle Buttons */}
           <div className="flex space-x-4 no-print">
+            <button
+              onClick={() => setUseMockData(!useMockData)}
+              className={`px-4 py-2 text-white rounded-lg transition-colors flex items-center ${
+                useMockData
+                  ? "bg-purple-600 hover:bg-purple-700"
+                  : "bg-gray-600 hover:bg-gray-700"
+              }`}
+            >
+              <span className="mr-2">🔄</span>
+              {useMockData ? "Using Mock Data" : "Use Mock Data"}
+            </button>
             <button
               onClick={handlePrint}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
@@ -318,6 +510,11 @@ const Admin = () => {
             Generated on: {new Date().toLocaleDateString()} at{" "}
             {new Date().toLocaleTimeString()}
           </p>
+          {useMockData && (
+            <p className="text-center text-red-500 font-bold mt-2">
+              [MOCK DATA FOR TESTING PURPOSES ONLY]
+            </p>
+          )}
         </div>
 
         {/* Statistics Section */}
@@ -336,6 +533,11 @@ const Admin = () => {
           <p className="text-lg">
             🔁 <strong>Repeated Submissions:</strong> {repeatedSubmissions}
           </p>
+          {useMockData && (
+            <p className="text-red-500 text-sm mt-2">
+              Using mock data for demonstration purposes
+            </p>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -421,7 +623,7 @@ const Admin = () => {
               Counseling Type Distribution
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data} layout="vertical">
+              <BarChart data={pieData} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} />
                 <YAxis type="category" dataKey="name" width={200} />
                 <Tooltip />
@@ -596,6 +798,11 @@ const Admin = () => {
             Generated from User Analysis Dashboard on{" "}
             {new Date().toLocaleString()}
           </p>
+          {useMockData && (
+            <p className="text-red-500 font-bold">
+              THIS REPORT CONTAINS MOCK DATA FOR TESTING PURPOSES ONLY
+            </p>
+          )}
         </div>
       </div>
     </div>

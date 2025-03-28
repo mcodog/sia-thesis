@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   ScrollView,
   TouchableOpacity,
   Image,
@@ -11,6 +10,8 @@ import { Chip, PaperProvider } from "react-native-paper";
 import ElevatedButton from "../../../components/customs/ElevatedButton";
 import theme from "../../../components/CustomTheme";
 import { useNavigation } from "@react-navigation/native";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const Resources = () => {
   const navigation = useNavigation();
@@ -74,6 +75,9 @@ const Resources = () => {
           <View style={styles.chipContainer}>
             {categories.map((category) => (
               <Chip
+                style={{ fontFamily: "Primary" }}
+                labelStyle={{ fontFamily: "Primary" }}
+                contentStyle={{ fontFamily: "Primary" }}
                 key={category}
                 icon={
                   category === "All"
@@ -119,7 +123,7 @@ export default Resources;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 20 },
-  header: { fontSize: 24, fontWeight: "bold", marginBottom: 11 },
+  header: { fontSize: 24, marginBottom: 11 },
   chipContainer: {
     flexDirection: "row",
     marginBottom: 9,
@@ -142,7 +146,6 @@ const styles = StyleSheet.create({
   cardText: {
     marginTop: 5,
     fontSize: 14,
-    fontWeight: "bold",
     textAlign: "center",
   },
 });

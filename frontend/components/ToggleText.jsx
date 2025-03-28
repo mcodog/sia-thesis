@@ -1,6 +1,7 @@
-import { View, Text, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback } from "react-native";
 import React, { useState } from "react";
 import { rem } from "./stylings/responsiveSize";
+import { default as Text } from "./CustomText";
 
 const ToggleText = ({ state, toggler }) => {
   return (

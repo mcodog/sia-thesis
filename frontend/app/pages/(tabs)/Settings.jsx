@@ -1,4 +1,4 @@
-import { View, Text, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import React, { useEffect } from "react";
 import { rem } from "../../../components/stylings/responsiveSize";
 
@@ -13,8 +13,10 @@ import {
   toggleFxQuiz,
   toggleQuizSpeech,
 } from "../../../redux/settingsSlice";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { default as Text } from "../../../components/CustomText";
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
   const settingsConfig = useSelector((state) => state.settings.settings);
   const dispatch = useDispatch();
 
@@ -36,6 +38,11 @@ const Settings = () => {
 
   return (
     <View style={{ flex: 1, padding: rem(10) }}>
+      <View style={{ marginBottom: 10 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <Text style={{ fontSize: rem(20), fontWeight: 500 }}>Settings</Text>
       <Text style={{ fontSize: rem(16), fontWeight: 500 }}>Quiz Settings</Text>
       <Divider style={{ marginVertical: rem(5) }} />

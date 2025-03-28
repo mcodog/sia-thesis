@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   TextInput,
   Button,
   ScrollView,
@@ -13,6 +12,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const Diary = () => {
   const navigation = useNavigation();
@@ -79,7 +80,7 @@ const Diary = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.title}>🫙 Dairy Jar</Text>
+        <BoldText style={styles.title}>🫙 Diary Jar</BoldText>
       </View>
       <Text style={styles.subtitle}>
         Take a moment to reflect on every day.
@@ -153,7 +154,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
     marginLeft: 10,
   },
   subtitle: {

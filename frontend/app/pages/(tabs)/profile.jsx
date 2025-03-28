@@ -1,16 +1,43 @@
-import React, { useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useSelector } from "react-redux";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
+import CounselingCharts from "../../../components/CounselingCharts"; // Import the new component
 
 const Profile = ({ navigation }) => {
   const authState = useSelector((state) => state.auth.auth);
-  const { onLogout } = useAuth();
+  const { onLogout, axiosInstanceWithBearer } = useAuth();
   const router = useRouter();
   const user = useSelector((state) => state.user.user);
+  const [profile, setProfile] = useState({});
+  const [analysisData, setAnalysisData] = useState(null); // Add state for analysis data
+
+  const fetchProfile = async () => {
+    try {
+      const response = await axiosInstanceWithBearer.get("/api/user/profile");
+      // console.log("Profile response:", response.data);
+      setProfile(response.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  const fetchLatest = async () => {
+    try {
+      const response = await axiosInstanceWithBearer.get(
+        `/get-analysis/${user.id}`
+      );
+      console.log("Latest analysis response:", response.data);
+      setAnalysisData(response.data); // Store the fetched data
+    } catch (error) {
+      console.error("Error fetching latest analysis:", error);
+    }
+  };
 
   console.log(user);
 
@@ -18,58 +45,63 @@ const Profile = ({ navigation }) => {
     if (!authState.isLoggedIn) {
       navigation.navigate("Login");
     }
+    fetchProfile();
+    fetchLatest();
   }, []);
 
   return (
     <View style={styles.container}>
-      {authState.isLoggedIn ? (
-        <View>
-          {/* Header Section */}
-          <View style={styles.header}>
-            {/* Back Icon */}
-            <TouchableOpacity
-              style={styles.iconContainer}
-              onPress={() => router.back()}
-            >
-              <MaterialIcons name="arrow-back" size={30} color="white" />
-            </TouchableOpacity>
-
-            {/* Settings Icon */}
-            <TouchableOpacity
-              style={styles.iconContainerRight}
-              onPress={() => console.log("Go to Settings")}
-            >
-              <MaterialIcons name="settings" size={30} color="white" />
-            </TouchableOpacity>
-
-            {/* Avatar with Edit Icon */}
-            <View style={styles.avatarContainer}>
-              <AntDesign name="user" size={50} color="#6cbab0" />
+      <ScrollView>
+        {authState.isLoggedIn ? (
+          <View>
+            {/* Header Section */}
+            <View style={styles.header}>
+              {/* Back Icon */}
               <TouchableOpacity
-                style={styles.editIcon}
-                onPress={() => console.log("Edit Profile Picture")}
+                style={styles.iconContainer}
+                onPress={() => router.back()}
               >
-                <MaterialIcons name="camera-alt" size={20} color="white" />
+                <MaterialIcons name="arrow-back" size={30} color="white" />
               </TouchableOpacity>
-            </View>
 
-            {/* Username  */}
-            <View style={styles.usernameWrapper}>
-              <Text style={styles.username}>
-                {user.firstName + " " + user.lastName} &nbsp;
+              {/* Settings Icon */}
+              <TouchableOpacity
+                style={styles.iconContainerRight}
+                onPress={() => console.log("Go to Settings")}
+              >
+                <MaterialIcons name="settings" size={30} color="white" />
+              </TouchableOpacity>
+
+              {/* Avatar with Edit Icon */}
+              <View style={styles.avatarContainer}>
+                <AntDesign name="user" size={50} color="#6cbab0" />
+                <TouchableOpacity
+                  style={styles.editIcon}
+                  onPress={() => console.log("Edit Profile Picture")}
+                >
+                  <MaterialIcons name="camera-alt" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Username  */}
+              <View
+                style={[styles.usernameWrapper, { flexDirection: "column" }]}
+              >
+                <BoldText style={styles.username}>
+                  {user.firstName + " " + user.lastName} &nbsp;
+                </BoldText>
+                <Text style={{ color: "#fefefe" }}>(@{user.name})</Text>
+              </View>
+              <View style={{ color: "#dedede" }}></View>
+
+              {/* Bio Section */}
+              <Text style={styles.bio}>
+                {profile.location ? profile.location : "Location not set"}
               </Text>
-              <Text style={{ color: "#fefefe" }}>(@{user.name})</Text>
             </View>
-            <View style={{ color: "#dedede" }}></View>
 
-            {/* Bio Section */}
-            <Text style={styles.bio}>
-              This is the bio section. You can add a short description here.
-            </Text>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.actions}>
+            {/* Action Buttons */}
+            {/* <View style={styles.actions}>
             <TouchableOpacity style={styles.actionButton}>
               <MaterialIcons name="event" size={24} color="white" />
               <Text style={styles.actionText}>Check-in</Text>
@@ -78,57 +110,65 @@ const Profile = ({ navigation }) => {
               <MaterialIcons name="group" size={24} color="white" />
               <Text style={styles.actionText}>Accounts</Text>
             </TouchableOpacity>
+          </View> */}
+
+            {/* Latest Analysis Section - Updated with Charts */}
+            <View>
+              <Text style={styles.sectionTitle}>Latest Analysis</Text>
+              {analysisData ? (
+                <CounselingCharts analysisData={analysisData} />
+              ) : (
+                <View style={styles.loadingContainer}>
+                  <Text>Loading analysis data...</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Settings List */}
+            {/* <TouchableOpacity style={styles.otherSetting}>
+              <MaterialIcons name="email" size={24} color="#6cbab0" />
+              <Text style={styles.settingText}>Results</Text>
+              <Text style={styles.emailText}>{user.email}</Text>
+            </TouchableOpacity> */}
+
+            {/* Other Settings */}
+            <TouchableOpacity
+              style={styles.otherSetting}
+              onPress={() => navigation.navigate("Settings")}
+            >
+              <MaterialIcons name="settings" size={24} color="#6cbab0" />
+              <Text style={styles.settingText}>Settings</Text>
+            </TouchableOpacity>
+
+            {/* Logout Button */}
+            <TouchableOpacity
+              style={styles.otherSetting}
+              onPress={() => {
+                onLogout();
+                navigation.navigate("Welcome");
+              }}
+            >
+              <MaterialIcons name="logout" size={24} color="#6cbab0" />
+              <Text style={styles.settingText}>Sign Out</Text>
+            </TouchableOpacity>
           </View>
-
-          {/* Settings List */}
-          <TouchableOpacity style={styles.otherSetting}>
-            <MaterialIcons name="email" size={24} color="#6cbab0" />
-            <Text style={styles.settingText}>Email</Text>
-            <Text style={styles.emailText}>{user.email}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.otherSetting}>
-            <MaterialIcons name="lock" size={24} color="#6cbab0" />
-            <Text style={styles.settingText}>Update Password</Text>
-          </TouchableOpacity>
-
-          {/* Other Settings */}
-          <TouchableOpacity style={styles.otherSetting}>
-            <MaterialIcons name="settings" size={24} color="#6cbab0" />
-            <Text style={styles.settingText}>Settings</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.otherSetting}>
-            <MaterialIcons name="support-agent" size={24} color="#6cbab0" />
-            <Text style={styles.settingText}>Support</Text>
-          </TouchableOpacity>
-
-          {/* Logout Button */}
-          <TouchableOpacity
-            style={styles.otherSetting}
-            onPress={() => {
-              onLogout();
-              navigation.navigate("Welcome");
-            }}
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <MaterialIcons name="logout" size={24} color="#6cbab0" />
-            <Text style={styles.settingText}>Sign Out</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text>You need to be logged in to view this page.</Text>
-        </View>
-      )}
+            <Text>You need to be logged in to view this page.</Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
 
-// Styles
+// Styles - add the new section title and loading styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white", // Light green background
+    backgroundColor: "white",
     padding: 16,
   },
   header: {
@@ -137,7 +177,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    position: "relative", // Allow absolute positioning of icons
+    position: "relative",
   },
   iconContainer: {
     position: "absolute",
@@ -158,13 +198,13 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative", // For absolute positioning of the edit icon
+    position: "relative",
   },
   editIcon: {
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#6cbab0", // Semi-transparent background
+    backgroundColor: "#6cbab0",
     borderRadius: 20,
     padding: 3,
   },
@@ -176,7 +216,6 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 18,
-    fontWeight: "bold",
     color: "#fff",
   },
   bio: {
@@ -198,6 +237,21 @@ const styles = StyleSheet.create({
   actionText: {
     color: "#fff",
     marginTop: 5,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 10,
+    color: "#6cbab0",
+  },
+  loadingContainer: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+    margin: 10,
   },
   settingsList: {
     backgroundColor: "#fff",

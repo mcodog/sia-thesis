@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   ScrollView,
   Image,
   TouchableOpacity,
@@ -8,6 +7,8 @@ import {
 } from "react-native";
 import React from "react";
 import background from "../../../assets/images/bg/abstract2.png";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -133,16 +134,15 @@ const Home = ({ navigation }) => {
                       zIndex: 20,
                     }}
                   >
-                    <Text
+                    <BoldText
                       className="text-center"
                       style={{
                         fontSize: rem(14),
                         color: "black",
-                        fontWeight: 700,
                       }}
                     >
                       Discover your Counseling Path!
-                    </Text>
+                    </BoldText>
                     <Text
                       className="mb-5"
                       style={{
@@ -212,7 +212,7 @@ const Home = ({ navigation }) => {
                 style={styles.gradientCard}
               >
                 <View style={styles.cardContent}>
-                  <Text style={styles.cardText}>✨ Mood Check! ✨</Text>
+                  <BoldText style={styles.cardText}>✨ Mood Check! ✨</BoldText>
                   <Text style={styles.subText}>How's your vibe? 😍😜</Text>
                 </View>
               </LinearGradient>
@@ -261,7 +261,7 @@ const Home = ({ navigation }) => {
                 </View>
               </ScrollView>
             </View>
-            <View className="items-center flex-row px-2">
+            {/* <View className="items-center flex-row px-2">
               <Text className="font-bold w-3/4" style={{ fontSize: rem(14) }}>
                 Community Forum
               </Text>
@@ -270,8 +270,8 @@ const Home = ({ navigation }) => {
                   See more
                 </Button>
               </View>
-            </View>
-            <View className="px-2 gap-4 w-full mb-4">
+            </View> */}
+            {/* <View className="px-2 gap-4 w-full mb-4">
               <PostTile
                 imageKey="user1"
                 title="Trying out PathFinder!"
@@ -293,7 +293,7 @@ const Home = ({ navigation }) => {
                 content="It is a long established fact that a reader will be distracted
           by the readable content of a page when looking at its layout."
               />
-            </View>
+            </View> */}
           </ScrollView>
         </View>
       ) : (
@@ -348,13 +348,11 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#000000", // Cute deep purple 💜
     textAlign: "center",
   },
   subText: {
     fontSize: 14,
-    fontWeight: "500",
     color: "#ffffff", // Soft pink 🌸
     textAlign: "center",
     marginTop: 5,

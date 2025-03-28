@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { Audio } from "expo-av";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import BoldText from "../../../components/BoldText";
+import { default as Text } from "../../../components/CustomText";
+
+const { width } = Dimensions.get("window");
+const cardSize = width / 4.5;
 
 const icons = ["🐰", "🐻", "🦊", "🐼", "🐱", "🐶", "🐵", "🐸", "🐯", "🐹"];
-
 const quotes = [
   "You're pawsome! 🐾 Keep going! ✨",
   "Cuteness overload! You're amazing! 💖",
@@ -11,8 +17,10 @@ const quotes = [
   "Great job! You're on fire! 🔥 Keep pushing! 🏆",
 ];
 
+let winnerSound;
+
 const generateCards = (level) => {
-  const numPairs = 2 + (level - 1) * 2; // Increase pairs per level
+  const numPairs = 2 + (level - 1) * 2;
   const selectedIcons = icons.slice(0, numPairs);
   const cards = [...selectedIcons, ...selectedIcons].map((content, index) => ({
     id: index + 1,
@@ -23,14 +31,15 @@ const generateCards = (level) => {
   return shuffleCards(cards);
 };
 
-const shuffleCards = (cards) => {
-  return [...cards].sort(() => Math.random() - 0.5);
-};
+const shuffleCards = (cards) => [...cards].sort(() => Math.random() - 0.5);
 
 const Card = ({ card, onClick }) => {
   return (
     <TouchableOpacity
-      style={[styles.card, (card.matched || card.flipped) && styles.flippedCard]}
+      style={[
+        styles.card,
+        (card.matched || card.flipped) && styles.flippedCard,
+      ]}
       onPress={() => onClick(card)}
       disabled={card.matched}
     >
@@ -41,12 +50,18 @@ const Card = ({ card, onClick }) => {
   );
 };
 
-const ClipCardGame = () => {
+const ClipCardGame = ({ navigation }) => {
   const [level, setLevel] = useState(1);
   const [cards, setCards] = useState(generateCards(level));
   const [selectedCards, setSelectedCards] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [motivationQuote, setMotivationQuote] = useState("");
+
+  const playSound = async (soundFile) => {
+    const { sound } = await Audio.Sound.createAsync(soundFile);
+    await sound.playAsync();
+    return sound;
+  };
 
   useEffect(() => {
     if (selectedCards.length === 2) {
@@ -57,6 +72,7 @@ const ClipCardGame = () => {
             card.content === first.content ? { ...card, matched: true } : card
           )
         );
+        playSound(require("../../../assets/audio/ting.mp3"));
       } else {
         setTimeout(() => {
           setCards((prevCards) =>
@@ -76,21 +92,31 @@ const ClipCardGame = () => {
     if (cards.every((card) => card.matched)) {
       setGameOver(true);
       setMotivationQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+      playSound(require("../../../assets/audio/winner.mp3")).then((sound) => {
+        winnerSound = sound;
+      });
     }
   }, [cards]);
 
   const handleCardClick = (card) => {
-    if (!gameOver && selectedCards.length < 2 && !card.flipped && !card.matched) {
+    if (
+      !gameOver &&
+      selectedCards.length < 2 &&
+      !card.flipped &&
+      !card.matched
+    ) {
       setCards((prevCards) =>
-        prevCards.map((c) =>
-          c.id === card.id ? { ...c, flipped: true } : c
-        )
+        prevCards.map((c) => (c.id === card.id ? { ...c, flipped: true } : c))
       );
       setSelectedCards([...selectedCards, card]);
+      playSound(require("../../../assets/audio/tap2.mp3"));
     }
   };
 
   const nextLevel = () => {
+    if (winnerSound) {
+      winnerSound.stopAsync();
+    }
     if (level < 5) {
       setLevel(level + 1);
       setCards(generateCards(level + 1));
@@ -103,6 +129,9 @@ const ClipCardGame = () => {
   };
 
   const resetGame = () => {
+    if (winnerSound) {
+      winnerSound.stopAsync();
+    }
     setLevel(1);
     setCards(generateCards(1));
     setSelectedCards([]);
@@ -112,8 +141,15 @@ const ClipCardGame = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Clip Card Game 🐰✨</Text>
-      <Text style={styles.level}>Level {level} 🔥</Text>
+      <View
+        style={{ marginBottom: 10, position: "absolute", top: 20, left: 20 }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <BoldText style={styles.title}>Clip Card Game 🐰✨</BoldText>
+      <BoldText style={styles.level}>Level {level} 🔥</BoldText>
 
       {gameOver ? (
         <View style={styles.motivationContainer}>
@@ -144,14 +180,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#E8F5E9",
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 28,
     marginBottom: 10,
     color: "#2E7D32",
   },
   level: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
     color: "#ff4500",
     marginBottom: 15,
   },
@@ -161,51 +195,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   card: {
-    width: 70,
-    height: 70,
+    width: cardSize,
+    height: cardSize,
     backgroundColor: "#C8E6C9",
     justifyContent: "center",
     alignItems: "center",
     margin: 5,
-    borderRadius: 10,
+    borderRadius: 15,
     shadowColor: "#1B5E20",
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   flippedCard: {
     backgroundColor: "#2E7D32",
   },
   cardText: {
-    fontSize: 24,
+    fontSize: 28,
     color: "#fff",
   },
-  motivationContainer: {
-    alignItems: "center",
-    marginTop: 20,
-  },
-  motivationText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#333",
-  },
   nextButton: {
-    backgroundColor: "#2E7D32",
-    padding: 10,
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: "#ff4500",
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   nextButtonText: {
     fontSize: 18,
     color: "#fff",
     fontWeight: "bold",
   },
-  dataTable: { backgroundColor: "#C8E6C9", borderRadius: 10 },
-  dataTableHeader: { backgroundColor: "#A5D6A7" },
-  dataTableRow: { backgroundColor: "#E8F5E9", borderBottomWidth: 1, borderBottomColor: "#C8E6C9" },
 });
 
 export default ClipCardGame;

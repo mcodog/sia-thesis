@@ -188,7 +188,9 @@ const Quiz = () => {
               className="bg-white shadow-custom rounded-xl p-12 text-center w-full pb-12"
             >
               {/* Question */}
-              <h2 className="text-lg font-semibold">{item.question}</h2>
+              <h2 className="text-lg font-semibold">
+                {language === "English" ? item.question : item.tagalog}
+              </h2>
 
               {/* Answer Options */}
               <div className="mt-4 flex flex-col gap-2">

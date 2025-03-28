@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { rem } from "./stylings/responsiveSize";
 import Animated, {
@@ -7,6 +7,7 @@ import Animated, {
   LinearTransition,
   Easing,
 } from "react-native-reanimated";
+import { default as Text } from "./CustomText";
 
 const MessageBox = ({ text = "This is a sample message.", user = true }) => {
   return (

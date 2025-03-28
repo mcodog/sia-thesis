@@ -39,9 +39,7 @@
       [
         "expo-font",
         {
-          "fonts": [
-            "./assets/fonts/GlacialIndifference-Regular.otf"
-          ]
+          "fonts": ["./assets/fonts/GlacialIndifference-Regular.otf"]
         }
       ],
       [

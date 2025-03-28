@@ -1,12 +1,14 @@
 import {
   View,
-  Text,
   TouchableWithoutFeedback,
   Pressable,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
+import { default as Text } from "../../../components/CustomText";
 import { useRouter } from "expo-router";
+import BoldText from "../../../components/BoldText";
 import Animated, {
   Keyframe,
   Easing,
@@ -852,6 +854,12 @@ const Quiz = ({ navigation }) => {
               elevation: 5,
             }}
           >
+            <View style={{ marginVertical: rem(10), gap: rem(10) }}>
+              <Text>
+                Question {questionNum + 1} of {questions.length}
+              </Text>
+              <ProgressBar progress={(questionNum + 1) / questions.length} />
+            </View>
             {questions.map((item, i) => {
               return questionNum === i ? (
                 <Animated.View
@@ -1148,52 +1156,36 @@ const Quiz = ({ navigation }) => {
                         </View>
                       </Animated.View>
                     )}
-
-                    {/* {i == questions.length - 1 && (
-                      <Animated.View
-                        entering={FadeInUp.easing(
-                          Easing.bezier(0.5, 1.5, 0.5, 1)
-                        )}
-                        style={{
-                          width: "100%",
-                          flexDirection: "row",
-                          marginTop: rem(50),
-                        }}
-                      >
-                        <View
-                          style={{ width: "100%", paddingHorizontal: rem(5) }}
-                        >
-                          <TouchableWithoutFeedback
-                            disabled={i === 0}
-                            onPress={() => {
-                              setFinished(true);
-                              setIsLoading(true);
-                            }}
-                          >
-                            <Text
-                              style={{
-                                elevation: 5,
-                                backgroundColor: "white",
-                                borderRadius: 32,
-                                padding: rem(10),
-                                paddingVertical: rem(15),
-                                textAlign: "center",
-                                fontSize: rem(13),
-                                fontWeight: 700,
-                              }}
-                            >
-                              Finish
-                            </Text>
-                          </TouchableWithoutFeedback>
-                        </View>
-                      </Animated.View>
-                    )} */}
                   </View>
                 </Animated.View>
               ) : null;
             })}
           </Animated.View>
         )}
+        <View
+          style={{
+            width: "100%",
+            paddingTop: 20,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+            <Animated.View
+              layout={LinearTransition.easing(Easing.bezier(0.5, 1.5, 0.5, 1))}
+              style={{
+                padding: 50,
+                paddingVertical: 15,
+                borderWidth: 1,
+                borderRadius: 24,
+                backgroundColor: "white",
+                elevation: 5,
+              }}
+            >
+              <Text style={{ color: "black" }}>End Quiz</Text>
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
       {finished && (
         <Animated.View

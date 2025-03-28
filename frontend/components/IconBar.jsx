@@ -1,7 +1,8 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { rem } from "./stylings/responsiveSize";
+import { default as Text } from "./CustomText";
 
 const IconBar = ({ title, sub, icon }) => {
   return (

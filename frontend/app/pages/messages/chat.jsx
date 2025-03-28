@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   TextInput,
   Button,
   TouchableWithoutFeedback,
@@ -11,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Appbar, DefaultTheme, PaperProvider } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { rem } from "../../../components/stylings/responsiveSize";
+import { default as Text } from "../../../components/CustomText";
 
 //Customs
 import { TopShadowBox } from "../../../components/CustomShadow";
@@ -21,6 +21,7 @@ import theme from "../../../components/CustomTheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../../../context/AuthContext";
+import BoldText from "../../../components/BoldText";
 
 const chats = [
   {
@@ -33,7 +34,7 @@ const chats = [
   },
 ];
 
-const Chat = () => {
+const Chat = ({ navigation }) => {
   const { axiosInstanceWithBearer, user } = useAuth();
 
   const stackRouter = useRoute();
@@ -96,6 +97,33 @@ const Chat = () => {
       }
     }
   };
+  const handleBack = async () => {
+    try {
+      const payload = chats
+        .map((chat) => `[${chat.user ? "user" : "bot"}]: ${chat.text}`)
+        .join(" | "); // Ensure no extra quotes
+
+      console.log("Sending payload:", payload);
+
+      const response = await axiosInstanceWithBearer.post(
+        "https://hook.us2.make.com/ugzehb1tisa8cethbq15mga1gn3k2yui",
+        payload, // Send as raw string
+        {
+          headers: {
+            "Content-Type": "text/plain", // Ensure it's treated as plain text
+          },
+        }
+      );
+
+      console.log("Response from Make:", response.data);
+      navigation.goBack();
+    } catch (error) {
+      console.error(
+        "Error sending data to Make:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const sendMessage = async () => {};
 
@@ -139,7 +167,7 @@ const Chat = () => {
       <Appbar.Header theme={DefaultTheme}>
         <Appbar.BackAction
           onPress={() => {
-            router.back();
+            handleBack();
           }}
         />
         <Appbar.Content title="Chat" />

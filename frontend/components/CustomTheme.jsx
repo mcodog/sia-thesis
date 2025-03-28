@@ -1,9 +1,15 @@
 import * as React from "react";
 import {
   MD3LightTheme as DefaultTheme,
-  PaperProvider,
+  configureFonts,
 } from "react-native-paper";
 
+// Start with the default font configuration
+const fontConfig = {
+  fontFamily: "Primary",
+};
+
+// Create the customized theme
 const theme = {
   ...DefaultTheme,
   myOwnProperty: true,
@@ -50,6 +56,9 @@ const theme = {
     onSurfaceDisabled: "rgba(231, 225, 229, 0.38)",
     backdrop: "rgba(51, 47, 55, 0.4)",
   },
+  // Use the configureFonts function to properly set up all the font variants
+  // This will automatically apply your fontFamily to all the default font configurations
+  fonts: configureFonts({ config: fontConfig }),
 };
 
 export default theme;

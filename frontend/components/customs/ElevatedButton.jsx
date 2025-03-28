@@ -1,6 +1,7 @@
-import { TouchableWithoutFeedback, Text } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
 import React from "react";
 import Feather from "@expo/vector-icons/Feather";
+import { default as Text } from "../CustomText";
 
 import { rem } from "../stylings/responsiveSize";
 

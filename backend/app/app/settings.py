@@ -51,9 +51,9 @@ REST_FRAMEWORK = {
 }
 
 
-TWILIO_ACCOUNT_SID = "AC5fc3ca652498ef1b80d552a22674a1f9"
-TWILIO_AUTH_TOKEN = "e48aa1f2a53b4ead843a11857797eca3"
-TWILIO_VERIFY_SERVICE_SID = "MG3932bf3ca53aad0be3aafd40aa0d43a6"
+TWILIO_ACCOUNT_SID = "ACa0bfc702dfdcb3329fe27a1d389d1d19"
+TWILIO_AUTH_TOKEN = "285862a5f2964f547ad05e6af5511b54"
+TWILIO_VERIFY_SERVICE_SID = "VAd64325fee50541a011a391a9f93b287e"
 
 from datetime import timedelta
 
@@ -114,6 +114,21 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pathfinder_a1ru',  # Your Render DB name
+#         'USER': 'mcodog',  # Your Render DB user
+#         'PASSWORD': 'rvquVLP3BCwclcAmFrCMdBU9v596Zzau',  # Your Render DB password
+#         'HOST': 'dpg-cviq119r0fns73851sng-a.singapore-postgres.render.com',  # Full Render DB hostname
+#         'PORT': '5432',  # PostgreSQL default port
+#         'OPTIONS': {
+#             'sslmode': 'require',  # Required for Render
+#         },
+#     }
+# }
+
 
 
 # Password validation

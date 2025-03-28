@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Text,
   Animated,
   View,
   TouchableOpacity,
@@ -14,6 +13,8 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../../context/AuthContext";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 // Import local audio files
 import getReadyAudio from "../../../assets/audio/breath/get-ready-in.mp3";

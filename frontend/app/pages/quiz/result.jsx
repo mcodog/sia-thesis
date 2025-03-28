@@ -1,12 +1,13 @@
 import {
   View,
-  Text,
   TouchableWithoutFeedback,
   Image,
   ScrollView,
   Dimensions,
 } from "react-native";
+import { default as Text } from "../../../components/CustomText";
 import React, { useEffect, useState } from "react";
+import BoldText from "../../../components/BoldText";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";

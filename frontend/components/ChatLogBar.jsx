@@ -1,14 +1,11 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import React, { useEffect, useState } from "react";
 import { rem } from "./stylings/responsiveSize";
 import Entypo from "@expo/vector-icons/Entypo";
 import Feather from "@expo/vector-icons/Feather";
 import { useStoreRootState } from "expo-router/build/global-state/router-store";
+import { default as Text } from "./CustomText";
+import BoldText from "./BoldText";
 
 const ChatLogBar = ({
   chatLogNum,
@@ -46,9 +43,7 @@ const ChatLogBar = ({
         <View className="flex-1 w-3/4">
           <View className="h-1/2">
             <View className="flex-row">
-              <Text className="font-bold" style={{ fontSize: rem(12) }}>
-                Chat Log #:
-              </Text>
+              <BoldText style={{ fontSize: rem(12) }}>Chat Log #:</BoldText>
               <Text
                 className="font-bold"
                 style={{ fontSize: rem(12), color: "#0cdfc6" }}

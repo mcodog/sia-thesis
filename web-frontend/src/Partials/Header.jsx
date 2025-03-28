@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { triggerLogout } from "../Redux/Slice/AuthSlice";
 import { useAuth } from "../Hooks/useAuth";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const user = useSelector((state) => state.auth);
@@ -22,6 +23,7 @@ const Header = () => {
       confirmButtonText: "Confirm",
     }).then((result) => {
       if (result.isConfirmed) {
+        Cookies.remove("token");
         Swal.fire("You are now logged out.");
         dispatch(triggerLogout());
         setTimeout(() => {

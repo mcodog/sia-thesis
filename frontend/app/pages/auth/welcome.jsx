@@ -1,5 +1,7 @@
-import { View, Text, Image } from "react-native";
+import { View, Image } from "react-native";
 import React, { useEffect } from "react";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 import { Button, PaperProvider } from "react-native-paper";
 import { useRouter } from "expo-router";
@@ -9,6 +11,8 @@ import theme from "../../../components/CustomTheme";
 import { rem } from "../../../components/stylings/responsiveSize";
 import { useAuth } from "../../../context/AuthContext";
 import SoundButton from "../../../components/SoundButton";
+import { BackHandler, Alert } from "react-native";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 const Welcome = ({ navigation }) => {
   const { setUser } = useAuth();
@@ -19,6 +23,21 @@ const Welcome = ({ navigation }) => {
     navigation.navigate("Main", { animation: "none" });
   };
 
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Exit App", "Are you sure you want to exit?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Exit", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
+
   return (
     <PaperProvider theme={theme}>
       <View className="flex-1 justify-center items-center p-16 bg-white">
@@ -28,9 +47,9 @@ const Welcome = ({ navigation }) => {
           resizeMode="contain"
         />
         <View className="absolute top-52">
-          <Text style={{ fontSize: rem(26), fontWeight: 700 }}>
+          <BoldText style={{ fontSize: rem(26) }}>
             Welcome to PathFinder!
-          </Text>
+          </BoldText>
           <Text className="text-center">Find the Right Counseling for You</Text>
         </View>
         <View className="absolute bottom-52">

@@ -23,8 +23,26 @@ class UserAnalysis(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
     is_phone_verified = models.BooleanField(default=False)
+    
+    # New Fields
+    gender = models.CharField(
+        max_length=10,
+        choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')],
+        null=True, blank=True,
+        default=""
+    )
+    age = models.PositiveIntegerField(null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True, default="")  # Location can be a city, country, etc.
+
+    def __str__(self):
+        return f"Profile of {self.user.username}"
+    
+    def save(self, *args, **kwargs):
+        if self.phone_number == "":
+            self.phone_number = None
+        super().save(*args, **kwargs)
 
 class ChatLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)

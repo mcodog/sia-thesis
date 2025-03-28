@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableWithoutFeedback, Text } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
+import { default as Text } from "./CustomText";
 
 const GradientButton = ({
   onPress,

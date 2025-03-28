@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Text,
   Image,
   TouchableOpacity,
   ScrollView,
@@ -12,6 +11,8 @@ import { rem } from "../../../components/stylings/responsiveSize";
 import logo from "../../../assets/images/logo.png";
 import NotificationBell from "../(tabs)/NotificationBell";
 import Octicons from "@expo/vector-icons/Octicons";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const LayoutGame = ({ navigation }) => {
   const copyToClipboard = (number) => {
@@ -39,10 +40,10 @@ const LayoutGame = ({ navigation }) => {
           style={styles.headerImage}
         />
 
-        <Text style={styles.quote}>
+        <BoldText style={styles.quote}>
           “I know this won’t be easy, but I also know you’ve got what it takes
           to get through it.”
-        </Text>
+        </BoldText>
 
         <View style={styles.supportContainer}>
           <TouchableOpacity
@@ -183,7 +184,6 @@ const styles = StyleSheet.create({
   },
   tipsTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     marginBottom: 5,
   },
   hotlineContainer: {
@@ -235,7 +235,6 @@ const styles = StyleSheet.create({
   },
   quote: {
     fontSize: 20,
-    fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
   },

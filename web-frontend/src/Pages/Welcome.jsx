@@ -34,7 +34,7 @@ const Welcome = () => {
     );
     if (!isCalling) {
       try {
-        await vapi.start("ec1032e5-7bf8-4e69-a165-f77efed94588");
+        await vapi.start("d98095b5-6bf0-4bb0-9631-214660006c3c");
         setIsCalling(true);
         toast.update(toastId, {
           render: "You are now connected to our assistant",
@@ -66,12 +66,19 @@ const Welcome = () => {
       <div className="fixed z-30 bottom-10 right-10 flex justify-center items-center flex-col gap-3">
         <button
           onClick={handleCall}
-          className="bg-white py-2 px-4 rounded-2xl shadow-custom flex gap-2 justify-center items-center"
+          className={`py-2 px-4 rounded-2xl shadow-custom flex gap-2 justify-center items-center transition duration-300 ${
+            isCalling ? "bg-[#0cdfc6] text-white" : "bg-white text-black"
+          }`}
         >
-          <p>Call Our Assistant</p>
-          <LuPhoneCall className="text-[#0cdfc6] text-2xl" />
+          <p>{isCalling ? "Calling..." : "Call Our Assistant"}</p>
+          <LuPhoneCall
+            className={`${
+              isCalling ? "text-white" : "text-[#0cdfc6]"
+            } text-2xl`}
+          />
         </button>
       </div>
+
       {/* HERO SECTION */}
       <section className="w-full px-14 grid grid-cols-2 items-center relative z-10 mb-10">
         <motion.div
@@ -350,9 +357,15 @@ const Welcome = () => {
               </p>
             </div>
             <motion.button
-              className="mt-6 p-4 px-8 rounded-lg shadow-lg bg-green-500 hover:bg-green-600 text-white font-bold cursor-pointer transition duration-300 hover:shadow-2xl"
+              className="mt-6 p-4 px-8 rounded-lg shadow-lg bg-[#0cdfc6] text-white font-bold cursor-pointer transition duration-300 hover:shadow-2xl"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              onClick={() =>
+                window.open(
+                  "https://www.nimh.nih.gov/health/find-help",
+                  "_blank"
+                )
+              }
             >
               Talk to a Professional
             </motion.button>

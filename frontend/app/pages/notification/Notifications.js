@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { default as Text } from "../../../components/CustomText";
+import BoldText from "../../../components/BoldText";
 
 const Notifications = () => {
   const navigation = useNavigation();
@@ -21,14 +23,10 @@ const Notifications = () => {
 
   const handleNotificationPress = async () => {
     if (message === "Sleep duration is finished! Click to stop the alarm.") {
-      Alert.alert(
-        "Sleep Tracker",
-        "Do you want to go to the Sleep Tracker?",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Go", onPress: () => navigation.navigate("SleepTracker") },
-        ]
-      );
+      Alert.alert("Sleep Tracker", "Do you want to go to the Sleep Tracker?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Go", onPress: () => navigation.navigate("SleepTracker") },
+      ]);
     }
 
     await AsyncStorage.setItem("notification", "No new notifications");
@@ -39,12 +37,24 @@ const Notifications = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Notifications</Text>
       <TouchableOpacity
-        style={[styles.notificationCard, message !== "No new notifications" && styles.activeCard]}
+        style={[
+          styles.notificationCard,
+          message !== "No new notifications" && styles.activeCard,
+        ]}
         onPress={handleNotificationPress}
         disabled={message === "No new notifications"}
       >
-        <MaterialIcons name="notifications" size={24} color={message !== "No new notifications" ? "#007bff" : "#6c757d"} />
-        <Text style={[styles.text, message !== "No new notifications" && styles.activeText]}>
+        <MaterialIcons
+          name="notifications"
+          size={24}
+          color={message !== "No new notifications" ? "#007bff" : "#6c757d"}
+        />
+        <Text
+          style={[
+            styles.text,
+            message !== "No new notifications" && styles.activeText,
+          ]}
+        >
           {message}
         </Text>
       </TouchableOpacity>

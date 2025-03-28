@@ -1,5 +1,6 @@
-import { View, Image, Text } from "react-native";
+import { View, Image } from "react-native";
 import React from "react";
+import { default as Text } from "../CustomText";
 
 import { rem } from "../stylings/responsiveSize";
 
@@ -36,7 +37,14 @@ const PortraitTile = ({ imageKey, title = "Title Value", chips = [] }) => {
         className="absolute z-10 bottom-10 border border-green-500"
         style={{ position: "absolute", bottom: 20, left: 10 }}
       >
-        <Text style={{ fontSize: rem(12), color: "white", fontWeight: 500 }}>
+        <Text
+          style={{
+            fontSize: rem(12),
+            color: "white",
+            fontWeight: 500,
+            paddingHorizontal: 10,
+          }}
+        >
           {title}
         </Text>
         <View

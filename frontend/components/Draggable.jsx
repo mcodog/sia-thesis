@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Animated, PanResponder, Text } from "react-native";
+import { View, Animated, PanResponder } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { default as Text } from "./CustomText";
 
 const Draggable = ({ onValueChange }) => {
   const [containerWidth, setContainerWidth] = useState(0);

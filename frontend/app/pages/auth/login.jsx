@@ -1,5 +1,6 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import { View } from "react-native";
+import { default as Text } from "../../../components/CustomText";
+import React, { useEffect, useState } from "react";
 import "../../../global.css";
 import Header from "../../../components/Header";
 import Logo from "../../../components/Logo";
@@ -14,22 +15,42 @@ import { useSafeAreaFrame } from "react-native-safe-area-context";
 import axios from "axios";
 import axiosInstance from "../../../context/axiosInstance";
 import { useAuth } from "../../../context/AuthContext";
+import LoadingScreen from "../../../components/LoadingScreen";
+import ErrorScreen from "../../../components/ErrorScreen";
+import { Keyboard } from "react-native";
 
 const Login = ({ navigation }) => {
   const router = useRouter();
-  const [email, setEmail] = useState("admin");
+  const [email, setEmail] = useState("markcodog");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [password, setPassword] = useState("secret");
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    isLoggedIn = login(email, password);
+    Keyboard.dismiss();
+    setIsLoading(true);
+    setError(null);
+    isLoggedIn = await login(email, password, setError);
+    console.log("isLoggedIn:", isLoggedIn);
+    setIsLoading(false);
     if (isLoggedIn) {
       navigation.navigate("Main");
     }
   };
 
+  useEffect(() => {
+    if (!error) return;
+    setShowError(true);
+  }, [error]);
+
   return (
     <PaperProvider theme={theme}>
+      {showError && (
+        <ErrorScreen isVisible={showError} setIsLoading={setShowError} />
+      )}
+      {isLoading && <LoadingScreen isVisible={isLoading} />}
       <View className="flex-1 justify-center items-center p-16 bg-white">
         <View style={{ position: "absolute", top: rem(20), left: rem(20) }}>
           <FAB icon="arrow-left" onPress={() => router.back()} />
@@ -43,9 +64,12 @@ const Login = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             style={{ height: rem(40), color: "black" }}
-            contentStyle={{ color: "black" }}
+            contentStyle={{ color: "black", fontFamily: "Primary" }}
             mode="outlined"
           />
+          {error && (
+            <Text style={{ color: "red", fontSize: 12 }}>Invalid Username</Text>
+          )}
         </View>
         <View className="w-full p-2">
           <TextInput
@@ -55,8 +79,11 @@ const Login = ({ navigation }) => {
             secureTextEntry
             style={{ height: rem(40) }}
             mode="outlined"
-            contentStyle={{ color: "black" }}
+            contentStyle={{ color: "black", fontFamily: "Primary" }}
           />
+          {error && (
+            <Text style={{ color: "red", fontSize: 12 }}>Invalid Password</Text>
+          )}
         </View>
         <View className="w-full flex-row p-2 gap-2">
           <View className="w-1/2 ">
@@ -67,7 +94,7 @@ const Login = ({ navigation }) => {
           <View className="w-1/2">
             <Button
               mode="outlined"
-              onPress={() => router.push("pages/auth/Register")}
+              onPress={() => navigation.navigate("Register")}
             >
               Register
             </Button>

@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, TouchableWithoutFeedback } from "react-native";
+import { View, ScrollView, TouchableWithoutFeedback } from "react-native";
 import React, { useEffect, useState } from "react";
 import { rem, em } from "../../../components/stylings/responsiveSize";
 import { useRouter } from "expo-router";
+
+import { default as Text } from "../../../components/CustomText";
 
 //Customs
 import ElevatedButton from "../../../components/customs/ElevatedButton";
@@ -23,6 +25,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 
 const Messages = ({ navigation }) => {
+  // const vapi = new Vapi("4712e393-1100-4981-813a-62981dba89a3");
   const { user, axiosInstanceWithBearer } = useAuth();
   const [chatData, setChatData] = useState([]);
   const [pressOutside, setPressOutside] = useState(1);
@@ -67,15 +70,16 @@ const Messages = ({ navigation }) => {
   };
 
   const makeVapiCall = async () => {
+    // vapi.start("d98095b5-6bf0-4bb0-9631-214660006c3c");
     const url = "https://api.vapi.ai/call";
-    const token = "1d9de362-7090-4849-8b13-5ac3f28c1810";
+    const token = "7e9e423d-5e35-4f99-86fd-d94dd0f5a532";
     // console.log("ti");
     const data = {
-      assistantId: "7d9aa9b6-fa45-4b65-9762-ef88ec7f0627",
-      phoneNumberId: "b673124e-0728-44ba-bd29-9092fe62f05a",
+      assistantId: "d98095b5-6bf0-4bb0-9631-214660006c3c",
+      phoneNumberId: "bff018f4-3a66-433b-89ba-37be59fc96ea",
       customer: {
-        number: "+639947088637",
-        name: "Glyza",
+        number: "+639934532573",
+        name: "Mark",
       },
     };
 

@@ -12,6 +12,8 @@ import {
   setId,
 } from "../redux/userSlice";
 import { useRouter } from "expo-router";
+// import Toast from "react-native-toast-message";
+import Toast from "react-native-simple-toast";
 
 const AuthContext = createContext();
 
@@ -30,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const axiosInstanceWithBearer = axios.create({
-    baseURL: "http://192.168.2.101:8000",
+    baseURL: "http://192.168.1.47:8000",
     // baseURL: "http://192.168.1.47:8000",
     // baseURL: "http://192.168.28.101:8000",
     // baseURL: "http://192.168.1.47:8000",
@@ -42,22 +44,32 @@ export const AuthProvider = ({ children }) => {
     withCredentials: true,
   });
 
-  const login = async (username, password) => {
+  const login = async (username, password, setError) => {
     console.log("Attempting to login with:", username, password);
     try {
       const result = await axiosInstance.post(`/api/token/`, {
         username,
         password,
       });
-      // console.log("Login successful:", result.data);
+
       setAccessToken(result.data.access);
       await fetchUserProfile(result.data.access);
 
+      // console.log("Login successful:", result.data);
       return true;
     } catch (error) {
       if (error.response) {
         console.log("Response Error:", error.response.data);
         console.log("Status Code:", error.response.status);
+        if (error.response.status === 401) {
+          console.log("Invalid username or password");
+          Toast.showWithGravity(
+            "Please check your Username or Password.",
+            5,
+            Toast.CENTER
+          );
+          setError("Invalid username or password");
+        }
       } else if (error.request) {
         console.log(
           "Request Error: No response received from server",
@@ -71,21 +83,45 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
 
-  const register = async (user) => {
+  const register = async (user, setErrors) => {
     try {
       const result = await axiosInstance.post(`/User/`, {
         username: user.name,
         password: user.password,
         first_name: user.first_name,
         last_name: user.last_name,
+        phone: user.phone,
       });
-
+      console.log("Register successful:", result.data);
       const isLoggedIn = login(user.name, user.password);
 
       return isLoggedIn;
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      if (error.response) {
+        console.log("Response Error:", error.response.data.username);
+        console.log("Status Code:", error.response.status);
+        if (
+          error.response.data.username.includes(
+            "A user with that username already exists."
+          )
+        ) {
+          console.log("User already exists");
+          setErrors((prev) => ({
+            ...prev,
+            userAlreadyExists: true,
+          }));
+        }
+      } else if (error.request) {
+        console.log(
+          "Request Error: No response received from server",
+          error.request
+        );
+      } else {
+        console.log("Error Message:", error.message);
+      }
     }
+
+    return false;
   };
 
   useEffect(() => {
@@ -113,7 +149,7 @@ export const AuthProvider = ({ children }) => {
         username: response.data.username,
         id: response.data.id,
       }));
-      // console.log(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }

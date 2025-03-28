@@ -1,5 +1,6 @@
-import { View, Text, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback } from "react-native";
 import React from "react";
+import { default as Text } from "./CustomText";
 
 const CustomButton = ({ text, onPress, style }) => {
   return (
