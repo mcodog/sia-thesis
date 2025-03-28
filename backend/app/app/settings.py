@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -108,26 +110,26 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'pathfinder_a1ru',  # Your Render DB name
-#         'USER': 'mcodog',  # Your Render DB user
-#         'PASSWORD': 'rvquVLP3BCwclcAmFrCMdBU9v596Zzau',  # Your Render DB password
-#         'HOST': 'dpg-cviq119r0fns73851sng-a.singapore-postgres.render.com',  # Full Render DB hostname
-#         'PORT': '5432',  # PostgreSQL default port
-#         'OPTIONS': {
-#             'sslmode': 'require',  # Required for Render
-#         },
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pathfinder_a1ru',  # Your Render DB name
+        'USER': 'mcodog',  # Your Render DB user
+        'PASSWORD': 'rvquVLP3BCwclcAmFrCMdBU9v596Zzau',  # Your Render DB password
+        'HOST': 'dpg-cviq119r0fns73851sng-a.singapore-postgres.render.com',  # Full Render DB hostname
+        'PORT': '5432',  # PostgreSQL default port
+        'OPTIONS': {
+            'sslmode': 'require',  # Required for Render
+        },
+    }
+}
 
 
 
@@ -166,6 +168,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
